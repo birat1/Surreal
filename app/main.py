@@ -59,7 +59,7 @@ class SignUpRequest(BaseModel):
 @app.post("/signup")
 def signup_user(request: SignUpRequest, db: Session = Depends(get_db)):
 
-    print("Received request: ", request.dict())
+    print("Received request: ", request.model_dump())
 
     try:
         new_user = models.User(
@@ -74,15 +74,14 @@ def signup_user(request: SignUpRequest, db: Session = Depends(get_db)):
             ethnicity=request.ethnicity,
             home_area=request.home_area
         )
-        
+   
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
-        
+   
         return {"message": "User created successfully,", "user's name": new_user.full_name}
-    
+
     except Exception as e:
         print("Error inserting user", e)
 
         raise HTTPException(status_code=400, detail=str(e))
-

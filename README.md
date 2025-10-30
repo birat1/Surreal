@@ -1,3 +1,15 @@
+### docker commands
+```docker compose build``` - build
+
+```docker compose up``` - run
+
+```docker compose down``` - stop
+
+
+<p>
+<details>
+<summary>...</summary>
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
@@ -71,3 +83,5 @@ export default defineConfig([
   },
 ])
 ```
+<details>
+<p>

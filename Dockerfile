@@ -10,4 +10,4 @@ COPY . .
 EXPOSE 8000
 
 # idk if its better to use uvicorn directly or use fastapi cli (?)
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app.main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]

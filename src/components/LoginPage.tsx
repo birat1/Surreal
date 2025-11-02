@@ -1,0 +1,65 @@
+import { useState } from "react";
+import { Card, CardHeader, CardContent } from "./ui/card";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
+import { useNavigate } from "react-router-dom";
+
+const LoginPage = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    try {
+      const res = await fetch("http://127.0.0.1:8000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (res.ok) {
+        const data = await res.json()
+        localStorage.setItem("jwt_token", data.jwt_token)
+        
+        alert("Login success!");
+        navigate("/user-profile");
+      } else {
+        const errorData = await res.json();
+        alert(errorData.detail);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong while logging in");
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <Card className="w-full max-w-md shadow-lg">
+        <CardHeader>
+          <h2 className="text-blue-600 text-2xl font-bold text-center">
+            Log In
+          </h2>
+        </CardHeader>
+
+        <CardContent className="flex flex-col gap-4">
+          <Input
+            placeholder="Enter your Surrey email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <Input
+            type="password"
+            placeholder="Enter your password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <Button onClick={handleLogin}>Login</Button>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+export default LoginPage;

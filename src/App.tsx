@@ -1,6 +1,8 @@
 import Home from "./components/Home";
-import RegisterPage from "./components/RegisterPage";
+import LoginPage from "./components/LoginPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 import SignUpPage from "./components/SignUpPage";
+import UserProfilePage from "./components/UserProfilePage";
 
 import "./index.css"
 
@@ -11,8 +13,11 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/register" element={<RegisterPage />} />
         <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/login" element={<LoginPage/>} />
+
+
+        <Route path="/user-profile" element={<ProtectedRoute><UserProfilePage/></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   );

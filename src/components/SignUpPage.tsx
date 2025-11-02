@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Card, CardHeader, CardContent } from "./ui/card";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import { useNavigate } from "react-router-dom";
 
 const SignUpPage = () => {
   const [step, setStep] = useState<"signup" | "verify">("signup");
@@ -11,6 +12,8 @@ const SignUpPage = () => {
   const [code, setCode] = useState("");
 
   const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate()
 
   const handleSendCode = async () => {
     if (!email.endsWith("@surrey.ac.uk")) {
@@ -50,6 +53,8 @@ const SignUpPage = () => {
 
       if (res.ok) {
         alert("Account created successfully!");
+        navigate("/user-profile")
+
       } else {
         const errorData = await res.json();
         alert(errorData.detail || "Invalid or expired code.");

@@ -2,7 +2,7 @@ import Home from "./components/Home";
 import LoginPage from "./components/LoginPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import SignUpPage from "./components/SignUpPage";
-import UserProfilePage from "./components/UserProfilePage";
+import UserProfilePage from "./components/UserProfileSetupPage";
 
 import "./index.css"
 

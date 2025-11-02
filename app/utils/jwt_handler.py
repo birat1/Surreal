@@ -14,16 +14,16 @@ def create_jwt_token(data: dict):
     
     return encoded_jwt
 
-# def verify_jwt_token(token: str):
-#     try:
-#         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-#         email: str = payload.get("sub")
+def verify_jwt_token(token: str):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
 
-#         if email is None:
-#             raise JWTError("Invalid token payload")
+        if email is None:
+            raise JWTError("Invalid token payload")
         
-#         return email
+        return email
     
-#     except JWTError:
-#         return None
+    except JWTError:
+        return None
 

@@ -1,18 +1,27 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+import os
+
+from fastapi import FastAPI, Depends, HTTPException, status, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi_mail import FastMail, MessageSchema, ConnectionConfig, MessageType
+
 from app.database import engine, SessionLocal
+from app.utils.jwt_handler import create_jwt_token, verify_jwt_token
+from app.schemas import EmailRequest, VerifyCodeRequest, LoginRequest, UserProfileRequest
+from app.models import User
+
 from app import models
+
+
 from typing import Annotated, List
 from sqlalchemy.orm import Session
-from pydantic import BaseModel, EmailStr
-from fastapi_mail import FastMail, MessageSchema, ConnectionConfig, MessageType
+
 from starlette.responses import JSONResponse
 import random
-import os
+
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
 
-from app.utils.jwt_handler import create_jwt_token
+
 
 
 app = FastAPI()
@@ -51,8 +60,6 @@ sender_email = os.getenv("EMAIL")
 sender_pass = os.getenv("PASS")
 app_password = os.getenv("APP_PASSWORD")
 
-class EmailRequest(BaseModel):
-    email: EmailStr
 
 conf = ConnectionConfig(
     MAIL_USERNAME= sender_email,
@@ -66,6 +73,13 @@ conf = ConnectionConfig(
     USE_CREDENTIALS=True,
     VALIDATE_CERTS=True
 )
+
+
+
+@app.get("/")
+def health():
+    return {"status": "ok"}
+
 
 
 # This method sends 6 digit verification code to ensure user is a surrey student
@@ -102,12 +116,6 @@ async def send_verification_code(request: EmailRequest, db: Session = Depends(ge
     fm = FastMail(conf)
     await fm.send_message(message)
     return JSONResponse(status_code=200, content= {"message": "email has been sent"})
-
-
-class VerifyCodeRequest(BaseModel):
-    email: EmailStr
-    password: str
-    code: str
 
 
 # hash password before storing in db for security
@@ -150,10 +158,6 @@ def verify_code(request: VerifyCodeRequest, db: Session = Depends(get_db)):
     return {"message": "Email verified successfully"}
 
 
-class LoginRequest(BaseModel):
-    email: EmailStr
-    password: str
-
 # This method is to handle a user login (checks if the email exists and the entered password (hashed) matches that in the database)
 @app.post("/login")
 def login_user(request: LoginRequest, db: Session = Depends(get_db)):
@@ -172,61 +176,41 @@ def login_user(request: LoginRequest, db: Session = Depends(get_db)):
     
     return {"jwt_token": jwt_token, "token_type": "bearer"}
 
- 
 
-@app.get("/")
-def health():
-    return {"status": "ok"}
+def get_matching_user(request: Request, db: Session = Depends(get_db)):
+    jwt_token = request.headers.get("Authorization").split(" ")[1]
+    email = verify_jwt_token(jwt_token)
+    user = db.query(models.User).filter(models.User.email_address == email).first()
 
+    return user
+         
 
-# class SignUpRequest(BaseModel):
-#     full_name: str
-#     age: int
-#     nickname: str
-#     bio: str
-#     course: str
-#     accomodation: str
-#     university_year: int
-#     languages: str
-#     ethnicity: str
-#     home_area: str
+# This method handles submission of the original user profile setup (basically just takes the data from the frontend and stores it in the database)
+@app.post("/user-profile-setup")
+def setup_user_profile(request: UserProfileRequest, db: Session = Depends(get_db), matching_user: User = Depends(get_matching_user)):
+    try:
+        new_user_profile = models.UserProfile(
+            user_id = matching_user.id,
+            full_name = request.full_name,
+            age = request.age,
+            nickname=request.nickname,
+            bio=request.bio,
+            course=request.course,
+            accomodation=request.accomodation,
+            university_year=request.university_year,
+            languages=request.languages,
+            ethnicity=request.ethnicity,
+            home_area=request.home_area
+        )
 
-
-
-
-
-
-
-
-
-
-# this function receives the values from the user signup form and inserts it into the postgres database
-# @app.post("/signup")
-# def signup_user(request: SignUpRequest, db: Session = Depends(get_db)):
-
-#     print("Received request: ", request.model_dump())
-
-#     try:
-#         new_user = models.User(
-#             full_name = request.full_name,
-#             age = request.age,
-#             nickname=request.nickname,
-#             bio=request.bio,
-#             course=request.course,
-#             accomodation=request.accomodation,
-#             university_year=request.university_year,
-#             languages=request.languages,
-#             ethnicity=request.ethnicity,
-#             home_area=request.home_area
-#         )
+        db.add(new_user_profile)
+        db.commit()
+        db.refresh(new_user_profile)
    
-#         db.add(new_user)
-#         db.commit()
-#         db.refresh(new_user)
-   
-#         return {"message": "User created successfully,", "user's name": new_user.full_name}
+        return {"message": "User created successfully,", "user's name": new_user_profile.full_name}
 
-#     except Exception as e:
-#         print("Error inserting user", e)
+    except Exception as e:
+        print("Error inserting user_profile", e)
 
-#         raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=str(e))
+

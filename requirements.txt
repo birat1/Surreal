@@ -7,3 +7,4 @@ fastapi-mail
 passlib
 bcrypt
 python-jose[cryptography]
+argon2-cffi

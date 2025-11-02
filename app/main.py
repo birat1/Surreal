@@ -12,6 +12,8 @@ import os
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
 
+from app.utils.jwt_handler import create_jwt_token
+
 
 app = FastAPI()
 
@@ -58,7 +60,7 @@ conf = ConnectionConfig(
     MAIL_FROM=sender_email,
     MAIL_PORT=587,
     MAIL_SERVER="smtp.gmail.com",
-    MAIL_FROM_NAME="Surreal App",  # This is what the user sees as sender
+    MAIL_FROM_NAME="Surreal",  # This is what the user sees as sender
     MAIL_STARTTLS=True,            
     MAIL_SSL_TLS=False,
     USE_CREDENTIALS=True,
@@ -69,10 +71,9 @@ conf = ConnectionConfig(
 # This method sends 6 digit verification code to ensure user is a surrey student
 @app.post("/send-verification-code")
 async def send_verification_code(request: EmailRequest, db: Session = Depends(get_db)):
-    email = request.email
     verification_code = str(random.randint(100000, 999999)) # Creates a random 6 digit number
 
-    existing_record = db.query(models.EmailVerificationCode).filter_by(email=email).first()
+    existing_record = db.query(models.EmailVerificationCode).filter_by(email= request.email).first()
 
     if existing_record:
         existing_record.code = verification_code
@@ -81,7 +82,7 @@ async def send_verification_code(request: EmailRequest, db: Session = Depends(ge
         existing_record.verified = False
     else:
         new_record = models.EmailVerificationCode(
-            email=email,
+            email=request.email,
             code=verification_code
         )
         db.add(new_record)
@@ -93,7 +94,7 @@ async def send_verification_code(request: EmailRequest, db: Session = Depends(ge
 
     message = MessageSchema(
         subject="Your Surreal Verification Code",
-        recipients=[email],
+        recipients=[request.email],
         body=html,
         subtype=MessageType.html
     )
@@ -147,6 +148,30 @@ def verify_code(request: VerifyCodeRequest, db: Session = Depends(get_db)):
     db.refresh(record)
 
     return {"message": "Email verified successfully"}
+
+
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str
+
+# This method is to handle a user login (checks if the email exists and the entered password (hashed) matches that in the database)
+@app.post("/login")
+def login_user(request: LoginRequest, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.email_address == request.email).first()
+
+    # if the email is not found in the database
+    if not user:
+        raise HTTPException(status_code=404, detail="Account not found. Please sign up first")
+    
+    if not pwd_context.verify(request.password, user.password):
+        raise HTTPException(status_code=401, detail="Incorrect password")
+    
+    jwt_token = create_jwt_token(data={"sub": user.email_address})
+    # print(f"User {request.email} logged in successfully w jwt token: {jwt_token}")
+
+    
+    return {"jwt_token": jwt_token, "token_type": "bearer"}
+
  
 
 @app.get("/")

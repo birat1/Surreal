@@ -51,7 +51,10 @@ const SignUpPage = () => {
         body: JSON.stringify({ email, password, code }),
       });
 
+      const data = await res.json()
+
       if (res.ok) {
+        localStorage.setItem("jwt_token", data.jwt_token)
         alert("Account created successfully!");
         navigate("/user-profile")
 

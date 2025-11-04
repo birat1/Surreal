@@ -155,7 +155,11 @@ def verify_code(request: VerifyCodeRequest, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(record)
 
-    return {"message": "Email verified successfully"}
+    jwt_token = create_jwt_token(data={"sub": new_user.email_address})
+
+    return {"message": "Email verified successfully",
+            "jwt_token": jwt_token,
+            "token_type": "bearer"}
 
 
 # This method is to handle a user login (checks if the email exists and the entered password (hashed) matches that in the database)

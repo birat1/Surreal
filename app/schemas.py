@@ -15,7 +15,6 @@ class LoginRequest(BaseModel):
     password: str
 
 class UserProfileRequest(BaseModel):
-    user_id: str
     full_name: str
     age: int
     nickname: str

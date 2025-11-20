@@ -3,12 +3,17 @@ import { Card, CardHeader, CardContent } from "./ui/card";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "@/context/AuthContext";
 
-const LoginPage = () => {
+
+const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
+
+  const { login } = useContext(AuthContext);
 
   const handleLogin = async () => {
     try {
@@ -19,11 +24,9 @@ const LoginPage = () => {
       });
 
       if (res.ok) {
-        const data = await res.json()
-        localStorage.setItem("jwt_token", data.jwt_token)
-        
-        alert("Login success!");
-        navigate("/user-profile");
+        const data = await res.json();
+        login(data.jwt_token);
+        navigate("/friends-finder")
       } else {
         const errorData = await res.json();
         alert(errorData.detail);

@@ -13,7 +13,9 @@ const SignUpPage = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate()
+  const [error, setError] = useState("");
+
+  const navigate = useNavigate();
 
   const handleSendCode = async () => {
     if (!email.endsWith("@surrey.ac.uk")) {
@@ -33,7 +35,8 @@ const SignUpPage = () => {
       if (res.ok) {
         setStep("verify");
       } else {
-        alert("Error sending code. Please try again.");
+        const errorData = await res.json();
+        setError(errorData.detail || "Error sending code. Please try again");
       }
     } catch (err) {
       console.error(err);
@@ -51,16 +54,14 @@ const SignUpPage = () => {
         body: JSON.stringify({ email, password, code }),
       });
 
-      const data = await res.json()
+      const data = await res.json();
 
       if (res.ok) {
-        localStorage.setItem("jwt_token", data.jwt_token)
+        localStorage.setItem("jwt_token", data.jwt_token);
         alert("Account created successfully!");
-        navigate("/user-profile")
-
+        navigate("/user-profile");
       } else {
-        const errorData = await res.json();
-        alert(errorData.detail || "Invalid or expired code.");
+        alert(data.detail || "Invalid or expired code.");
       }
     } catch (err) {
       console.error(err);
@@ -80,6 +81,19 @@ const SignUpPage = () => {
         <CardContent className="flex flex-col gap-4">
           {step === "signup" && (
             <div className="flex flex-col gap-4">
+              {error && (
+                <div className="p-3 bg-red-100 border border-red-300 text-red-700 rounded-lg">
+                  {error}
+                  {error.includes("already exists") && (  // display this box specifically if the error is the 'user already exists' error
+                    <button
+                      onClick={() => navigate("/login")}
+                      className="block mt-2 text-blue-600 underline font-medium cursor-pointer"
+                    >
+                      Log in instead
+                    </button>
+                  )}
+                </div>
+              )}
               <Input
                 placeholder="Enter your Surrey email"
                 value={email}

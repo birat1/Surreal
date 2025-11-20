@@ -1,8 +1,20 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
-import surreyLogo2 from "../assets/surrey_logo.jpg";
+import surreyLogo from "../assets/surrey_logo.jpg";
+import { useContext } from "react";
+import { AuthContext } from "@/context/AuthContext";
 
 const Navbar: React.FC = () => {
+  
+  const {token, logout} = useContext(AuthContext)
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    logout()
+    navigate("/")
+  }
+
+
   return (
     <nav className="fixed top-0 left-0 w-full bg-white/70 backdrop-blur-md shadow-md z-50">
       <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
@@ -11,22 +23,34 @@ const Navbar: React.FC = () => {
           to="/"
         >
           <img
-            src={surreyLogo2}
+            src={surreyLogo}
             alt="University of Surrey logo"
             className="h-10 w-auto hover:opacity-90 transition"
           />
         </Link>
 
         <div className="flex items-center gap-4">
-          <Link className="hover:text-gray-950" to="/login">
-            Sign In
-          </Link>
+          <div className="flex items-center gap-4">
+            {token ? (
+              // If logged in → show Logout
+              <Button variant="destructive" onClick={handleLogout}>
+                Logout
+              </Button>
+            ) : (
+              // If NOT logged in => show Login + Signup
+              <>
+                <Link to="/login">
+                  <Button variant="ghost">Login</Button>
+                </Link>
 
-          <Link to="/signup">
-            <Button className="px-4 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition duration-300 transform hover:scale-105 shadow-sm hover:shadow-lg cursor-pointer">
-              Sign Up
-            </Button>
-          </Link>
+                <Link to="/signup">
+                  <Button className="px-4 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition duration-300 transform hover:scale-105 shadow-sm hover:shadow-lg cursor-pointer">
+                    Sign Up
+                  </Button>
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </nav>

@@ -1,4 +1,4 @@
-// This is a wrapper component to hide pages that should only be accessible when a user is logged in, it just checks if a jwt token exists in localstorage
+// This is a wrapper component to hide pages that shouldn't be accessible when a user is not logged in, it just checks if a jwt token exists in localstorage
 // the jwt token is created in the backend in the /login endpoint and is set in the handleLogin method in LoginPage.tsx
 
 import type { JSX } from "react";

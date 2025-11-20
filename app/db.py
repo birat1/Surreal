@@ -1,12 +1,18 @@
-# In-memory message store: conversation_id -> list of messages
-MESSAGES: dict[str, list[dict]] = {}
+import os
 
-def get_messages() -> dict[str, list[dict]]:
-    return MESSAGES
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import declarative_base, sessionmaker
 
-# Generate a consistent conversation ID for two users
+DATABASE_URL = os.getenv("DATABASE_URL")
+engine = create_async_engine(DATABASE_URL)
+
+AsyncSessionLocal = sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
+
+Base = declarative_base()
+
+async def get_db():
+    async with AsyncSessionLocal() as session:
+        yield session
+
 def conv_id(user_a: str, user_b: str) -> str:
-    if user_a == user_b:
-        raise ValueError("Cannot create conversation with self")
-    a, b = sorted([user_a, user_b])
-    return f"conv-{a}-{b}"
+    return f"{min(user_a, user_b)}-{max(user_a, user_b)}"

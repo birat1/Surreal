@@ -5,6 +5,7 @@ from app.database import Base
 
 # This maps the Python User class to the users table in Postgres.
 class User(Base):
+    
     __tablename__ = "users" # name of the table in postgres
 
     id = Column(Integer, primary_key=True, index=True)
@@ -13,7 +14,8 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.utcnow())
 
 
-class EmailVerificationCode(Base):      # The temporary verification code is stored in this table   
+class EmailVerificationCode(Base):      # The temporary verification code is stored in this table
+
     __tablename__ = "email_verifications"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -25,7 +27,7 @@ class EmailVerificationCode(Base):      # The temporary verification code is sto
 
 
 class UserProfile(Base):
-    
+
     __tablename__ = "user_profiles"
 
     id = Column(Integer, primary_key=True, index=True)

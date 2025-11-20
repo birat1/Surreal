@@ -51,18 +51,18 @@ async def get_users_messages(
 
     # If recipient is not provided, get conversations
     stmt = (
-        select(Message)
+        select(Message.sender, Message.recipient)
         .where(or_(Message.sender == username, Message.recipient == username))
         .order_by(Message.created_at.desc())
     )
     result = await db.execute(stmt)
-    all_msgs = result.scalars().all()
+    all_rows = result.all()
 
     contacts = []
     seen = set()
 
-    for msg in all_msgs:
-        partner = msg.recipient if msg.sender == username else msg.sender
+    for sender, receiver in all_rows:
+        partner = receiver if sender == username else sender
 
         if partner not in seen:
             contacts.append(partner)

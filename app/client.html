@@ -36,7 +36,7 @@
         
         function connect() {
             const username = document.getElementById("username").value;
-            const url = `ws://localhost:8000/ws/${username}`; // Adjust port if needed
+            const url = `ws://localhost:8000/ws/${username}`;
             
             ws = new WebSocket(url);
 
@@ -52,11 +52,10 @@
                 if (data.type === "error") {
                     msgDiv.innerHTML += `<div class="error">Error: ${data.message || JSON.stringify(data.details)}</div>`;
                 } else {
-                    // Standard message
                     const align = data.side === "left" ? "left" : "right";
                     msgDiv.innerHTML += `<div class="${align}"><b>${data.sender}:</b> ${data.body}</div>`;
                 }
-                msgDiv.scrollTop = msgDiv.scrollHeight; // Auto scroll
+                msgDiv.scrollTop = msgDiv.scrollHeight; 
             };
 
             ws.onclose = (event) => {
@@ -70,7 +69,6 @@
             const recipient = document.getElementById("recipient").value;
             const body = document.getElementById("message").value;
             
-            // Matches your Pydantic Schema
             const payload = {
                 recipient: recipient,
                 body: body

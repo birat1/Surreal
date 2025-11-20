@@ -42,7 +42,7 @@ async def get_users_messages(
         response_data = []
         for msg in db_messages:
             pydantic_model = MessageResponse.model_validate(msg)
-            data = pydantic_model.model_dump(model="json")
+            data = pydantic_model.model_dump(mode="json")
 
             data["side"] = "left" if msg.sender == username else "right"
             response_data.append(data)

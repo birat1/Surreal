@@ -1,12 +1,22 @@
-const FriendsFinderPage = () => {
-    return (
-        <div className="flex justify-center items-center h-screen">
-            <p className="text-green-500 text-center">
-                This is the Friends Finder Page
-            </p>
-        
-        </div>
-    )
-}
+import { Card, CardContent } from "@/components/ui/card";
 
-export default FriendsFinderPage
+const FriendsFinderPage = () => {
+  // array for 8 cards
+  const dummyCards = Array.from({ length: 8 });
+
+  return (
+    <div className="p-8">
+      <div className="grid grid-cols-4 gap-6">
+        {dummyCards.map((_, idx) => (
+          <Card key={idx} className="h-40">
+            <CardContent className="flex items-center justify-center text-gray-400">
+              User Card
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default FriendsFinderPage;

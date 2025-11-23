@@ -17,42 +17,44 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route
-            path="/signup"
-            element={
-              <RequireLoggedOut>
-                <SignUpPage />
-              </RequireLoggedOut>
-            }
-          />
-          <Route
-            path="/login"
-            element={
-              <RequireLoggedOut>
-                <LoginPage />
-              </RequireLoggedOut>
-            }
-          />
+        <main className="pt-20">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route
+              path="/signup"
+              element={
+                <RequireLoggedOut>
+                  <SignUpPage />
+                </RequireLoggedOut>
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                <RequireLoggedOut>
+                  <LoginPage />
+                </RequireLoggedOut>
+              }
+            />
 
-          <Route
-            path="/user-profile"
-            element={
-              <ProtectedRoute>
-                <UserProfilePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/friends-finder"
-            element={
-              <ProtectedRoute>
-                <FriendsFinderPage />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
+            <Route
+              path="/user-profile"
+              element={
+                <ProtectedRoute>
+                  <UserProfilePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/friends-finder"
+              element={
+                <ProtectedRoute>
+                  <FriendsFinderPage />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </main>
       </BrowserRouter>
     </AuthProvider>
   );

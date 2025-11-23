@@ -3,7 +3,7 @@ import LoginPage from "@/components/LoginPage";
 import ProtectedRoute from "@/routes/ProtectedRoute";
 import SignUpPage from "@/components/SignUpPage";
 import UserProfilePage from "@/components/UserProfileSetupPage";
-import FinderFriendsPage from "./components/FinderFriendsPage";
+import FriendsFinderPage from "./components/FriendsFinderPage";
 import Navbar from "./components/Navbar";
 
 import "./index.css";
@@ -48,7 +48,7 @@ function App() {
             path="/friends-finder"
             element={
               <ProtectedRoute>
-                <FinderFriendsPage />
+                <FriendsFinderPage />
               </ProtectedRoute>
             }
           />

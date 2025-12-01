@@ -60,6 +60,12 @@ function App() {
                 <MessagesPage />
               }
             />
+            <Route
+              path="/events-and-societies"
+              element={
+                <MessagesPage />
+              }
+            />
           </Routes>
         </main>
       </BrowserRouter>

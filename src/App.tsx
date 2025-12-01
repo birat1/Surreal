@@ -64,7 +64,7 @@ function App() {
             <Route
               path="/events-and-societies"
               element={
-                <MessagesPage />
+                <EventsAndSocietiesPagePage />
               }
             />
           </Routes>

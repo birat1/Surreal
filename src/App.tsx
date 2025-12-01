@@ -5,6 +5,7 @@ import SignUpPage from "@/components/SignUpPage";
 import UserProfilePage from "@/components/UserProfileSetupPage";
 import FriendsFinderPage from "@/components/FriendsFinderPage";
 import MessagesPage from "@/components/MessagesPage";
+import EventsAndSocietiesPage from "@/components/EventsAndSocietiesPage";
 import Navbar from "@/components/Navbar";
 
 import "./index.css";

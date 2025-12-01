@@ -53,6 +53,14 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/events-and-societies"
+              element={
+                <ProtectedRoute>
+                  <EventsAndSocietiesPage />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </main>
       </BrowserRouter>

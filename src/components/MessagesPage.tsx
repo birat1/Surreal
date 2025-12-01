@@ -1,15 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-
-interface Message {
-    id?: string;
-    sender: string;
-    recipient: string;
-    body: string;
-    side: 'left' | 'right';
-    type?: string;
-    message?: string;
-    created_at?: string;
-}
+import type { Message } from '@/types/types';
 
 const WS_URL = 'ws://localhost:8001/ws';
 
@@ -164,7 +154,7 @@ export default function MessagesPage() {
                 )}
 
                 {messages.map((msg, index) => {
-                    const isMe = msg.side === 'left';
+                    const isMe = msg.sender === username;
 
                     return (
                         <div 

@@ -50,7 +50,6 @@ export interface Message {
     sender: string;
     recipient: string;
     body: string;
-    side: 'left' | 'right';
     type?: string;
     message?: string;
     created_at?: string;

@@ -3,8 +3,9 @@ import LoginPage from "@/components/LoginPage";
 import ProtectedRoute from "@/routes/ProtectedRoute";
 import SignUpPage from "@/components/SignUpPage";
 import UserProfilePage from "@/components/UserProfileSetupPage";
-import FriendsFinderPage from "./components/FriendsFinderPage";
-import Navbar from "./components/Navbar";
+import FriendsFinderPage from "@/components/FriendsFinderPage";
+import MessagesPage from "@/components/MessagesPage";
+import Navbar from "@/components/Navbar";
 
 import "./index.css";
 
@@ -54,11 +55,9 @@ function App() {
               }
             />
             <Route
-              path="/events-and-societies"
+              path="/messages"
               element={
-                <ProtectedRoute>
-                  <EventsAndSocietiesPage />
-                </ProtectedRoute>
+                <MessagesPage />
               }
             />
           </Routes>

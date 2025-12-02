@@ -41,9 +41,49 @@ export const ETHNICITIES = [
 ];
 
 export const SOCIETIES = [
-
+  "ABACUS",
+  "Baking Society",
+  "Caribbean Students' Society",
+  "Debating Society",
+  "EARS",
+  "Filipino Society",
+  "GameSoc",
+  "Hindu Society",
+  "Islamic Society",
+  "Japanese Society",
+  "Kannada Society",
+  "Languages Society",
+  "MaDSoc",
+  "Nepalese Society",
+  "Opa Surrey",
+  "ParaSoc",
+  "Rifle Club",
+  "Salsa Society",
+  "Tamil Society",
+  "UAS Team Peryton",
+  "Vet Band",
+  "Welsh Society",
+  "Zoological Society",
 ]
 
 export const SPORTS = [
-  
+  "Football", 
+  "Horse Riding", 
+  "Basketball",
+  "Netball",
+  "Swimming",
+  "Water Polo",
+  "Tennis",
+  "Badminton",
+  "Volleyball",
+  "MMA",
+  "Boxing",
+  "Cricket",
+  "Rugby",
+  "Hockey",
+  "Athletics",
+  "Lacrosse",
+  "Sailing",
+  "Rock Climbing",
+  "Taekwondo",
 ]

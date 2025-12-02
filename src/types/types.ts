@@ -44,3 +44,13 @@ export interface UserProfileFormProps {
   formData: UserProfileFormData;
   setFormData: React.Dispatch<React.SetStateAction<UserProfileFormData>>;
 }
+
+export interface Message {
+    id?: string;
+    sender: string;
+    recipient: string;
+    body: string;
+    type?: string;
+    message?: string;
+    created_at?: string;
+}

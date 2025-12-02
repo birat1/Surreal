@@ -21,6 +21,7 @@ import {
   ETHNICITIES,
   SPORTS,
   SOCIETIES,
+  COURSES,
 } from "@/data/dummy_data";
 
 const UserProfileForm: React.FC<UserProfileFormProps> = ({
@@ -152,13 +153,37 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
             className="border-blue-300 text-blue-600 focus:ring-blue-500"
           />
 
-          <Input
-            name="course"
-            placeholder="Course"
+          {/*Course */}
+          <Select
             value={formData.course}
-            onChange={handleChange}
-            className="border-blue-300 text-blue-600 focus:ring-blue-500"
-          />
+            onValueChange={(value) =>
+              setFormData({ ...formData, course: value })
+            }
+          >
+            <SelectTrigger className="w-full border-blue-300 text-blue-600 focus:ring-blue-500">
+              <SelectValue placeholder="Course" />
+            </SelectTrigger>
+
+            <SelectContent
+              className="bg-white border border-gray-200 rounded-md shadow-lg text-blue-600
+             max-h-48 overflow-y-auto"
+            >
+              <SelectGroup>
+                <SelectLabel className="text-blue-700 text-xs px-2">
+                  Course
+                </SelectLabel>
+                {COURSES.map((course) => (
+                  <SelectItem
+                    key={course}
+                    value={course}
+                    className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
+                  >
+                    {course}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
 
           {/*accommodations */}
           <Select
@@ -439,7 +464,7 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
                   {society}
                   <button
                     className="ml-2 text-blue-700 hover:text-red-600 font-bold"
-                    onClick={() => handleRemoveItem("sports", society)}
+                    onClick={() => handleRemoveItem("societies", society)}
                   >
                     ×
                   </button>

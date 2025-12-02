@@ -21,7 +21,7 @@ class UserProfileRequest(BaseModel):
     bio: str
     course: str
     accomodation: str
-    university_year: int
+    university_year: str
     languages: str
     ethnicity: str
     home_area: str

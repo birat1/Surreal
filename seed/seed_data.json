@@ -1,0 +1,132 @@
+{
+    "users": [
+        {
+            "email": "sharmika@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Sharmika Nirmalan",
+                "age": 21,
+                "nickname": "sharmix",
+                "bio": "Hey :)",
+                "course": "Chemistry",
+                "accommodation": "Stag Hill",
+                "university_year": "Third Year",
+                "languages": "Tamil",
+                "ethnicity": "Tamil",
+                "home_area": "London"
+            }
+        },
+        {
+            "email": "test@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Test User",
+                "age": 20,
+                "nickname": "user",
+                "bio": "Hey :)",
+                "course": "Computer Science",
+                "accommodation": "Manor Park",
+                "university_year": "Third Year",
+                "languages": "English",
+                "ethnicity": "British",
+                "home_area": "London"
+            }
+        },
+        {
+            "email": "manu@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Manu M",
+                "age": 21,
+                "nickname": "manu",
+                "bio": "I love Surrey!",
+                "course": "Computer Science",
+                "accommodation": "Stag Hill",
+                "university_year": "Third Year",
+                "languages": "Hindi",
+                "ethnicity": "Indian",
+                "home_area": "High Wycombe"
+            }
+        },
+        {
+            "email": "athavi@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Athavi S",
+                "age": 19,
+                "nickname": "athavi",
+                "bio": "welcome to my profile",
+                "course": "Games Design",
+                "accommodation": "Manor Park",
+                "university_year": "First Year",
+                "languages": "Tamil",
+                "ethnicity": "Tamil",
+                "home_area": "London"
+            }
+        },
+        {
+            "email": "enisa@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Enisa S",
+                "age": 20,
+                "nickname": "enisa",
+                "bio": "Hi",
+                "course": "Economics and Finance",
+                "accommodation": "Manor Park",
+                "university_year": "Second Year",
+                "languages": "Albanian",
+                "ethnicity": "Albanian",
+                "home_area": "London"
+            }
+        },
+        {
+            "email": "birat@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Birat A",
+                "age": 20,
+                "nickname": "birat",
+                "bio": "hey im birat",
+                "course": "Computer Science",
+                "accommodation": "Private Housing",
+                "university_year": "Third Year",
+                "languages": "Nepali",
+                "ethnicity": "Nepali",
+                "home_area": "High Wycombe"
+            }
+        },
+        {
+            "email": "yuken@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Yuken R",
+                "age": 22,
+                "nickname": "yuken",
+                "bio": "Hi I'm Yuken",
+                "course": "Chemistry",
+                "accommodation": "Stag Hill",
+                "university_year": "Third Year",
+                "languages": "Nepali",
+                "ethnicity": "Nepali",
+                "home_area": "Essex"
+            }
+        },
+        {
+            "email": "test2@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Test User 2",
+                "age": 19,
+                "nickname": "user 2",
+                "bio": "Hi",
+                "course": "Games Design",
+                "accommodation": "Private Housing",
+                "university_year": "Second Year",
+                "languages": "Albanian",
+                "ethnicity": "Albanian",
+                "home_area": "Portsmouth"
+            }
+        }
+    ]
+}

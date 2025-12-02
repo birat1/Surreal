@@ -6,11 +6,10 @@ from fastapi_mail import FastMail, MessageSchema, ConnectionConfig, MessageType
 
 from app.database import engine, SessionLocal
 from app.utils.jwt_handler import create_jwt_token, verify_jwt_token
-from app.schemas import EmailRequest, VerifyCodeRequest, LoginRequest, UserProfileRequest
+from app.schemas import EmailRequest, VerifyCodeRequest, LoginRequest, UserProfileRequest, UserProfileResponse
 from app.models import User
 
 from app import models
-
 
 from typing import Annotated, List
 from sqlalchemy.orm import Session
@@ -20,8 +19,6 @@ import random
 
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
-
-
 
 
 app = FastAPI()
@@ -75,17 +72,20 @@ conf = ConnectionConfig(
 )
 
 
-
 @app.get("/")
 def health():
     return {"status": "ok"}
-
 
 
 # This method sends 6 digit verification code to ensure user is a surrey student
 @app.post("/send-verification-code")
 async def send_verification_code(request: EmailRequest, db: Session = Depends(get_db)):
     verification_code = str(random.randint(100000, 999999)) # Creates a random 6 digit number
+
+    # check to see if there is already an existing user with this email (in which case they cannot sign up again)
+    existing_user = db.query(models.User).filter(models.User.email_address == request.email).first()
+    if existing_user:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User with this email already exists")
 
     existing_record = db.query(models.EmailVerificationCode).filter_by(email= request.email).first()
 
@@ -121,7 +121,7 @@ async def send_verification_code(request: EmailRequest, db: Session = Depends(ge
 # hash password before storing in db for security
 pwd_context = CryptContext(schemes=["argon2"])
 
-# This method checks if the 6 digit code they entered is correct (matches the value in the database for their email)
+# This method checks if the 6 digit code they entered is correct (compares the value in the database for their email)
 @app.post("/verify-code")
 def verify_code(request: VerifyCodeRequest, db: Session = Depends(get_db)):
     record = db.query(models.EmailVerificationCode).filter(models.EmailVerificationCode.email == request.email).first() # get the record with email from previous step 
@@ -139,10 +139,6 @@ def verify_code(request: VerifyCodeRequest, db: Session = Depends(get_db)):
     
     hashed_password = pwd_context.hash(request.password)
 
-    existing_user = db.query(models.User).filter(models.User.email_address == request.email).first()
-    if existing_user:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User with this email already exists")
-    
 
     new_user = models.User(
         email_address = request.email,
@@ -182,11 +178,25 @@ def login_user(request: LoginRequest, db: Session = Depends(get_db)):
 
 
 def get_matching_user(request: Request, db: Session = Depends(get_db)):
-    jwt_token = request.headers.get("Authorization").split(" ")[1]
-    email = verify_jwt_token(jwt_token)
+    auth_header = request.headers.get("Authorization")
+    if not auth_header or not auth_header.startswith("Bearer "):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Missing or invalid Authorization header",
+        )
+
+    token = auth_header.split(" ")[1]
+    email = verify_jwt_token(token)  # this now raises 401 if token invalid
+
     user = db.query(models.User).filter(models.User.email_address == email).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not found"
+        )
 
     return user
+
          
 
 # This method handles submission of the original user profile setup (basically just takes the data from the frontend and stores it in the database)
@@ -218,3 +228,15 @@ def setup_user_profile(request: UserProfileRequest, db: Session = Depends(get_db
 
         raise HTTPException(status_code=400, detail=str(e))
 
+# This gets user profiles from the db and is used to display them on the friends-finder page.
+@app.get("/user-profiles", response_model=List[UserProfileResponse])
+def list_user_profiles(db: Session = Depends(get_db)):
+    """
+    Return a list of all user profiles.
+    """
+    try:
+        profiles = db.query(models.UserProfile).all()
+        return profiles
+    except Exception as e:
+        print("Error fetching user profiles", e)
+        raise HTTPException(status_code=500, detail="Error fetching user profiles")

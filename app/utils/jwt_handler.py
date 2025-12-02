@@ -1,6 +1,7 @@
 import os
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
+from fastapi import HTTPException, status
 
 SECRET_KEY = os.getenv("JWT_SECRET")
 ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
@@ -25,5 +26,5 @@ def verify_jwt_token(token: str):
         return email
     
     except JWTError:
-        return None
+        raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED, detail = "Invalid or expired token")
 

@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey
+from sqlalchemy.dialects.postgresql import ARRAY
 from datetime import datetime, timedelta
 from app.database import Base
 
@@ -33,12 +34,19 @@ class UserProfile(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), unique=True)  # this links to the respective user
     full_name = Column(String, nullable=False)
-    age = Column(Integer, nullable=True)
     nickname = Column(String, nullable=True)
+    age = Column(Integer, nullable=True)
     bio = Column(String, nullable=True)
     course = Column(String, nullable=True)
-    accomodation = Column(String, nullable=True)
-    university_year = Column(Integer, nullable=True)
-    languages = Column(String, nullable=True)
-    ethnicity = Column(String, nullable=True)
+    accommodation = Column(String, nullable=True)
+    university_year = Column(String, nullable=True)
+    languages = Column(ARRAY(String), nullable=True)
+    ethnicities = Column(ARRAY(String), nullable=True)
     home_area = Column(String, nullable=True)
+    fun_fact = Column(String, nullable=False)
+    societies = Column(ARRAY(String), nullable=True)
+    sports = Column(ARRAY(String), nullable=True)
+    gym_goer = Column(String, nullable=True)
+
+
+

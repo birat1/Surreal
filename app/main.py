@@ -155,7 +155,8 @@ def verify_code(request: VerifyCodeRequest, db: Session = Depends(get_db)):
 
     return {"message": "Email verified successfully",
             "jwt_token": jwt_token,
-            "token_type": "bearer"}
+            "token_type": "bearer"
+            }
 
 
 # This method is to handle a user login (checks if the email exists and the entered password (hashed) matches that in the database)
@@ -207,14 +208,19 @@ def setup_user_profile(request: UserProfileRequest, db: Session = Depends(get_db
             user_id = matching_user.id,
             full_name = request.full_name,
             age = request.age,
-            nickname=request.nickname,
             bio=request.bio,
             course=request.course,
-            accomodation=request.accomodation,
+            accommodation=request.accommodation,
+            nickname=request.nickname,
             university_year=request.university_year,
             languages=request.languages,
-            ethnicity=request.ethnicity,
-            home_area=request.home_area
+            ethnicities=request.ethnicities,
+            home_area=request.home_area,
+            fun_fact = request.fun_fact,
+            societies = request.societies,
+            sports = request.sports,
+            gym_goer = request.gym_goer
+
         )
 
         db.add(new_user_profile)

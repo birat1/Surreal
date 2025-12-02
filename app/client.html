@@ -52,7 +52,7 @@
                 if (data.type === "error") {
                     msgDiv.innerHTML += `<div class="error">Error: ${data.message || JSON.stringify(data.details)}</div>`;
                 } else {
-                    const align = data.side === "left" ? "left" : "right";
+                    const align = data.sender === username ? "right" : "left";
                     msgDiv.innerHTML += `<div class="${align}"><b>${data.sender}:</b> ${data.body}</div>`;
                 }
                 msgDiv.scrollTop = msgDiv.scrollHeight; 

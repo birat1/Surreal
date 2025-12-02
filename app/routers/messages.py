@@ -1,13 +1,10 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import or_, select
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import APIRouter, HTTPException, Query
 
 from app.config import VALID_USERS
-from app.db import conv_id, get_db
-from app.models import Message
-from app.schemas import MessageResponse
+from app.db import conv_id
+from app.models import Conversation, Message
 
 router = APIRouter()
 
@@ -15,7 +12,6 @@ router = APIRouter()
 async def get_users_messages(
         username: str,
         recipient: Annotated[str | None, Query()] = None,
-        db: AsyncSession = Depends(get_db)
     ):
     """
     Get messages for a user. 
@@ -29,43 +25,29 @@ async def get_users_messages(
     if recipient:
         if recipient not in VALID_USERS:
             raise HTTPException(status_code=404, detail="Recipient does not exist.")
+
         cid = conv_id(username, recipient)
 
-        stmt = (
-            select(Message)
-            .where(Message.conversation_id == cid)
-            .order_by(Message.created_at.asc())
-        )
-        result = await db.execute(stmt)
-        db_messages = result.scalars().all()
+        messages = await Message.find(
+            Message.conversation_id == cid
+        ).sort("+created_at").to_list()
 
-        response_data = []
-        for msg in db_messages:
-            pydantic_model = MessageResponse.model_validate(msg)
-            data = pydantic_model.model_dump(mode="json")
-
-            data["side"] = "left" if msg.sender == username else "right"
-            response_data.append(data)
-
-        return response_data
+        return [msg.model_dump(mode="json") for msg in messages]
 
     # If recipient is not provided, get conversations
-    stmt = (
-        select(Message.sender, Message.recipient)
-        .where(or_(Message.sender == username, Message.recipient == username))
-        .order_by(Message.created_at.desc())
-    )
-    result = await db.execute(stmt)
-    all_rows = result.all()
+    conversations = await Conversation.find(
+        Conversation.participants == username
+    ).sort("-updated_at").to_list()
 
-    contacts = []
-    seen = set()
+    inbox_list = []
+    for c in conversations:
+        other_user = c.participants[0] if c.participants[1] == username else c.participants[1]
 
-    for sender, receiver in all_rows:
-        partner = receiver if sender == username else sender
+        inbox_list.append({
+            "recipient": other_user,
+            "last_message": c.last_message,
+            "last_sender": "You" if c.last_sender == username else other_user,
+            "updated_at": c.updated_at,
+        })
 
-        if partner not in seen:
-            contacts.append(partner)
-            seen.add(partner)
-
-    return {"user": username, "recipients": contacts}
+    return {"user": username, "conversations": inbox_list}

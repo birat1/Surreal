@@ -1,16 +1,15 @@
 import contextlib
 import datetime
 import logging
-from uuid import uuid4
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from pydantic import ValidationError
 
 from app.config import VALID_USERS
 from app.connection_manager import manager
-from app.db import AsyncSessionLocal, conv_id
-from app.models import Message
-from app.schemas import MessageCreate, MessageResponse
+from app.db import conv_id
+from app.models import Conversation, Message
+from app.schemas import MessageCreate
 
 logger = logging.getLogger(__name__)
 
@@ -45,25 +44,37 @@ async def websocket_endpoint(websocket: WebSocket, username: str) -> None:
             cid = conv_id(username, data.recipient)
 
             new_msg = Message(
-                id=str(uuid4()),
                 conversation_id=cid,
                 sender=username,
                 recipient=data.recipient,
                 body=data.body,
-                created_at=datetime.datetime.now(datetime.timezone.utc),
             )
 
-            async with AsyncSessionLocal() as session:
-                session.add(new_msg)
-                await session.commit()
-                await session.refresh(new_msg)
+            await new_msg.insert()
 
-            response_model = MessageResponse.model_validate(new_msg)
-            response_dict = response_model.model_dump(mode="json")
+            # Update conversation metadata
+            await Conversation.find_one(Conversation.id == cid).upsert(
+                {
+                    "$set": {
+                        "last_msg": data.body[:100],
+                        "last_sender": username,
+                        "updated_at": datetime.datetime.now(datetime.timezone.utc),
+                        "participants": [username, data.recipient],
+                    },
+                },
+                on_insert=Conversation(
+                    id=cid,
+                    participants=[username, data.recipient],
+                    last_msg=data.body[:100],
+                    last_sender=username,
+                    updated_at=datetime.datetime.now(datetime.timezone.utc),
+                ),
+            )
 
-            # Only between sender and recipient (left=sender, right=recipient)
-            await manager.send_to_user(username, {**response_dict, "side": "left"})
-            await manager.send_to_user(data.recipient, {**response_dict, "side": "right"})
+            response_dict = new_msg.model_dump(mode="json")
+
+            await manager.send_to_user(username, response_dict)
+            await manager.send_to_user(data.recipient, response_dict)
     except WebSocketDisconnect:
         logger.info(f"WebSocket disconnected: {username}")
     except Exception as e:

@@ -4,14 +4,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import ALLOWED_ORIGINS
-from app.db import Base, engine
+from app.db import init_db
 from app.routers import messages, ws
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # async with engine.begin() as conn:
-    #    await conn.run_sync(Base.metadata.create_all)
+    await init_db()
     yield
 
 app = FastAPI(lifespan=lifespan)

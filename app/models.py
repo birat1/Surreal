@@ -1,16 +1,27 @@
-import datetime
+from datetime import datetime, timezone
+from uuid import UUID, uuid4
 
-from sqlalchemy import Column, DateTime, String, Text
+from beanie import Document, Indexed
+from pydantic import Field
 
-from app.db import Base
 
+class Message(Document):
+    id: UUID = Field(default_factory=uuid4)
+    conversation_id: str = Indexed()
+    sender: str
+    recipient: str
+    body: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
-class Message(Base):
-    __tablename__ = "messages"
+    class Settings:
+        name = "messages"
 
-    id = Column(String, primary_key=True, index=True)
-    conversation_id = Column(String, index=True)
-    sender = Column(String, index=True)
-    recipient = Column(String, index=True)
-    body = Column(Text)
-    created_at = Column(DateTime(timezone=True), default=datetime.datetime.now(datetime.timezone.utc))
+class Conversation(Document):
+    id: str
+    participants: list[str] = Indexed()
+    last_msg: str
+    last_sender: str
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+    class Settings:
+        name = "conversations"

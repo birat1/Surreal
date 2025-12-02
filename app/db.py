@@ -1,18 +1,19 @@
 import os
 
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
+from beanie import init_beanie
+from pymongo import AsyncMongoClient
+
+from app.models import Conversation, Message
 
 DATABASE_URL = os.getenv("DATABASE_URL")
-engine = create_async_engine(DATABASE_URL)
 
-AsyncSessionLocal = sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
+async def init_db():
+    client = AsyncMongoClient(DATABASE_URL)
 
-Base = declarative_base()
-
-async def get_db():
-    async with AsyncSessionLocal() as session:
-        yield session
+    await init_beanie(
+        database=client.messagedb,
+        document_models=[Message, Conversation],
+    )
 
 def conv_id(user_a: str, user_b: str) -> str:
     return f"{min(user_a, user_b)}-{max(user_a, user_b)}"

@@ -54,3 +54,8 @@ export interface Message {
     message?: string;
     created_at?: string;
 }
+
+export interface MessageBubbleProps {
+    msg: Message;
+    isMe: boolean;
+}

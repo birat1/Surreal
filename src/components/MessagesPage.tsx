@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import type { Message } from '@/types/types';
+import MessageBubble from '@/components/MessageBubble';
 
 const WS_URL = 'ws://localhost:8001/ws';
 
@@ -99,7 +100,9 @@ export default function MessagesPage() {
     const handleKeyPress = (event: React.KeyboardEvent) => {
         if (event.key === 'Enter') handleSendMessage();
     };
-
+    
+    // Login as Placeholder Users
+    // Haven't implemented using user auth service yet
     if (!isConnected) {
         return (
             <div className="flex items-center justify-center h-[calc(100vh-64px)] bg-gray-100">
@@ -134,6 +137,7 @@ export default function MessagesPage() {
         );
     }
 
+    // Chat UI
     return ( 
         <div className="max-w-4xl mx-auto p-4 h-[calc(100vh-64px)] flex flex-col">
             <div className="bg-white shadow rounded-t-lg p-4 flex justify-between items-center border-b">
@@ -148,37 +152,23 @@ export default function MessagesPage() {
                 </button>
             </div>
 
+            {/* Messages List */}
             <div className="flex-1 bg-gray-50 p-4 overflow-y-auto space-y-4 border-x border-gray-200">
                 {messages.length === 0 && (
                     <p className="text-center text-gray-400 mt-10">No messages yet. Start a conversation!</p>
                 )}
 
-                {messages.map((msg, index) => {
-                    const isMe = msg.sender === username;
-
-                    return (
-                        <div 
-                            key={index}
-                            className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}
-                        >
-                            <div
-                                className={`max-w-[70%] px-4 py-2 rounded-2xl shadow-sm ${
-                                    isMe
-                                    ? 'bg-blue-600 text-white rounded-br-none'
-                                    : 'bg-white text-gray-800 border border-gray-200 rounded-bl-none'
-                                }`}
-                            >
-                                <p>{msg.body}</p>
-                            </div>
-                            <span className="text-xs text-gray-400 mt-1 px-1">
-                                {isMe ? 'You' : msg.sender}
-                            </span>
-                        </div>
-                    );
-                })}
+                {messages.map((msg) => (
+                    <MessageBubble
+                        key={msg.id || Math.random()}
+                        msg={msg}
+                        isMe={msg.sender === username}
+                    />
+                ))}
                 <div ref={messagesEndRef} />
             </div>
-
+            
+            {/* Input Area */}
             <div className="bg-white p-4 rounded-b-lg shadow border-t">
                 <div className="flex gap-2 mb-2">
                     <input

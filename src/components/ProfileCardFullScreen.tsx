@@ -11,7 +11,7 @@ const ProfilePreviewFullScreen: React.FC<ProfilePreviewProps> = ({
     age,
     bio,
     course,
-    accomodation,
+    accommodation,
     university_year,
     languages,
     ethnicities,
@@ -65,21 +65,17 @@ const ProfilePreviewFullScreen: React.FC<ProfilePreviewProps> = ({
 
         <div className="grid grid-cols-2 gap-2 text-sm text-gray-600">
           <p>Course: {course || "-"}</p>
-          <p>Accommodation: {accomodation || "-"}</p>
+          <p>Accommodation: {accommodation || "-"}</p>
           <p>Year: {university_year || "-"}</p>
           <p>Languages: {languages || "-"}</p>
           <p>Ethnicity: {ethnicities || "-"}</p>
+          <p>Sports: {sports || "-"}</p>
+          <p>Societies: {societies || "-"}</p>
           <p>Home Area: {home_area || "-"}</p>
           <p>Gym Goer: {gym_goer || "-"}</p>
-          {/* <p>Fun Fact: {fun_fact || "-"}</p> */}
+          <p>Fun Fact: {fun_fact || "-"}</p>
 
         </div>
-
-        {fun_fact && <p className="mt-2">Fun Fact: {fun_fact}</p>}
-        {societies && societies.length > 0 && (
-          <p>Societies: {societies.join(", ")}</p>
-        )}
-        {sports && sports.length > 0 && <p>Sports: {sports.join(", ")}</p>}
       </CardContent>
     </Card>
   );

@@ -14,7 +14,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LANGUAGES, ETHNICITIES } from "@/data/dummy_data";
+import {
+  ACCOMMODATIONS,
+  UNIVERSITY_YEARS,
+  LANGUAGES,
+  ETHNICITIES,
+  SPORTS,
+  SOCIETIES,
+} from "@/data/dummy_data";
 
 const UserProfileForm: React.FC<UserProfileFormProps> = ({
   formData,
@@ -37,7 +44,7 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
   };
 
   const handleRemoveItem = (
-    field: "languages" | "ethnicities",
+    field: "languages" | "ethnicities" | "sports" | "societies",
     valueToRemove: string
   ) => {
     setFormData({
@@ -153,52 +160,39 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
             className="border-blue-300 text-blue-600 focus:ring-blue-500"
           />
 
+          {/*accommodations */}
           <Select
-            value={formData.accomodation}
+            value={formData.accommodation}
             onValueChange={(value) =>
-              setFormData({ ...formData, accomodation: value })
+              setFormData({ ...formData, accommodation: value })
             }
           >
             <SelectTrigger className="w-full border-blue-300 text-blue-600 focus:ring-blue-500">
               <SelectValue placeholder="Accommodation" />
             </SelectTrigger>
 
-            <SelectContent className="bg-white border border-gray-200 rounded-md shadow-lg text-blue-600">
+            <SelectContent
+              className="bg-white border border-gray-200 rounded-md shadow-lg text-blue-600
+             max-h-48 overflow-y-auto"
+            >
               <SelectGroup>
-                <SelectLabel className="text-blue-600">
+                <SelectLabel className="text-blue-700 text-xs px-2">
                   Accommodation
                 </SelectLabel>
-                <SelectItem
-                  value="Stag Hill"
-                  className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
-                >
-                  Stag Hill
-                </SelectItem>
-
-                <SelectItem
-                  value="Manor Park"
-                  className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
-                >
-                  Manor Park
-                </SelectItem>
-
-                <SelectItem
-                  value="Private Housing"
-                  className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
-                >
-                  Private Housing
-                </SelectItem>
-
-                <SelectItem
-                  value="Commuting"
-                  className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
-                >
-                  Commuting
-                </SelectItem>
+                {ACCOMMODATIONS.map((accommodation) => (
+                  <SelectItem
+                    key={accommodation}
+                    value={accommodation}
+                    className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
+                  >
+                    {accommodation}
+                  </SelectItem>
+                ))}
               </SelectGroup>
             </SelectContent>
           </Select>
 
+          {/*university year */}
           <Select
             value={formData.university_year}
             onValueChange={(value) =>
@@ -211,48 +205,18 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
 
             <SelectContent className="bg-white border border-gray-200 rounded-md shadow-lg text-blue-600">
               <SelectGroup>
-                <SelectLabel className="text-blue-600">
+                <SelectLabel className="text-blue-700 text-xs px-2">
                   University Year
                 </SelectLabel>
-                <SelectItem
-                  value="Foundation"
-                  className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
-                >
-                  Foundation
-                </SelectItem>
-
-                <SelectItem
-                  value="First Year"
-                  className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
-                >
-                  First Year
-                </SelectItem>
-
-                <SelectItem
-                  value="Second year"
-                  className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
-                >
-                  Second Year
-                </SelectItem>
-
-                <SelectItem
-                  value="Placement"
-                  className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
-                >
-                  Placement
-                </SelectItem>
-                <SelectItem
-                  value="Third Year"
-                  className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
-                >
-                  Third Year
-                </SelectItem>
-                <SelectItem
-                  value="Masters"
-                  className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
-                >
-                  Masters
-                </SelectItem>
+                {UNIVERSITY_YEARS.map((university_year) => (
+                  <SelectItem
+                    key={university_year}
+                    value={university_year}
+                    className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
+                  >
+                    {university_year}
+                  </SelectItem>
+                ))}
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -280,6 +244,9 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
              max-h-48 overflow-y-auto"
               >
                 <SelectGroup>
+                  <SelectLabel className="text-blue-700 text-xs px-2">
+                    Languages
+                  </SelectLabel>
                   {LANGUAGES.map((lang) => (
                     <SelectItem
                       key={lang}
@@ -334,6 +301,9 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
              max-h-48 overflow-y-auto"
               >
                 <SelectGroup>
+                  <SelectLabel className="text-blue-700 text-xs px-2">
+                    Ethnicities
+                  </SelectLabel>
                   {ETHNICITIES.map((ethnicity) => (
                     <SelectItem
                       key={ethnicity}
@@ -365,6 +335,119 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
             </div>
           </div>
 
+          {/* societies */}
+          <div className="w-full">
+            <Select
+              value=""
+              onValueChange={(value) => {
+                if (formData.sports.includes(value)) return;
+                if (formData.sports.length >= 3) return;
+
+                setFormData({
+                  ...formData,
+                  sports: [...formData.sports, value],
+                });
+              }}
+            >
+              <SelectTrigger className="w-full border-blue-300 text-blue-600 focus:ring-blue-500">
+                <SelectValue placeholder="Sports (up to 3)" />
+              </SelectTrigger>
+
+              <SelectContent
+                className="bg-white border border-gray-200 rounded-md shadow-lg text-blue-600
+             max-h-48 overflow-y-auto"
+              >
+                <SelectGroup>
+                  <SelectLabel className="text-blue-700 text-xs px-2">
+                    Sports
+                  </SelectLabel>
+                  {SPORTS.map((sport) => (
+                    <SelectItem
+                      key={sport}
+                      value={sport}
+                      className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
+                    >
+                      {sport}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+
+            <div className="flex flex-wrap gap-2 mt-2">
+              {formData.sports.map((sport) => (
+                <div
+                  key={sport}
+                  className="flex items-center bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm"
+                >
+                  {sport}
+                  <button
+                    className="ml-2 text-blue-700 hover:text-red-600 font-bold"
+                    onClick={() => handleRemoveItem("sports", sport)}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="w-full">
+            <Select
+              value=""
+              onValueChange={(value) => {
+                if (formData.societies.includes(value)) return;
+                if (formData.societies.length >= 5) return;
+
+                setFormData({
+                  ...formData,
+                  societies: [...formData.societies, value],
+                });
+              }}
+            >
+              <SelectTrigger className="w-full border-blue-300 text-blue-600 focus:ring-blue-500">
+                <SelectValue placeholder="Societies (up to 5)" />
+              </SelectTrigger>
+
+              <SelectContent
+                className="bg-white border border-gray-200 rounded-md shadow-lg text-blue-600
+             max-h-48 overflow-y-auto"
+              >
+                <SelectGroup>
+                  <SelectLabel className="text-blue-700 text-xs px-2">
+                    Societies
+                  </SelectLabel>
+                  {SOCIETIES.map((society) => (
+                    <SelectItem
+                      key={society}
+                      value={society}
+                      className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
+                    >
+                      {society}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+
+            <div className="flex flex-wrap gap-2 mt-2">
+              {formData.societies.map((society) => (
+                <div
+                  key={society}
+                  className="flex items-center bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm"
+                >
+                  {society}
+                  <button
+                    className="ml-2 text-blue-700 hover:text-red-600 font-bold"
+                    onClick={() => handleRemoveItem("sports", society)}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <Input
             name="home_area"
             placeholder="Home Area"
@@ -385,20 +468,31 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
 
             <SelectContent className="bg-white border border-gray-200 rounded-md shadow-lg text-blue-600">
               <SelectGroup>
-                <SelectLabel className="text-blue-600 text-xs px-2 opacity-70">
+                <SelectLabel className="text-blue-700 text-xs px-2">
                   Do you go to the gym?
                 </SelectLabel>
-                <SelectItem value="yes">Yes</SelectItem>
-                <SelectItem value="no">No</SelectItem>
+                <SelectItem
+                  className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
+                  value="yes"
+                >
+                  Yes
+                </SelectItem>
+                <SelectItem
+                  className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
+                  value="no"
+                >
+                  No
+                </SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
-
-          
         </div>
 
         <div className="flex flex-col mt-2">
-          <label htmlFor="fun_fact" className="text-sm font-medium text-orange-300 ">
+          <label
+            htmlFor="fun_fact"
+            className="text-sm font-medium text-orange-300 "
+          >
             Fun Fact
           </label>
           <Textarea

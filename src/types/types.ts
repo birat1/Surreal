@@ -6,7 +6,7 @@ export interface ProfilePreviewUser {
   age: number | string;
   bio?: string;
   course: string;
-  accomodation?: string;
+  accommodation?: string;
   university_year?: string;
   languages?: string[];
   ethnicities?: string[];
@@ -28,7 +28,7 @@ export interface UserProfileFormData {
   age: number | string;
   bio: string;
   course: string;
-  accomodation?: string;
+  accommodation?: string;
   university_year?: string;
   languages: string[];
   ethnicities: string[];

@@ -13,7 +13,7 @@ const UserProfilePage = () => {
     nickname: "",
     bio: "",
     course: "",
-    accomodation: "",
+    accommodation: "",
     university_year: "",
     languages: [],
     ethnicities: [],

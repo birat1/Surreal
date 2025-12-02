@@ -1,3 +1,19 @@
+export const ACCOMMODATIONS = [
+  "Stag Hill",
+  "Manor Park",
+  "Private Housing",
+  "Commuting",
+];
+
+export const UNIVERSITY_YEARS = [
+  "Foundation",
+  "First Year",
+  "Second Year",
+  "Placement",
+  "Third Year",
+  "Masters",
+];
+
 export const LANGUAGES = [
   "English",
   "Albanian",
@@ -64,11 +80,11 @@ export const SOCIETIES = [
   "Vet Band",
   "Welsh Society",
   "Zoological Society",
-]
+];
 
 export const SPORTS = [
-  "Football", 
-  "Horse Riding", 
+  "Football",
+  "Equestrian",
   "Basketball",
   "Netball",
   "Swimming",
@@ -86,4 +102,17 @@ export const SPORTS = [
   "Sailing",
   "Rock Climbing",
   "Taekwondo",
-]
+];
+
+export const COURSES = [
+  "Computer Science",
+  "Chemistry",
+  "Physics",
+  "Law",
+  "Politics",
+  "International Relations",
+  "Economics",
+  "Mathematics",
+  "Psychology",
+  "History",
+];

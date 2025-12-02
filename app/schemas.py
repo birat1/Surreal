@@ -40,11 +40,16 @@ class UserProfileResponse(BaseModel):
     nickname: str | None = None
     bio: str | None = None
     course: str | None = None
-    accomodation: str | None = None
-    university_year: int | None = None
-    languages: str | None = None
-    ethnicity: str | None = None
+    accommodation: str | None = None     
+    university_year: str | None = None    
+    languages: List[str] | None = None   
+    ethnicities: List[str] | None = None 
     home_area: str | None = None
+    fun_fact: str | None = None          
+    societies: List[str] | None = None    
+    sports: List[str] | None = None       
+    gym_goer: bool | None = None          
 
     class Config:
         orm_mode = True
+

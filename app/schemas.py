@@ -1,4 +1,5 @@
 from pydantic import BaseModel, EmailStr
+from typing import List
 
 class EmailRequest(BaseModel):
     email: EmailStr
@@ -16,15 +17,20 @@ class LoginRequest(BaseModel):
 
 class UserProfileRequest(BaseModel):
     full_name: str
-    age: int
     nickname: str
+    age: int
     bio: str
     course: str
-    accomodation: str
+    accommodation: str
     university_year: str
-    languages: str
-    ethnicity: str
+    languages: List[str]
+    ethnicities: List[str]
     home_area: str
+    fun_fact: str
+    societies: List[str]
+    sports: List[str]
+    gym_goer: str
+    
 
 class UserProfileResponse(BaseModel):
     id: int

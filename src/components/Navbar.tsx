@@ -3,17 +3,16 @@ import { Button } from "./ui/button";
 import surreyLogo from "../assets/surrey_logo.jpg";
 import { useContext } from "react";
 import { AuthContext } from "@/context/AuthContext";
+import { Users } from "lucide-react";
 
 const Navbar: React.FC = () => {
-  
-  const {token, logout} = useContext(AuthContext)
-  const navigate = useNavigate()
+  const { token, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout()
-    navigate("/")
-  }
-
+    logout();
+    navigate("/");
+  };
 
   return (
     <nav className="fixed top-0 left-0 w-full bg-white/70 backdrop-blur-md shadow-md z-50">
@@ -28,6 +27,18 @@ const Navbar: React.FC = () => {
             className="h-10 w-auto hover:opacity-90 transition"
           />
         </Link>
+
+        {token && (
+          <div className="flex items-center gap-6">
+            <Link
+              to="/friends-finder"
+              className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition"
+            >
+              <Users className="w-5 h-5" />
+              <span>Friends Finder</span>
+            </Link>
+          </div>
+        )}
 
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-4">

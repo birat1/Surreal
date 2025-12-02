@@ -8,12 +8,16 @@
                 "age": 21,
                 "nickname": "sharmix",
                 "bio": "Hey :)",
+                "fun_fact": "I have a strange talent for naming the model and year of any classic car I see.",
                 "course": "Chemistry",
                 "accommodation": "Stag Hill",
                 "university_year": "Third Year",
-                "languages": "Tamil",
-                "ethnicity": "Tamil",
-                "home_area": "London"
+                "languages": ["Tamil"],
+                "ethnicity": ["Tamil"],
+                "home_area": "London",
+                "society": ["Drama Society"],
+                "sport": ["Badminton"],
+                "gym_goer": "No"
             }
         },
         {
@@ -24,12 +28,16 @@
                 "age": 20,
                 "nickname": "user",
                 "bio": "Hey :)",
+                "fun_fact": "My preferred stress-reliever during deadlines is baking excessively complicated desserts.",
                 "course": "Computer Science",
                 "accommodation": "Manor Park",
                 "university_year": "Third Year",
-                "languages": "English",
-                "ethnicity": "British",
-                "home_area": "London"
+                "languages": ["English"],
+                "ethnicity": ["British"],
+                "home_area": "London",
+                "society": ["Coding Club"],
+                "sport": ["Football"],
+                "gym_goer": "No"
             }
         },
         {
@@ -40,12 +48,16 @@
                 "age": 21,
                 "nickname": "manu",
                 "bio": "I love Surrey!",
+                "fun_fact": "I once participated in a week-long silent meditation retreat and survived without speaking a word.",
                 "course": "Computer Science",
                 "accommodation": "Stag Hill",
                 "university_year": "Third Year",
-                "languages": "Hindi",
-                "ethnicity": "Indian",
-                "home_area": "High Wycombe"
+                "languages": ["Hindi"],
+                "ethnicity": ["Indian"],
+                "home_area": "High Wycombe",
+                "society": ["Robotics Society"],
+                "sport": ["Cricket"],
+                "gym_goer": "Yes"
             }
         },
         {
@@ -56,12 +68,16 @@
                 "age": 19,
                 "nickname": "athavi",
                 "bio": "welcome to my profile",
+                "fun_fact": "I can solve a Rubik's Cube in under two minutes.",
                 "course": "Games Design",
                 "accommodation": "Manor Park",
                 "university_year": "First Year",
-                "languages": "Tamil",
-                "ethnicity": "Tamil",
-                "home_area": "London"
+                "languages": ["Tamil"],
+                "ethnicity": ["Tamil"],
+                "home_area": "London",
+                "society": ["Art Society"],
+                "sport": ["Tennis"],
+                "gym_goer": "Yes"
             }
         },
         {
@@ -72,12 +88,16 @@
                 "age": 20,
                 "nickname": "enisa",
                 "bio": "Hi",
+                "fun_fact": "I have a collection of over 100 unique tea blends from around the world.",
                 "course": "Economics and Finance",
                 "accommodation": "Manor Park",
                 "university_year": "Second Year",
-                "languages": "Albanian",
-                "ethnicity": "Albanian",
-                "home_area": "London"
+                "languages": ["Albanian"],
+                "ethnicity": ["Albanian"],
+                "home_area": "London",
+                "society": ["Finance Society"],
+                "sport": ["Volleyball"],
+                "gym_goer": "Yes"
             }
         },
         {
@@ -88,12 +108,16 @@
                 "age": 20,
                 "nickname": "birat",
                 "bio": "hey im birat",
+                "fun_fact": "I once hiked to the summit of Mount Kilimanjaro and camped overnight at the peak.",
                 "course": "Computer Science",
                 "accommodation": "Private Housing",
                 "university_year": "Third Year",
-                "languages": "Nepali",
-                "ethnicity": "Nepali",
-                "home_area": "High Wycombe"
+                "languages": ["Nepali"],
+                "ethnicity": ["Nepali"],
+                "home_area": "High Wycombe",
+                "society": ["Gaming Society"],
+                "sport": ["Table Tennis"],
+                "gym_goer": "Yes"
             }
         },
         {
@@ -104,12 +128,16 @@
                 "age": 22,
                 "nickname": "yuken",
                 "bio": "Hi I'm Yuken",
+                "fun_fact": "I can play the piano blindfolded.",
                 "course": "Chemistry",
                 "accommodation": "Stag Hill",
                 "university_year": "Third Year",
-                "languages": "Nepali",
-                "ethnicity": "Nepali",
-                "home_area": "Essex"
+                "languages": ["Nepali"],
+                "ethnicity": ["Nepali"],
+                "home_area": "Essex",
+                "society": ["Science Society"],
+                "sport": ["Rugby"],
+                "gym_goer": "Yes"
             }
         },
         {
@@ -120,12 +148,516 @@
                 "age": 19,
                 "nickname": "user 2",
                 "bio": "Hi",
+                "fun_fact": "I have a knack for remembering random trivia about historical events.",
                 "course": "Games Design",
                 "accommodation": "Private Housing",
                 "university_year": "Second Year",
-                "languages": "Albanian",
-                "ethnicity": "Albanian",
-                "home_area": "Portsmouth"
+                "languages": ["Albanian"],
+                "ethnicity": ["Albanian"],
+                "home_area": "Portsmouth",
+                "society": ["Photography Society"],
+                "sport": ["Swimming"],
+                "gym_goer": "No"
+            }
+        },
+        {
+            "email": "raymondknight@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Raymond Knight",
+                "age": 19,
+                "nickname": "raymond",
+                "bio": "New to Surrey and excited to make friends :)",
+                "fun_fact": "I've rewatched The Office at least 9 times.",
+                "course": "Politics",
+                "accommodation": "Stag Hill",
+                "university_year": "Foundation Year",
+                "languages": ["Russian"],
+                "ethnicity": ["Russian"],
+                "home_area": "Manchester",
+                "society": ["UAS Team Peryton"],
+                "sport": ["Swimming"],
+                "gym_goer": "Yes"
+            }
+        },
+        {
+            "email": "marialamb@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Maria Lamb",
+                "age": 19,
+                "nickname": "maria",
+                "bio": "Always looking for study buddies! I'm doing Chemistry.",
+                "fun_fact": "I can solve a simple Rubik's Cube in under two minutes.",
+                "course": "Chemistry",
+                "accommodation": "Commuting",
+                "university_year": "Placement Year",
+                "languages": ["Hindi"],
+                "ethnicity": ["Nepali"],
+                "home_area": "Winchester",
+                "society": ["Opa Surrey"],
+                "sport": ["Hockey"],
+                "gym_goer": "Yes"
+            }
+        },
+        {
+            "email": "jonathansanchez@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Jonathan Sanchez",
+                "age": 22,
+                "nickname": "jonathan",
+                "bio": "Always looking for study buddies! I'm doing Chemistry.",
+                "fun_fact": "I'm a massive Formula 1 fan, even though I don't have a driver's license.",
+                "course": "Chemistry",
+                "accommodation": "Private Housing",
+                "university_year": "Foundation Year",
+                "languages": ["Hindi"],
+                "ethnicity": ["Nepali"],
+                "home_area": "Winchester",
+                "society": ["Debating Society"],
+                "sport": ["Horse Riding"],
+                "gym_goer": "Yes"
+            }
+        },
+        {
+            "email": "jacobmahoney@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Jacob Mahoney",
+                "age": 19,
+                "nickname": "jacob",
+                "bio": "I love meeting new people and exploring campus. Studying Computer Science.",
+                "fun_fact": "I'm a massive Formula 1 fan, even though I don't have a driver's license.",
+                "course": "Computer Science",
+                "accommodation": "Manor Park",
+                "university_year": "Third Year",
+                "languages": ["German"],
+                "ethnicity": ["German"],
+                "home_area": "Southampton",
+                "society": ["Filipino Society"],
+                "sport": ["Rock Climbing"],
+                "gym_goer": "Yes"
+            }
+        },
+        {
+            "email": "annaswanson@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Anna Swanson",
+                "age": 23,
+                "nickname": "anna",
+                "bio": "You'll usually find me at the library or grabbing coffee on Stag Hill!",
+                "fun_fact": "I've rewatched The Office at least 9 times.",
+                "course": "Psychology",
+                "accommodation": "Manor Park",
+                "university_year": "Placement Year",
+                "languages": ["English"],
+                "ethnicity": ["British"],
+                "home_area": "Birmingham",
+                "society": ["Rifle Club"],
+                "sport": ["Football"],
+                "gym_goer": "No"
+            }
+        },
+        {
+            "email": "melissajordan@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Melissa Jordan",
+                "age": 19,
+                "nickname": "melissa",
+                "bio": "Hi! I'm Melissa, currently studying Psychology. Always up for a chat!",
+                "fun_fact": "I've rewatched The Office at least 9 times.",
+                "course": "Psychology",
+                "accommodation": "Commuting",
+                "university_year": "First Year",
+                "languages": ["English"],
+                "ethnicity": ["British"],
+                "home_area": "Winchester",
+                "society": ["ABACUS"],
+                "sport": ["Basketball"],
+                "gym_goer": "Yes"
+            }
+        },
+        {
+            "email": "michellestewart@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Michelle Stewart",
+                "age": 21,
+                "nickname": "michelle",
+                "bio": "Balancing uni life and hobbies one day at a time!",
+                "fun_fact": "I played the Triangle in my school band.",
+                "course": "Computer Science",
+                "accommodation": "Commuting",
+                "university_year": "Placement Year",
+                "languages": ["Tamil"],
+                "ethnicity": ["Indian"],
+                "home_area": "Winchester",
+                "society": ["Islamic Society"],
+                "sport": ["Hockey"],
+                "gym_goer": "Yes"
+            }
+        },
+        {
+            "email": "derekmoreno@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Derek Moreno",
+                "age": 23,
+                "nickname": "derek",
+                "bio": "New to Surrey and excited to make friends :)",
+                "fun_fact": "I can solve a simple Rubik's Cube in under two minutes.",
+                "course": "Physics",
+                "accommodation": "Commuting",
+                "university_year": "Foundation Year",
+                "languages": ["Spanish"],
+                "ethnicity": ["Spanish"],
+                "home_area": "London",
+                "society": ["ABACUS"],
+                "sport": ["Rock Climbing"],
+                "gym_goer": "No"
+            }
+        },
+        {
+            "email": "jeffreybates@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Jeffrey Bates",
+                "age": 22,
+                "nickname": "jeffrey",
+                "bio": "Love gaming, movies, and late-night discussions. Doing History.",
+                "fun_fact": "I've rewatched The Office at least 9 times.",
+                "course": "History",
+                "accommodation": "Manor Park",
+                "university_year": "Third Year",
+                "languages": ["Spanish"],
+                "ethnicity": ["Portuguese"],
+                "home_area": "London",
+                "society": ["Tamil Society"],
+                "sport": ["Swimming"],
+                "gym_goer": "No"
+            }
+        },
+        {
+            "email": "anitasimpson@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Anita Simpson",
+                "age": 18,
+                "nickname": "anita",
+                "bio": "I love meeting new people and exploring campus. Studying Law.",
+                "fun_fact": "I have a pet cat who thinks they are a dog.",
+                "course": "Law",
+                "accommodation": "Private Housing",
+                "university_year": "Placement Year",
+                "languages": ["Korean"],
+                "ethnicity": ["Korean"],
+                "home_area": "London",
+                "society": ["Kannada Society"],
+                "sport": ["Netball"],
+                "gym_goer": "No"
+            }
+        },
+        {
+            "email": "shelbynguyen@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Shelby Nguyen",
+                "age": 20,
+                "nickname": "shelby",
+                "bio": "Always looking for study buddies! I'm doing Politics.",
+                "fun_fact": "I have a pet cat who thinks they are a dog.",
+                "course": "Politics",
+                "accommodation": "Stag Hill",
+                "university_year": "Foundation Year",
+                "languages": ["Bengali"],
+                "ethnicity": ["Indian"],
+                "home_area": "Birmingham",
+                "society": ["EARS"],
+                "sport": ["Tennis"],
+                "gym_goer": "Yes"
+            }
+        },
+        {
+            "email": "abigailgraham@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Abigail Graham",
+                "age": 18,
+                "nickname": "abigail",
+                "bio": "Always looking for study buddies! I'm doing Psychology.",
+                "fun_fact": "I can solve a simple Rubik's Cube in under two minutes.",
+                "course": "Psychology",
+                "accommodation": "Private Housing",
+                "university_year": "Placement Year",
+                "languages": ["English"],
+                "ethnicity": ["British"],
+                "home_area": "Manchester",
+                "society": ["UAS Team Peryton"],
+                "sport": ["Basketball"],
+                "gym_goer": "Yes"
+            }
+        },
+        {
+            "email": "michelledavis@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Michelle Davis",
+                "age": 21,
+                "nickname": "michelle",
+                "bio": "Hi! I'm Michelle, currently studying Physics. Always up for a chat!",
+                "fun_fact": "I'm a massive Formula 1 fan, even though I don't have a driver's license.",
+                "course": "Physics",
+                "accommodation": "Stag Hill",
+                "university_year": "Third Year",
+                "languages": ["Cantonese"],
+                "ethnicity": ["Chinese"],
+                "home_area": "Birmingham",
+                "society": ["Hindu Society"],
+                "sport": ["Lacrosse"],
+                "gym_goer": "No"
+            }
+        },
+        {
+            "email": "johncole@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "John Cole",
+                "age": 19,
+                "nickname": "john",
+                "bio": "Balancing uni life and hobbies one day at a time!",
+                "fun_fact": "I have a pet cat who thinks they are a dog.",
+                "course": "Economics",
+                "accommodation": "Commuting",
+                "university_year": "First Year",
+                "languages": ["Portuguese"],
+                "ethnicity": ["Spanish"],
+                "home_area": "London",
+                "society": ["Rifle Club"],
+                "sport": ["Badminton"],
+                "gym_goer": "Yes"
+            }
+        },
+        {
+            "email": "jamiedecker@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Jamie Decker",
+                "age": 20,
+                "nickname": "jamie",
+                "bio": "Always looking for study buddies! I'm doing Politics.",
+                "fun_fact": "I've rewatched The Office at least 9 times.",
+                "course": "Politics",
+                "accommodation": "Private Housing",
+                "university_year": "Foundation Year",
+                "languages": ["English"],
+                "ethnicity": ["British"],
+                "home_area": "Birmingham",
+                "society": ["Caribbean Students' Society"],
+                "sport": ["Volleyball"],
+                "gym_goer": "No"
+            }
+        },
+        {
+            "email": "rebeccarodriguez@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Rebecca Rodriguez",
+                "age": 18,
+                "nickname": "rebecca",
+                "bio": "You'll usually find me at the library or grabbing coffee on Stag Hill!",
+                "fun_fact": "I drink more coffee than any human should, mainly just for the warmth.",
+                "course": "Computer Science",
+                "accommodation": "Stag Hill",
+                "university_year": "Third Year",
+                "languages": ["English"],
+                "ethnicity": ["British"],
+                "home_area": "Southampton",
+                "society": ["Rifle Club"],
+                "sport": ["Taekwondo"],
+                "gym_goer": "No"
+            }
+        },
+        {
+            "email": "hollyrasmussen@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Holly Rasmussen",
+                "age": 22,
+                "nickname": "holly",
+                "bio": "Hi! I'm Holly, currently studying Law. Always up for a chat!",
+                "fun_fact": "I can solve a simple Rubik's Cube in under two minutes.",
+                "course": "Law",
+                "accommodation": "Manor Park",
+                "university_year": "Foundation Year",
+                "languages": ["German"],
+                "ethnicity": ["German"],
+                "home_area": "Winchester",
+                "society": ["Kannada Society"],
+                "sport": ["Hockey"],
+                "gym_goer": "Yes"
+            }
+        },
+        {
+            "email": "annehester@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Anne Hester",
+                "age": 22,
+                "nickname": "anne",
+                "bio": "Always looking for study buddies! I'm doing Computer Science.",
+                "fun_fact": "I've rewatched The Office at least 9 times.",
+                "course": "Computer Science",
+                "accommodation": "Manor Park",
+                "university_year": "Third Year",
+                "languages": ["Spanish"],
+                "ethnicity": ["Spanish"],
+                "home_area": "Winchester",
+                "society": ["ParaSoc"],
+                "sport": ["Netball"],
+                "gym_goer": "No"
+            }
+        },
+        {
+            "email": "kellyrodriguez@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Kelly Rodriguez",
+                "age": 18,
+                "nickname": "kelly",
+                "bio": "Always looking for study buddies! I'm doing Physics.",
+                "fun_fact": "I have a pet cat who thinks they are a dog.",
+                "course": "Physics",
+                "accommodation": "Private Housing",
+                "university_year": "Second Year",
+                "languages": ["Spanish"],
+                "ethnicity": ["Portuguese"],
+                "home_area": "Kent",
+                "society": ["Salsa Society"],
+                "sport": ["MMA"],
+                "gym_goer": "Yes"
+            }
+        },
+        {
+            "email": "allisonjohnson@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Allison Johnson",
+                "age": 22,
+                "nickname": "allison",
+                "bio": "Love gaming, movies, and late-night discussions. Doing Chemistry.",
+                "fun_fact": "I played the Triangle in my school band.",
+                "course": "Chemistry",
+                "accommodation": "Commuting",
+                "university_year": "Foundation Year",
+                "languages": ["Spanish"],
+                "ethnicity": ["Spanish"],
+                "home_area": "Leeds",
+                "society": ["Japanese Society"],
+                "sport": ["Taekwondo"],
+                "gym_goer": "Yes"
+            }
+        },
+        {
+            "email": "alanpowell@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Alan Powell",
+                "age": 20,
+                "nickname": "alan",
+                "bio": "Hi! I'm Alan, currently studying Physics. Always up for a chat!",
+                "fun_fact": "I played the Triangle in my school band.",
+                "course": "Physics",
+                "accommodation": "Commuting",
+                "university_year": "Third Year",
+                "languages": ["Hindi"],
+                "ethnicity": ["Nepali"],
+                "home_area": "London",
+                "society": ["Kannada Society"],
+                "sport": ["Water Polo"],
+                "gym_goer": "Yes"
+            }
+        },
+        {
+            "email": "emilymartin@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Emily Martin",
+                "age": 20,
+                "nickname": "emily",
+                "bio": "I love meeting new people and exploring campus. Studying Mathematics.",
+                "fun_fact": "I'm a massive Formula 1 fan, even though I don't have a driver's license.",
+                "course": "Mathematics",
+                "accommodation": "Private Housing",
+                "university_year": "Placement Year",
+                "languages": ["French"],
+                "ethnicity": ["French"],
+                "home_area": "Birmingham",
+                "society": ["Welsh Society"],
+                "sport": ["Cricket"],
+                "gym_goer": "Yes"
+            }
+        },
+        {
+            "email": "christopherlivingston@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Christopher Livingston",
+                "age": 19,
+                "nickname": "christopher",
+                "bio": "Hi! I'm Christopher, currently studying Economics. Always up for a chat!",
+                "fun_fact": "I played the Triangle in my school band.",
+                "course": "Economics",
+                "accommodation": "Commuting",
+                "university_year": "Third Year",
+                "languages": ["Spanish"],
+                "ethnicity": ["Spanish"],
+                "home_area": "London",
+                "society": ["Islamic Society"],
+                "sport": ["Tennis"],
+                "gym_goer": "Yes"
+            }
+        },
+        {
+            "email": "traceywilliams@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Tracey Williams",
+                "age": 21,
+                "nickname": "tracey",
+                "bio": "You'll usually find me at the library or grabbing coffee on Stag Hill!",
+                "fun_fact": "I have a pet cat who thinks they are a dog.",
+                "course": "Physics",
+                "accommodation": "Private Housing",
+                "university_year": "Foundation Year",
+                "languages": ["English"],
+                "ethnicity": ["Pakistani"],
+                "home_area": "Manchester",
+                "society": ["Islamic Society"],
+                "sport": ["Taekwondo"],
+                "gym_goer": "No"
+            }
+        },
+        {
+            "email": "sarahuynh@surrey.ac.uk",
+            "password": "password",
+            "profile": {
+                "full_name": "Sara Huynh",
+                "age": 22,
+                "nickname": "sara",
+                "bio": "I love meeting new people and exploring campus. Studying Law.",
+                "fun_fact": "I've rewatched The Office at least 9 times.",
+                "course": "Law",
+                "accommodation": "Manor Park",
+                "university_year": "Second Year",
+                "languages": ["German"],
+                "ethnicity": ["German"],
+                "home_area": "Birmingham",
+                "society": ["Debating Society"],
+                "sport": ["Basketball"],
+                "gym_goer": "No"
             }
         }
     ]

@@ -44,12 +44,16 @@ def seed():
                     age=user_p.get("age"),
                     nickname=user_p.get("nickname"),
                     bio=user_p.get("bio"),
+                    fun_fact=user_p.get("fun_fact"),
                     course=user_p.get("course"),
-                    accomodation=user_p.get("accommodation"),
+                    accommodation=user_p.get("accommodation"),
                     university_year=user_p.get("university_year"),
                     languages=user_p.get("languages"),
-                    ethnicity=user_p.get("ethnicity"),
-                    home_area=user_p.get("home_area")
+                    ethnicities=user_p.get("ethnicity"),
+                    home_area=user_p.get("home_area"),
+                    societies=user_p.get("society"),
+                    sports=user_p.get("sport"),
+                    gym_goer=user_p.get("gym_goer")
                 )
                 db.add(profile)
                 db.commit()

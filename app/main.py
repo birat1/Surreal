@@ -6,11 +6,10 @@ from fastapi_mail import FastMail, MessageSchema, ConnectionConfig, MessageType
 
 from app.database import engine, SessionLocal
 from app.utils.jwt_handler import create_jwt_token, verify_jwt_token
-from app.schemas import EmailRequest, VerifyCodeRequest, LoginRequest, UserProfileRequest
+from app.schemas import EmailRequest, VerifyCodeRequest, LoginRequest, UserProfileRequest, UserProfileResponse
 from app.models import User
 
 from app import models
-
 
 from typing import Annotated, List
 from sqlalchemy.orm import Session
@@ -229,3 +228,15 @@ def setup_user_profile(request: UserProfileRequest, db: Session = Depends(get_db
 
         raise HTTPException(status_code=400, detail=str(e))
 
+# This gets user profiles from the db and is used to display them on the friends-finder page.
+@app.get("/user-profiles", response_model=List[UserProfileResponse])
+def list_user_profiles(db: Session = Depends(get_db)):
+    """
+    Return a list of all user profiles.
+    """
+    try:
+        profiles = db.query(models.UserProfile).all()
+        return profiles
+    except Exception as e:
+        print("Error fetching user profiles", e)
+        raise HTTPException(status_code=500, detail="Error fetching user profiles")

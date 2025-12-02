@@ -14,7 +14,7 @@ const ProfilePreviewFullScreen: React.FC<ProfilePreviewProps> = ({
     accomodation,
     university_year,
     languages,
-    ethnicity,
+    ethnicities,
     home_area,
     fun_fact,
     societies,
@@ -50,7 +50,7 @@ const ProfilePreviewFullScreen: React.FC<ProfilePreviewProps> = ({
   };
 
   return (
-    <Card className="w-full h-full shadow-lg p-4 flex flex-col">
+    <Card className="w-full h-full shadow-lg p-4 flex flex-col overflow-hidden">
       <CardHeader>
         <div className="flex flex-col items-center">
           {renderProfileImage()}
@@ -68,12 +68,14 @@ const ProfilePreviewFullScreen: React.FC<ProfilePreviewProps> = ({
           <p>Accommodation: {accomodation || "-"}</p>
           <p>Year: {university_year || "-"}</p>
           <p>Languages: {languages || "-"}</p>
-          <p>Ethnicity: {ethnicity || "-"}</p>
+          <p>Ethnicity: {ethnicities || "-"}</p>
           <p>Home Area: {home_area || "-"}</p>
+          <p>Gym Goer: {gym_goer || "-"}</p>
+          {/* <p>Fun Fact: {fun_fact || "-"}</p> */}
+
         </div>
 
         {fun_fact && <p className="mt-2">Fun Fact: {fun_fact}</p>}
-        {gym_goer && <p>Gym Goer: {gym_goer ? "Yes" : "No"}</p>}
         {societies && societies.length > 0 && (
           <p>Societies: {societies.join(", ")}</p>
         )}

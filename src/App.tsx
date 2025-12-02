@@ -1,11 +1,11 @@
-import Home from "@/components/Home";
-import LoginPage from "@/components/LoginPage";
+import Home from "@/pages/Home";
+import LoginPage from "@/pages/LoginPage";
 import ProtectedRoute from "@/routes/ProtectedRoute";
-import SignUpPage from "@/components/SignUpPage";
-import UserProfilePage from "@/components/UserProfileSetupPage";
-import FriendsFinderPage from "@/components/FriendsFinderPage";
-import MessagesPage from "@/components/MessagesPage";
-import EventsAndSocietiesPage from "@/components/EventsAndSocietiesPage";
+import SignUpPage from "@/pages/SignUpPage";
+import UserProfilePage from "@/pages/UserProfileSetupPage";
+import FriendsFinderPage from "@/pages/FriendsFinderPage";
+import MessagesPage from "@/pages/MessagesPage";
+import EventsAndSocietiesPage from "@/pages/EventsAndSocietiesPage";
 import Navbar from "@/components/Navbar";
 
 import "./index.css";
@@ -19,7 +19,7 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <Navbar />
-        <main className="pt-20">
+        <main className="pt-16">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route

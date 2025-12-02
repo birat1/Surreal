@@ -7,14 +7,14 @@ export interface ProfilePreviewUser {
   bio?: string;
   course: string;
   accomodation?: string;
-  university_year?: number | string;
-  languages?: string;
-  ethnicity?: string;
+  university_year?: string;
+  languages?: string[];
+  ethnicities?: string[];
   home_area?: string;
   fun_fact?: string;
   societies?: string[];
   sports?: string[];
-  gym_goer?: boolean;
+  gym_goer?: string;
   profile_picture?: ProfilePicture;
 }
 
@@ -25,18 +25,18 @@ export interface ProfilePreviewProps {
 export interface UserProfileFormData {
   full_name: string;
   nickname: string;
-  age: string | number;
+  age: number | string;
   bio: string;
   course: string;
-  accomodation: string;
-  university_year: string | number;
-  languages: string;
-  ethnicity: string;
+  accomodation?: string;
+  university_year?: string;
+  languages: string[];
+  ethnicities: string[];
   home_area: string;
   fun_fact: string;
   societies: string[];
   sports: string[];
-  gym_goer: boolean;
+  gym_goer: string;
   profile_picture: ProfilePicture;
 }
 

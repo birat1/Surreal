@@ -50,7 +50,7 @@ export default function ConversationInbox({conversations, currentRecipient, curr
                             </div>
                             <p className="text-sm text-gray-600 truncate">
                                 <span className="font-medium text-gray-400 mr-1">
-                                    {conv.last_sender === currentUser ? 'You:' : ''}
+                                    {conv.last_sender === currentUser ? 'You:' : `${conv.last_sender}:`}
                                 </span>
                                 {conv.last_message}
                             </p>

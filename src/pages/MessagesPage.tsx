@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import type { Message, Conversation } from '@/types/types';
 import MessageBubble from '@/components/MessageBubble';
 import ConversationInbox from '@/components/ConversationInbox';
@@ -11,6 +11,7 @@ export default function MessagesPage() {
     const [username, setUsername] = useState('');
     const [isConnected, setIsConnected] = useState(false);
 
+    // Data
     const [conversations, setConversations] = useState<Conversation[]>([]);
     const [messages, setMessages] = useState<Message[]>([]);
 
@@ -18,6 +19,7 @@ export default function MessagesPage() {
     const [inputMessage, setInputMessage] = useState('');
     const [connectionError, setConnectionError] = useState('');
 
+    // Refs
     const recipientRef = useRef('');
     const socketRef = useRef<WebSocket | null>(null);
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -34,52 +36,8 @@ export default function MessagesPage() {
         };
     }, []);
 
-    // Fetch conversations for user
-    const fetchConversations = async () => {
-        try {
-            const res = await fetch(`${API_URL}/${username}/inbox`);
-            const data = await res.json();
-            if (data.conversations) {
-                setConversations(data.conversations);
-            }
-        } catch (error) {
-            console.error('Error fetching conversations:', error);
-        }
-    };
-
-    useEffect(() => {
-        if (isConnected && username) {
-            fetchConversations();
-        }
-    }, [isConnected, username]);
-
-    // Fetch messages for a conversation
-    const fetchMessages = async (conversationId: string) => {
-        try {
-            const res = await fetch(`${API_URL}/conversations/${conversationId}/messages`);
-            const data = await res.json();
-
-            if (Array.isArray(data)) {
-                setMessages(data);
-            }
-        } catch (error) {
-            console.error('Error fetching messages:', error);
-        }
-    };
-
-    useEffect(() => {
-        recipientRef.current = recipient;
-
-        if (recipient && username) {
-            // Generate conversation ID
-            const conversationId = getConversationId(username, recipient);
-
-            // Fetch messages for this conversation
-            fetchMessages(conversationId);
-        }
-    }, [recipient, username]);
-
-    const handleConnect = () => {
+    // WebSocket Connection
+    const handleConnect = useCallback(() => {
         if (!username.trim()) return;
 
         if (socketRef.current) {
@@ -104,7 +62,6 @@ export default function MessagesPage() {
                 }
 
                 const currentRecipient = recipientRef.current;
-                // Determine who the message is from/to
                 const chattingWith = data.sender === username ? data.recipient : data.sender;
 
                 // If the message is for the currently open chat, add it to messages immediately
@@ -154,19 +111,70 @@ export default function MessagesPage() {
         };
 
         socketRef.current = ws;
-    };
+    }, [username]);
 
-    const handleSendMessage = () => {
+    // Fetch conversations (Inbox)
+    useEffect(() => {
+        const fetchConversations = async () => {
+            try {
+                const res = await fetch(`${API_URL}/${username}/inbox`);
+                const data = await res.json();
+                if (data.conversations) {
+                    setConversations(data.conversations);
+                }
+            } catch (error) {
+                console.error('Error fetching conversations:', error);
+            }
+        };
+
+        if (isConnected && username) {
+            fetchConversations();
+        }
+    }, [isConnected, username]);
+
+    // Fetch messages for selected conversation
+    useEffect(() => {
+        let active = true;
+        recipientRef.current = recipient;
+
+        if (recipient && username) {
+            // Generate conversation ID
+            const conversationId = getConversationId(username, recipient);
+
+            // Fetch messages for this conversation
+            const fetchMessages = async (conversationId: string) => {
+                try {
+                    const res = await fetch(`${API_URL}/conversations/${conversationId}/messages`);
+                    const data = await res.json();
+
+                    if (active && Array.isArray(data)) {
+                        setMessages(data);
+                    }
+                } catch (error) {
+                    console.error('Error fetching messages:', error);
+                }
+            };
+
+            fetchMessages(conversationId);
+        }
+
+        return () => {
+            active = false;
+        }
+    }, [recipient, username]);
+
+    // Send Message
+    const handleSendMessage = useCallback(() => {
         if (!socketRef.current || !recipient || !inputMessage.trim()) return;
 
         const payload = {
-            recipient: recipient,
+            recipient,
             body: inputMessage,
         };
 
         socketRef.current.send(JSON.stringify(payload));
         setInputMessage('');
-    };
+    }, [recipient, inputMessage]);
     
     // Login as Placeholder Users
     // Haven't implemented using user auth service yet
@@ -230,7 +238,7 @@ export default function MessagesPage() {
                             <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-50">
                                 {messages.map((msg, index) => (
                                     <MessageBubble 
-                                        key={index} 
+                                        key={msg.id || index} 
                                         msg={msg} 
                                         isMe={msg.sender === username} 
                                     />

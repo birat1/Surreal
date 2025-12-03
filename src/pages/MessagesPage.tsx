@@ -1,18 +1,24 @@
 import { useState, useEffect, useRef } from 'react';
-import type { Message } from '@/types/types';
+import type { Message, Conversation } from '@/types/types';
 import MessageBubble from '@/components/MessageBubble';
+import ConversationInbox from '@/components/ConversationInbox';
+import { getConversationId } from '@/lib/utils';
 
 const WS_URL = 'ws://localhost:8001/ws';
+const API_URL = 'http://localhost:8001';
 
 export default function MessagesPage() {
     const [username, setUsername] = useState('');
     const [isConnected, setIsConnected] = useState(false);
+
+    const [conversations, setConversations] = useState<Conversation[]>([]);
     const [messages, setMessages] = useState<Message[]>([]);
 
     const [recipient, setRecipient] = useState('');
     const [inputMessage, setInputMessage] = useState('');
     const [connectionError, setConnectionError] = useState('');
 
+    const recipientRef = useRef('');
     const socketRef = useRef<WebSocket | null>(null);
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -27,6 +33,51 @@ export default function MessagesPage() {
             }
         };
     }, []);
+
+    // Fetch conversations for user
+    const fetchConversations = async () => {
+        try {
+            const res = await fetch(`${API_URL}/${username}/inbox`);
+            const data = await res.json();
+            if (data.conversations) {
+                setConversations(data.conversations);
+            }
+        } catch (error) {
+            console.error('Error fetching conversations:', error);
+        }
+    };
+
+    useEffect(() => {
+        if (isConnected && username) {
+            fetchConversations();
+        }
+    }, [isConnected, username]);
+
+    // Fetch messages for a conversation
+    const fetchMessages = async (conversationId: string) => {
+        try {
+            const res = await fetch(`${API_URL}/conversations/${conversationId}/messages`);
+            const data = await res.json();
+
+            if (Array.isArray(data)) {
+                setMessages(data);
+            }
+        } catch (error) {
+            console.error('Error fetching messages:', error);
+        }
+    };
+
+    useEffect(() => {
+        recipientRef.current = recipient;
+
+        if (recipient && username) {
+            // Generate conversation ID
+            const conversationId = getConversationId(username, recipient);
+
+            // Fetch messages for this conversation
+            fetchMessages(conversationId);
+        }
+    }, [recipient, username]);
 
     const handleConnect = () => {
         if (!username.trim()) return;
@@ -52,7 +103,36 @@ export default function MessagesPage() {
                     return;
                 }
 
-                setMessages((prevMessages) => [...prevMessages, data]);
+                const currentRecipient = recipientRef.current;
+                // Determine who the message is from/to
+                const chattingWith = data.sender === username ? data.recipient : data.sender;
+
+                // If the message is for the currently open chat, add it to messages immediately
+                if (data.sender === currentRecipient || data.recipient === currentRecipient) {
+                    setMessages((prevMessages) => [...prevMessages, data]);
+                }
+
+                // Update conversations inbox
+                setConversations((prevConversations) => {
+                    // Check if conversation already exists
+                    const existingIndex = prevConversations.findIndex(c => c.recipient === chattingWith);
+
+                    // Create the updated conversation object
+                    const updatedConversation: Conversation = {
+                        id: existingIndex !== -1 ? prevConversations[existingIndex].id : Date.now().toString(),
+                        recipient: chattingWith,
+                        last_message: data.body,
+                        last_sender: data.sender,
+                        updated_at: new Date().toISOString(),
+                    };
+
+                    const newConversations = [...prevConversations];
+                    if (existingIndex !== -1) {
+                        newConversations.splice(existingIndex, 1);
+                    }
+
+                    return [updatedConversation, ...newConversations];
+                });
             } catch (error) {
                 console.error('Error parsing message:', error);
             }
@@ -76,17 +156,8 @@ export default function MessagesPage() {
         socketRef.current = ws;
     };
 
-    const handleDisconnect = () => {
-        if (socketRef.current) {
-            socketRef.current.close();
-        }
-        setIsConnected(false);
-        setMessages([]);
-    };
-
     const handleSendMessage = () => {
-        if (!socketRef.current || socketRef.current.readyState !== WebSocket.OPEN) return;
-        if (!recipient.trim() || !inputMessage.trim()) return;
+        if (!socketRef.current || !recipient || !inputMessage.trim()) return;
 
         const payload = {
             recipient: recipient,
@@ -95,10 +166,6 @@ export default function MessagesPage() {
 
         socketRef.current.send(JSON.stringify(payload));
         setInputMessage('');
-    };
-
-    const handleKeyPress = (event: React.KeyboardEvent) => {
-        if (event.key === 'Enter') handleSendMessage();
     };
     
     // Login as Placeholder Users
@@ -139,62 +206,65 @@ export default function MessagesPage() {
 
     // Chat UI
     return ( 
-        <div className="max-w-4xl mx-auto p-4 h-[calc(100vh-64px)] flex flex-col">
-            <div className="bg-white shadow rounded-t-lg p-4 flex justify-between items-center border-b">
-                <div className="flex items-center gap-2">
-                    <span className="font-bold text-gray-700">Logged in as: {username}</span>
-                </div>
-                <button
-                    onClick={handleDisconnect}
-                    className="text-sm text-red-600 hover:text-red-800 underline"
-                >
-                    Disconnect
-                </button>
-            </div>
+        <div className="max-w-6xl mx-auto p-4 h-[calc(100vh-64px)]">
+            <div className="bg-white shadow-lg rounded-lg overflow-hidden flex h-full border border-gray-200">
+                
+                {/* Conversation Inbox */}
+                <ConversationInbox
+                    conversations={conversations}
+                    currentRecipient={recipient}
+                    currentUser={username}
+                    onSelect={setRecipient}
+                />
 
-            {/* Messages List */}
-            <div className="flex-1 bg-gray-50 p-4 overflow-y-auto space-y-4 border-x border-gray-200">
-                {messages.length === 0 && (
-                    <p className="text-center text-gray-400 mt-10">No messages yet. Start a conversation!</p>
-                )}
+                {/* Chat Area */}
+                <div className="w-2/3 flex flex-col bg-white">
+                    {recipient ? (
+                        <>
+                            {/* Header */}
+                            <div className="p-4 border-b shadow-sm flex justify-between items-center bg-white z-10">
+                                <span className="font-bold text-lg text-gray-800">{recipient}</span>
+                            </div>
 
-                {messages.map((msg) => (
-                    <MessageBubble
-                        key={msg.id || Math.random()}
-                        msg={msg}
-                        isMe={msg.sender === username}
-                    />
-                ))}
-                <div ref={messagesEndRef} />
-            </div>
-            
-            {/* Input Area */}
-            <div className="bg-white p-4 rounded-b-lg shadow border-t">
-                <div className="flex gap-2 mb-2">
-                    <input
-                        type="text"
-                        value={recipient}
-                        onChange={(event) => setRecipient(event.target.value)}
-                        placeholder="Recipient (e.g. user2)"
-                        className="w-1/3 p-2 border border-gray-400 rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    />
-                </div>
-                <div className="flex gap-2">
-                    <input
-                        type="text"
-                        value={inputMessage}
-                        onChange={(event) => setInputMessage(event.target.value)}
-                        onKeyDown={handleKeyPress}
-                        placeholder='Type a message...'
-                        className="flex-1 p-2 border border-gray-400 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    />
-                    <button
-                        onClick={handleSendMessage}
-                        className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition font-medium disabled:opacity-50"
-                        disabled={!recipient || !inputMessage}
-                    >
-                        Send
-                    </button>
+                            {/* Messages List */}
+                            <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-50">
+                                {messages.map((msg, index) => (
+                                    <MessageBubble 
+                                        key={index} 
+                                        msg={msg} 
+                                        isMe={msg.sender === username} 
+                                    />
+                                ))}
+                                <div ref={messagesEndRef} />
+                            </div>
+
+                            {/* Input Area */}
+                            <div className="p-4 bg-white border-t">
+                                <div className="flex gap-2">
+                                    <input
+                                        type="text"
+                                        value={inputMessage}
+                                        onChange={(e) => setInputMessage(e.target.value)}
+                                        onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                                        placeholder="Type a message..."
+                                        className="flex-1 p-3 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
+                                    />
+                                    <button 
+                                        onClick={handleSendMessage}
+                                        disabled={!inputMessage.trim()}
+                                        className="bg-blue-600 text-white px-6 rounded-full hover:bg-blue-700 disabled:opacity-50 font-medium transition"
+                                    >
+                                        Send
+                                    </button>
+                                </div>
+                            </div>
+                        </>
+                    ) : (
+                        <div className="flex-1 flex flex-col items-center justify-center text-gray-400">
+                            <p className="text-xl font-semibold">Select a conversation</p>
+                            <p className="text-sm">or click "+ New Message" to start chatting</p>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

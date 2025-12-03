@@ -1,6 +1,6 @@
 ### set up a .env inside /messaging-service/
 
-```DATABASE_URL=postgresql+asyncpg://user:pass@db:5432/messagedb```  
+```DATABASE_URL=mongodb://user:pass@db:27017/messagedb?authSource=admin```  
 you can change the username, password, database name in docker-compose.yml
 
 ### docker commands

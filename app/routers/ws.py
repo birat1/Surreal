@@ -53,12 +53,13 @@ async def websocket_endpoint(websocket: WebSocket, username: str) -> None:
             await new_msg.insert()
 
             # Update conversation metadata
+            curr_time = datetime.datetime.now(datetime.timezone.utc)
             await Conversation.find_one(Conversation.id == cid).upsert(
                 {
                     "$set": {
                         "last_msg": data.body[:100],
                         "last_sender": username,
-                        "updated_at": datetime.datetime.now(datetime.timezone.utc),
+                        "updated_at": curr_time,
                         "participants": [username, data.recipient],
                     },
                 },
@@ -67,7 +68,7 @@ async def websocket_endpoint(websocket: WebSocket, username: str) -> None:
                     participants=[username, data.recipient],
                     last_msg=data.body[:100],
                     last_sender=username,
-                    updated_at=datetime.datetime.now(datetime.timezone.utc),
+                    updated_at=curr_time,
                 ),
             )
 

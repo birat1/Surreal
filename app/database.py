@@ -5,7 +5,7 @@ import os
 from dotenv import load_dotenv
 
 # this imports the env file in the same folder
-load_dotenv() 
+load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 

@@ -10,6 +10,8 @@ services:
       - mongo_data:/data/db
     ports:
       - "27017:27017"
+    networks:
+      - messaging-internal
 
   messaging-service:
     build: .
@@ -26,11 +28,13 @@ services:
       - .:/app
     restart: on-failure
     networks:
-      - default
+      - backend
+      - messaging-internal
 
 networks:
-  default:
-    name: user-messaging
+  messaging-internal:
+    driver: bridge
+  backend:
     external: true
 
 volumes:

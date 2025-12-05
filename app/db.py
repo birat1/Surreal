@@ -16,4 +16,5 @@ async def init_db():
     )
 
 def conv_id(user_a: str, user_b: str) -> str:
+    """Generate a consistent conversation ID for two users."""
     return f"{min(str(user_a), str(user_b))}-{max(str(user_a), str(user_b))}"

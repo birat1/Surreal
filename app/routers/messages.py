@@ -14,21 +14,27 @@ async def get_user_inbox(current_user: Annotated[str, Depends(get_current_user)]
     """Get the inbox for a user, listing all conversations they are a part of."""
     user_id = UUID(current_user)
 
+    # Fetch conversations involving the user
     conversations = await Conversation.find(
         Conversation.participants == user_id
     ).sort("-updated_at").to_list()
 
     inbox_list = []
     for c in conversations:
+        # Identify the other participant(s) in the conversation
         others = [p for p in c.participants if p != user_id]
 
+        # Skip if no other participants found (should not happen in valid data)
         if not others:
             continue
 
+        # 1-to-1 conversation assumption (for now??)
         other_user_id = others[0]
 
+        # Get display name for the other participant
         display_name = c.participant_names.get(str(other_user_id), "Unknown User")
 
+        # Append conversation details to inbox list
         inbox_list.append({
             "id": c.id,
             "recipient_id": str(other_user_id),
@@ -38,6 +44,7 @@ async def get_user_inbox(current_user: Annotated[str, Depends(get_current_user)]
             "updated_at": c.updated_at,
         })
 
+    # Return the compiled inbox list
     return {"conversations": inbox_list}
 
 # Messages in a conversation endpoint
@@ -55,7 +62,6 @@ async def get_conversation(conversation_id: str, current_user: Annotated[str, De
         if current_user not in conversation_id:
             raise HTTPException(status_code=403, detail="You are not a participant in this conversation")
         return []
-
     if user_id not in conversation.participants:
         raise HTTPException(status_code=403, detail="You are not a participant in this conversation")
 
@@ -64,4 +70,5 @@ async def get_conversation(conversation_id: str, current_user: Annotated[str, De
         Message.conversation_id == conversation_id
     ).sort("+created_at").to_list()
 
+    # Return messages as JSON dicts
     return [msg.model_dump(mode="json") for msg in messages]

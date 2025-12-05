@@ -23,6 +23,7 @@ async def fetch_names_from_auth_service(user_ids: list[str]) -> dict[str, str]:
     """Get names from user-auth-service given a list of user IDs."""
     try:
         async with httpx.AsyncClient() as client:
+            # Make request to user-auth-service to get userid-name mapping
             response = await client.post(
                 f"{USER_AUTH_SERVICE_URL}/users/retrieve",
                 json={"user_ids": user_ids},
@@ -48,6 +49,7 @@ async def websocket_endpoint(websocket: WebSocket, token: str = Query(...)) -> N
 
     try:
         while True:
+            # Receive and validate incoming message
             raw_data = await websocket.receive_json()
 
             try:
@@ -65,8 +67,10 @@ async def websocket_endpoint(websocket: WebSocket, token: str = Query(...)) -> N
             # Store the message
             cid = conv_id(user_id_str, recipient_id_str)
 
+            # Fetch participant id-name mapping
             names_dict = await fetch_names_from_auth_service([user_id_str, recipient_id_str])
 
+            # Create and insert new message document
             new_msg = Message(
                 conversation_id=cid,
                 sender_id=user_id,
@@ -100,8 +104,10 @@ async def websocket_endpoint(websocket: WebSocket, token: str = Query(...)) -> N
                 ),
             )
 
+            # Prepare response payload
             response_dict = new_msg.model_dump(mode="json")
 
+            # Send the new message to both sender and recipient
             await manager.send_to_user(user_id_str, response_dict)
             await manager.send_to_user(recipient_id_str, response_dict)
     except WebSocketDisconnect:

@@ -270,3 +270,7 @@ def retrieve_users(payload: BatchIDRequest, db: Annotated[Session, Depends(get_d
     profiles = db.query(models.UserProfile).filter(models.UserProfile.user_id.in_(payload.user_ids)).all()
 
     return {str(p.user_id): p.nickname for p in profiles}
+
+@app.get("/validate-token")
+def validate_token(request: Request, db: Annotated[Session, Depends(get_db)]):
+    return get_matching_user(request, db)

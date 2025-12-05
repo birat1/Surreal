@@ -2,6 +2,7 @@
 
 ```DATABASE_URL=mongodb://user:pass@db:27017/messagedb?authSource=admin```  
 you can change the username, password, database name in docker-compose.yml
+```USER_AUTH_SERVICE_URL=http://user-auth-service:8000```
 
 ### Create a docker network if you haven't
 ```docker network create user-messaging```

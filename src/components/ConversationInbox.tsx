@@ -1,7 +1,14 @@
 import { useState } from 'react';
 import type { ConversationInboxProps } from '@/types/types';
 
-export default function ConversationInbox({conversations, currentRecipientId, currentUserId, onSelect, token}: ConversationInboxProps) {
+export default function ConversationInbox({
+        conversations,
+        currentRecipientId,
+        currentUserId,
+        currentUserName,
+        onSelect,
+        token
+    }: ConversationInboxProps) {
     const [isSearching, setIsSearching] = useState(false);
 
     const handleNewConversation = async () => {
@@ -44,7 +51,9 @@ export default function ConversationInbox({conversations, currentRecipientId, cu
             {/* Header */}
             <div className="p-4 border-b bg-white">
                 <h3 className="font-bold text-gray-700">Chats</h3>
-                <p className="text-xs text-gray-500">Logged in as: {currentUserId}</p>
+                <p className="text-xs text-gray-500">
+                    Logged in as: <span className="font-semibold">{currentUserName}</span>
+                    </p>
             </div>
 
             {/* Conversations List */}

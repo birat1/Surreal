@@ -1,31 +1,38 @@
 //Normally, if you want to share data from a parent to a deeply nested child, you’d need prop drilling: passing props through every intermediate component.
 // Context lets you wrap a component tree and provide values that any child can access directly using useContext.
 
-import React, { createContext, useState, useEffect, ReactNode } from "react";
+import React, { createContext, useState, useEffect, ReactNode, useContext } from "react";
 import { jwtDecode } from "jwt-decode";
 
 export interface DecodedToken {
   sub: string;
   email: string;
+  name: string;
   exp?: number;
-  iat?: number;
 }
 
 // Define what your context provides
 interface AuthContextType {
   token: string | null;
   userId: string | null;
+  userName: string | null;
   login: (token: string) => void;
   logout: () => void;
 }
 
 // Create the context
-export const AuthContext = createContext<AuthContextType>({
+const AuthContext = createContext<AuthContextType>({
   token: null,
   userId: null,
+  userName: null,
   login: () => {},
   logout: () => {},
 });
+
+// eslint-disable-next-line react-refresh/only-export-components
+export const useAuth = () => {
+  return useContext(AuthContext);
+}
 
 interface AuthProviderProps {
   children: ReactNode; // the type of all the things we're going to wrap AuthProvider with
@@ -35,13 +42,17 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [token, setToken] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string | null>(null);
 
-  const getUserIdFromToken = (token: string): string | null => {
+  const getUserDataFromToken = (token: string) => {
     try {
       const decoded = jwtDecode<DecodedToken>(token);
-      return decoded.sub;
+      return {
+        id: decoded.sub,
+        name: decoded.name,
+      }
     } catch (error) {
-      console.error("Invalid token:", error);
+      console.error("Failed to decode token:", error);
       return null;
     }
   };
@@ -51,11 +62,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const savedToken = localStorage.getItem("jwt_token");
     if (savedToken) {
-      const decodedId = getUserIdFromToken(savedToken);
+      const data = getUserDataFromToken(savedToken);
       
-      if (decodedId) {
+      if (data) {
         setToken(savedToken);
-        setUserId(decodedId);
+        setUserId(data.id);
+        setUserName(data.name);
       } else {
         localStorage.removeItem("jwt_token");
       }
@@ -66,18 +78,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     localStorage.setItem("jwt_token", newToken);
     setToken(newToken);
     
-    const decodedId = getUserIdFromToken(newToken);
-    setUserId(decodedId);
+    const data = getUserDataFromToken(newToken);
+    if (data) {
+      setUserId(data.id);
+      setUserName(data.name);
+    }
   };
 
   const logout = () => {
     localStorage.removeItem("jwt_token");
     setToken(null);
     setUserId(null);
+    setUserName(null);
   };
 
   return (
-    <AuthContext.Provider value={{ token, userId, login, logout }}>
+    <AuthContext.Provider value={{ token, userId, userName,login, logout }}>
       {children}
     </AuthContext.Provider>
   );

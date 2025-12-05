@@ -74,6 +74,7 @@ export interface ConversationInboxProps {
   conversations: Conversation[];
   currentRecipientId: string;
   currentUserId: string;
+  currentUserName: string;
   onSelect: (recipientId: string) => void;
   token: string;
 }

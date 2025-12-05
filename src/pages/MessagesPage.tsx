@@ -1,15 +1,15 @@
-import { useState, useEffect, useRef, useCallback, useContext } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import type { Message, Conversation } from '@/types/types';
 import MessageBubble from '@/components/MessageBubble';
 import ConversationInbox from '@/components/ConversationInbox';
 import { getConversationId } from '@/lib/utils';
-import { AuthContext } from '@/context/AuthContext';
+import { useAuth } from '@/context/AuthContext';
 
 const WS_URL = 'ws://localhost:8001/ws';
 const API_URL = 'http://localhost:8001';
 
 export default function MessagesPage() {
-    const { token, userId } = useContext(AuthContext);
+    const { token, userId, userName } = useAuth();
     const currentUserId = userId || '';
 
     // Data
@@ -193,6 +193,7 @@ export default function MessagesPage() {
                     conversations={conversations}
                     currentRecipientId={recipientId}
                     currentUserId={currentUserId}
+                    currentUserName={userName || 'Me'}
                     onSelect={setRecipientId}
                     token={token || ''}
                 />

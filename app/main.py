@@ -157,6 +157,7 @@ def verify_code(request: VerifyCodeRequest, db: Annotated[Session, Depends(get_d
     jwt_token = create_jwt_token(data={
         "sub": str(new_user.id),
         "email": new_user.email_address,
+        "name": "New User", # default name until they set up profile
     })
 
     return {"message": "Email verified successfully",
@@ -177,9 +178,15 @@ def login_user(request: LoginRequest, db: Annotated[Session, Depends(get_db)]):
     if not pwd_context.verify(request.password, user.password):
         raise HTTPException(status_code=401, detail="Incorrect password")
 
+    display_name = "Placeholder Name"
+    profile  = db.query(models.UserProfile).filter(models.UserProfile.user_id == user.id).first()
+    if profile:
+        display_name = profile.nickname or profile.full_name or "Placeholder Name"
+
     jwt_token = create_jwt_token(data={
         "sub": str(user.id),
         "email": user.email_address,
+        "name": display_name,
     })
     # print(f"User {request.email} logged in successfully w jwt token: {jwt_token}")
 
@@ -227,14 +234,23 @@ def setup_user_profile(request: UserProfileRequest, db: Annotated[Session, Depen
             societies = request.societies,
             sports = request.sports,
             gym_goer = request.gym_goer,
-
         )
 
         db.add(new_user_profile)
         db.commit()
         db.refresh(new_user_profile)
 
-        return {"message": "User created successfully,", "user's name": new_user_profile.full_name}
+        new_token = create_jwt_token(data={
+            "sub": str(matching_user.id),
+            "email": matching_user.email_address,
+            "name": new_user_profile.nickname,
+        })
+
+        return {
+            "message": "User created successfully,",
+            "user's name": new_user_profile.full_name,
+            "jwt_token": new_token,
+        }
 
     except Exception as e:
         print("Error inserting user_profile", e)

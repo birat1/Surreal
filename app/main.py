@@ -13,7 +13,14 @@ from starlette.responses import JSONResponse
 from app import models
 from app.database import SessionLocal, engine
 from app.models import User
-from app.schemas import EmailRequest, LoginRequest, UserProfileRequest, UserProfileResponse, VerifyCodeRequest
+from app.schemas import (
+    BatchIDRequest,
+    EmailRequest,
+    LoginRequest,
+    UserProfileRequest,
+    UserProfileResponse,
+    VerifyCodeRequest,
+)
 from app.utils.jwt_handler import create_jwt_token, verify_jwt_token
 
 app = FastAPI()
@@ -246,3 +253,20 @@ def list_user_profiles(db: Annotated[Session, Depends(get_db)]):
     except Exception as e:
         print("Error fetching user profiles", e)
         raise HTTPException(status_code=500, detail="Error fetching user profiles")
+
+@app.get("/users/search")
+def search_user(nickname: str, db: Annotated[Session, Depends(get_db)]):
+    """Find a user ID via their nickname."""
+    user = db.query(models.UserProfile).filter(models.UserProfile.nickname == nickname).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    return {"user_id": str(user.user_id), "display_name": user.nickname}
+
+@app.post("/users/retrieve")
+def retrieve_users(payload: BatchIDRequest, db: Annotated[Session, Depends(get_db)]):
+    """Retrieve UUIDs to names in batches."""
+    profiles = db.query(models.UserProfile).filter(models.UserProfile.user_id.in_(payload.user_ids)).all()
+
+    return {str(p.user_id): p.nickname for p in profiles}

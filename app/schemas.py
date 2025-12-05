@@ -52,3 +52,5 @@ class UserProfileResponse(BaseModel):
     class Config:
         orm_mode = True
 
+class BatchIDRequest(BaseModel):
+    user_ids: list[str]

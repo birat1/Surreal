@@ -4,6 +4,12 @@
 you can change the username, password, database name in docker-compose.yml
 ```USER_AUTH_SERVICE_URL=http://user-auth-service:8000```
 
+# JWT
+```JWT_SECRET=```
+```JWT_ALGORITHM=```
+```JWT_EXPIRY_MINUTES=```
+SAME VALUES AS THE ONES IN USER-AUTH-SERVICE .ENV
+
 ### Create a docker network if you haven't
 ```docker network create user-messaging```
 

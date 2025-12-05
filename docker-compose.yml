@@ -19,11 +19,19 @@ services:
       - .env
     environment:
       - DATABASE_URL=${DATABASE_URL}
+      - USER_AUTH_SERVICE_URL=${USER_AUTH_SERVICE_URL}
     depends_on:
       - db
     volumes:
       - .:/app
     restart: on-failure
+    networks:
+      - default
+
+networks:
+  default:
+    name: user-messaging
+    external: true
 
 volumes:
   mongo_data:

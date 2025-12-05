@@ -11,8 +11,8 @@ import Navbar from "@/components/Navbar";
 import "./index.css";
 
 import { Routes, Route, BrowserRouter } from "react-router-dom";
-import RequireLoggedOut from "./routes/RequireLoggedOut";
-import { AuthProvider } from "./context/AuthContext";
+import RequireLoggedOut from "@/routes/RequireLoggedOut";
+import { AuthProvider } from "@/context/AuthContext";
 
 function App() {
   return (
@@ -58,7 +58,9 @@ function App() {
             <Route
               path="/messages"
               element={
-                <MessagesPage />
+                <ProtectedRoute>
+                  <MessagesPage />
+                </ProtectedRoute>
               }
             />
             <Route

@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import type { MessageBubbleProps } from '@/types/types';
 
-const MessageBubble = memo(({ msg, isMe }: MessageBubbleProps) => {
+const MessageBubble = memo(({ msg, isMe, senderName }: MessageBubbleProps) => {
     const timestamp = msg.created_at
         ? new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         : '';
@@ -18,7 +18,7 @@ const MessageBubble = memo(({ msg, isMe }: MessageBubbleProps) => {
                 <p>{msg.body}</p>
             </div>
             <div className="text-xs text-gray-400 mt-1 px-1 flex gap-2">
-                <span>{isMe ? 'You' : msg.sender}</span>
+                <span>{isMe ? 'You' : senderName}</span>
                 {timestamp && <span>{timestamp}</span>}
             </div>
         </div>

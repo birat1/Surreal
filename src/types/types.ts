@@ -47,31 +47,34 @@ export interface UserProfileFormProps {
 
 export interface Message {
   id?: string;
-  sender: string;
-  recipient: string;
+  conversation_id?: string;
+  sender_id: string;
+  recipient_id: string;
   body: string;
   type?: string;
-  message?: string;
   created_at?: string;
 }
 
 export interface MessageBubbleProps {
   msg: Message;
   isMe: boolean;
+  senderName: string;
 }
 
 export interface Conversation {
   id: string;
-  recipient: string;
+  recipient_id: string;
+  recipient_name?: string;
   last_message: string;
-  last_sender: string;
+  last_sender_id: string;
   updated_at: string;
 }
 
 export interface ConversationInboxProps {
   conversations: Conversation[];
-  currentRecipient: string;
-  currentUser: string;
-  onSelect: (recipient: string) => void;
+  currentRecipientId: string;
+  currentUserId: string;
+  onSelect: (recipientId: string) => void;
+  token: string;
 }
 

@@ -3,20 +3,26 @@ import type { Message, Conversation } from '@/types/types';
 import MessageBubble from '@/components/MessageBubble';
 import ConversationInbox from '@/components/ConversationInbox';
 import { getConversationId } from '@/lib/utils';
+import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
 
 const WS_URL = 'ws://localhost:8001/ws';
 const API_URL = 'http://localhost:8001';
 
 export default function MessagesPage() {
-    const [username, setUsername] = useState('');
+    const navigate = useNavigate();
+
+    // User Info
+    const [currentUserId, setCurrentUserId] = useState('');
+    const [token, setToken] = useState('');
     const [isConnected, setIsConnected] = useState(false);
 
     // Data
     const [conversations, setConversations] = useState<Conversation[]>([]);
     const [messages, setMessages] = useState<Message[]>([]);
-
-    const [recipient, setRecipient] = useState('');
+    const [recipientId, setRecipientId] = useState('');
     const [inputMessage, setInputMessage] = useState('');
+
     const [connectionError, setConnectionError] = useState('');
 
     // Refs
@@ -24,32 +30,44 @@ export default function MessagesPage() {
     const socketRef = useRef<WebSocket | null>(null);
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
+    // Auth Check
+    useEffect(() => {
+        const token = localStorage.getItem("jwt_token");
+        if (!token) {
+            navigate("/login");
+            return;
+        }
+
+        try {
+            const decoded: any = jwtDecode(token);
+            setCurrentUserId(decoded.sub);
+            setToken(token);
+        } catch (error) {
+            console.error("Invalid token:", error);
+            navigate("/login");
+        }
+    }, [navigate]);
+
+    // Scroll to bottom on new message
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
 
     useEffect(() => {
         return () => {
-            if (socketRef.current) {
-                socketRef.current.close();
-            }
+            socketRef.current?.close();
         };
     }, []);
 
     // WebSocket Connection
-    const handleConnect = useCallback(() => {
-        if (!username.trim()) return;
+    useEffect(() => {
+        if (!token || !currentUserId) return;
 
-        if (socketRef.current) {
-            socketRef.current.close();
-        }
-
-        const ws = new WebSocket(`${WS_URL}/${username}`);
+        const ws = new WebSocket(`${WS_URL}?token=${token}`);
 
         ws.onopen = () => {
+            console.log('Connected to WebSocket as:', currentUserId);
             setIsConnected(true);
-            setConnectionError('');
-            console.log('Connected to WebSocket as:', username);
         };
 
         ws.onmessage = (event) => {
@@ -57,29 +75,29 @@ export default function MessagesPage() {
                 const data = JSON.parse(event.data);
 
                 if (data.type === 'error') {
-                    alert(`Error: ${data.message || 'Unknown error'}`);
+                    console.error('WS Error:', data);
                     return;
                 }
 
-                const currentRecipient = recipientRef.current;
-                const chattingWith = data.sender === username ? data.recipient : data.sender;
+                const chattingWith = data.sender_id === currentUserId ? data.recipient_id : data.sender_id;
 
                 // If the message is for the currently open chat, add it to messages immediately
-                if (data.sender === currentRecipient || data.recipient === currentRecipient) {
+                if (chattingWith === recipientRef.current) {
                     setMessages((prevMessages) => [...prevMessages, data]);
                 }
 
                 // Update conversations inbox
                 setConversations((prevConversations) => {
                     // Check if conversation already exists
-                    const existingIndex = prevConversations.findIndex(c => c.recipient === chattingWith);
+                    const existingIndex = prevConversations.findIndex(c => c.recipient_id === chattingWith);
 
                     // Create the updated conversation object
                     const updatedConversation: Conversation = {
                         id: existingIndex !== -1 ? prevConversations[existingIndex].id : Date.now().toString(),
-                        recipient: chattingWith,
+                        recipient_id: chattingWith,
+                        recipient_name: existingIndex !== -1 ? prevConversations[existingIndex].recipient_name : undefined,
                         last_message: data.body,
-                        last_sender: data.sender,
+                        last_sender_id: data.sender_id,
                         updated_at: new Date().toISOString(),
                     };
 
@@ -91,7 +109,7 @@ export default function MessagesPage() {
                     return [updatedConversation, ...newConversations];
                 });
             } catch (error) {
-                console.error('Error parsing message:', error);
+                console.error('Error parsing WS message:', error);
             }
         };
 
@@ -109,108 +127,84 @@ export default function MessagesPage() {
         ws.onerror = (error) => {
             console.error('WebSocket error:', error);
         };
-
         socketRef.current = ws;
-    }, [username]);
+
+        return () => {
+            ws.close();
+        };
+    }, [token, currentUserId]);
 
     // Fetch conversations (Inbox)
     useEffect(() => {
+        if (!token) return;
+
         const fetchConversations = async () => {
             try {
-                const res = await fetch(`${API_URL}/${username}/inbox`);
-                const data = await res.json();
-                if (data.conversations) {
-                    setConversations(data.conversations);
+                const res = await fetch(`${API_URL}/inbox`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.conversations) {
+                        setConversations(data.conversations);
+                    }
                 }
             } catch (error) {
                 console.error('Error fetching conversations:', error);
             }
         };
-
-        if (isConnected && username) {
-            fetchConversations();
-        }
-    }, [isConnected, username]);
+        fetchConversations();
+    }, [token]);
 
     // Fetch messages for selected conversation
     useEffect(() => {
         let active = true;
-        recipientRef.current = recipient;
+        recipientRef.current = recipientId;
 
-        if (recipient && username) {
-            // Generate conversation ID
-            const conversationId = getConversationId(username, recipient);
+        if (!recipientId || !token || !currentUserId) {
+            return;
+        }
 
-            // Fetch messages for this conversation
-            const fetchMessages = async (conversationId: string) => {
-                try {
-                    const res = await fetch(`${API_URL}/conversations/${conversationId}/messages`);
+        // Fetch messages for this conversation
+        const fetchMessages = async () => {
+            const conversationId = getConversationId(currentUserId, recipientId);
+            try {
+                const res = await fetch(`${API_URL}/conversations/${conversationId}/messages`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                if (res.ok) {
                     const data = await res.json();
-
                     if (active && Array.isArray(data)) {
                         setMessages(data);
                     }
-                } catch (error) {
-                    console.error('Error fetching messages:', error);
                 }
-            };
+            } catch (error) {
+                console.error('Error fetching messages:', error);
+            }
+        };
 
-            fetchMessages(conversationId);
-        }
+        fetchMessages();
 
         return () => {
             active = false;
         }
-    }, [recipient, username]);
+    }, [recipientId, token, currentUserId]);
 
     // Send Message
     const handleSendMessage = useCallback(() => {
-        if (!socketRef.current || !recipient || !inputMessage.trim()) return;
+        if (!socketRef.current || !recipientId || !inputMessage.trim()) return;
 
         const payload = {
-            recipient,
+            recipient_id: recipientId,
             body: inputMessage,
         };
 
         socketRef.current.send(JSON.stringify(payload));
         setInputMessage('');
-    }, [recipient, inputMessage]);
-    
-    // Login as Placeholder Users
-    // Haven't implemented using user auth service yet
-    if (!isConnected) {
-        return (
-            <div className="flex items-center justify-center h-[calc(100vh-64px)] bg-gray-100">
-                <div className="bg-white p-8 rounded-lg shadow-md w-96">
-                    <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Join Chat</h2>
+    }, [recipientId, inputMessage]);
 
-                    {connectionError && (
-                        <div className="mb-4 p-3 bg-red-100 text-red-700 text-sm rounded">
-                            {connectionError}
-                        </div>
-                    )}
-
-                    <div className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
-                            <input
-                                type="text"
-                                value={username}
-                                onChange={(event) => setUsername(event.target.value)}
-                                className="w-full border border-gray-400 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 p-1"
-                            />
-                        </div>
-                        <button
-                            onClick={handleConnect}
-                            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
-                        >
-                            Connect
-                        </button>
-                    </div>
-                </div>
-            </div>
-        );
-    }
+    const activeConversation = conversations.find(c => c.recipient_id === recipientId);
+    const activeRecipientName = activeConversation?.recipient_name || activeConversation?.recipient_id.slice(0, 8) + '...' || 'Unknown';
 
     // Chat UI
     return ( 
@@ -220,18 +214,19 @@ export default function MessagesPage() {
                 {/* Conversation Inbox */}
                 <ConversationInbox
                     conversations={conversations}
-                    currentRecipient={recipient}
-                    currentUser={username}
-                    onSelect={setRecipient}
+                    currentRecipientId={recipientId}
+                    currentUserId={currentUserId}
+                    onSelect={setRecipientId}
+                    token={token}
                 />
 
                 {/* Chat Area */}
                 <div className="w-2/3 flex flex-col bg-white">
-                    {recipient ? (
+                    {recipientId ? (
                         <>
                             {/* Header */}
                             <div className="p-4 border-b shadow-sm flex justify-between items-center bg-white z-10">
-                                <span className="font-bold text-lg text-gray-800">{recipient}</span>
+                                <span className="font-bold text-lg text-gray-800 truncate">{activeRecipientName}</span>
                             </div>
 
                             {/* Messages List */}
@@ -240,7 +235,8 @@ export default function MessagesPage() {
                                     <MessageBubble 
                                         key={msg.id || index} 
                                         msg={msg} 
-                                        isMe={msg.sender === username} 
+                                        isMe={msg.sender_id === currentUserId}
+                                        senderName={msg.sender_id === currentUserId ? 'You' : activeRecipientName}
                                     />
                                 ))}
                                 <div ref={messagesEndRef} />

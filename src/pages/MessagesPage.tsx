@@ -1,50 +1,29 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useContext } from 'react';
 import type { Message, Conversation } from '@/types/types';
 import MessageBubble from '@/components/MessageBubble';
 import ConversationInbox from '@/components/ConversationInbox';
 import { getConversationId } from '@/lib/utils';
-import { jwtDecode } from 'jwt-decode';
-import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '@/context/AuthContext';
 
 const WS_URL = 'ws://localhost:8001/ws';
 const API_URL = 'http://localhost:8001';
 
 export default function MessagesPage() {
-    const navigate = useNavigate();
-
-    // User Info
-    const [currentUserId, setCurrentUserId] = useState('');
-    const [token, setToken] = useState('');
-    const [isConnected, setIsConnected] = useState(false);
+    const { token, userId } = useContext(AuthContext);
+    const currentUserId = userId || '';
 
     // Data
     const [conversations, setConversations] = useState<Conversation[]>([]);
     const [messages, setMessages] = useState<Message[]>([]);
     const [recipientId, setRecipientId] = useState('');
     const [inputMessage, setInputMessage] = useState('');
-
+    const [isConnected, setIsConnected] = useState(false);
     const [connectionError, setConnectionError] = useState('');
 
     // Refs
     const recipientRef = useRef('');
     const socketRef = useRef<WebSocket | null>(null);
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
-
-    // Auth Check
-    useEffect(() => {
-        const token = localStorage.getItem("jwt_token");
-
-        if (token) {
-            try {
-                const decoded: any = jwtDecode(token);
-                setCurrentUserId(decoded.sub);
-                setToken(token);
-            } catch (error) {
-                console.error("Invalid token:", error);
-                navigate("/login");
-            }
-        }
-    }, [navigate]);
 
     // Scroll to bottom on new message
     useEffect(() => {
@@ -215,7 +194,7 @@ export default function MessagesPage() {
                     currentRecipientId={recipientId}
                     currentUserId={currentUserId}
                     onSelect={setRecipientId}
-                    token={token}
+                    token={token || ''}
                 />
 
                 {/* Chat Area */}

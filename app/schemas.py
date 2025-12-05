@@ -2,7 +2,7 @@ from pydantic import BaseModel, UUID4, Field
 from datetime import datetime
 
 class MessageCreate(BaseModel):
-    recipient: str
+    recipient_id: UUID4
     body: str = Field(..., min_length=1)
 
 class MessageResponse(BaseModel):

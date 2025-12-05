@@ -16,4 +16,4 @@ async def init_db():
     )
 
 def conv_id(user_a: str, user_b: str) -> str:
-    return f"{min(user_a, user_b)}-{max(user_a, user_b)}"
+    return f"{min(str(user_a), str(user_b))}-{max(str(user_a), str(user_b))}"

@@ -23,6 +23,13 @@ services:
       - db
     volumes:
       - .:/app
+    networks:
+      - default
+
+networks:
+  default:
+    name: user-messaging
+    external: true
 
 volumes:
   postgres_data:

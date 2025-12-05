@@ -33,18 +33,16 @@ export default function MessagesPage() {
     // Auth Check
     useEffect(() => {
         const token = localStorage.getItem("jwt_token");
-        if (!token) {
-            navigate("/login");
-            return;
-        }
 
-        try {
-            const decoded: any = jwtDecode(token);
-            setCurrentUserId(decoded.sub);
-            setToken(token);
-        } catch (error) {
-            console.error("Invalid token:", error);
-            navigate("/login");
+        if (token) {
+            try {
+                const decoded: any = jwtDecode(token);
+                setCurrentUserId(decoded.sub);
+                setToken(token);
+            } catch (error) {
+                console.error("Invalid token:", error);
+                navigate("/login");
+            }
         }
     }, [navigate]);
 

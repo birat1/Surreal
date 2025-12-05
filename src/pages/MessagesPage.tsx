@@ -57,6 +57,7 @@ export default function MessagesPage() {
                 }
 
                 const chattingWith = data.sender_id === currentUserId ? data.recipient_id : data.sender_id;
+                const isIncoming = data.sender_id !== currentUserId;
 
                 // If the message is for the currently open chat, add it to messages immediately
                 if (chattingWith === recipientRef.current) {
@@ -67,12 +68,22 @@ export default function MessagesPage() {
                 setConversations((prevConversations) => {
                     // Check if conversation already exists
                     const existingIndex = prevConversations.findIndex(c => c.recipient_id === chattingWith);
+                    const existingName = existingIndex !== -1 ? prevConversations[existingIndex].recipient_name : undefined;
+
+                    let display_name = existingName;
+
+                    if (!display_name && isIncoming) {
+                        console.log("WS Message Received:", data);
+
+                        if (!data.sender_name) console.error("Sender name missing in WS message data");
+                        display_name = data.sender_name;
+                    }
 
                     // Create the updated conversation object
                     const updatedConversation: Conversation = {
                         id: existingIndex !== -1 ? prevConversations[existingIndex].id : Date.now().toString(),
                         recipient_id: chattingWith,
-                        recipient_name: existingIndex !== -1 ? prevConversations[existingIndex].recipient_name : undefined,
+                        recipient_name: display_name,
                         last_message: data.body,
                         last_sender_id: data.sender_id,
                         updated_at: new Date().toISOString(),
@@ -180,6 +191,28 @@ export default function MessagesPage() {
         setInputMessage('');
     }, [recipientId, inputMessage]);
 
+    const handleSelectConversation = (recipientId: string, recipientName?: string) => {
+        setRecipientId(recipientId);
+
+        if (recipientName) {
+            setConversations((prevConversations) => {
+                const exists = prevConversations.some(c => c.recipient_id === recipientId);
+                if (!exists) {
+                    const newConversation: Conversation = {
+                        id: `temp-${Date.now()}`,
+                        recipient_id: recipientId,
+                        recipient_name: recipientName,
+                        last_message: '',
+                        last_sender_id: '',
+                        updated_at: new Date().toISOString(),
+                    };
+                    return [newConversation, ...prevConversations];
+                }
+                return prevConversations;
+            });
+        }
+    };
+
     const activeConversation = conversations.find(c => c.recipient_id === recipientId);
     const activeRecipientName = activeConversation?.recipient_name || activeConversation?.recipient_id.slice(0, 8) + '...' || 'Unknown';
 
@@ -194,7 +227,7 @@ export default function MessagesPage() {
                     currentRecipientId={recipientId}
                     currentUserId={currentUserId}
                     currentUserName={userName || 'Me'}
-                    onSelect={setRecipientId}
+                    onSelect={handleSelectConversation}
                     token={token || ''}
                 />
 

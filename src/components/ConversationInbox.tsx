@@ -37,7 +37,7 @@ export default function ConversationInbox({
                 return;
             }
 
-            onSelect(data.user_id);
+            onSelect(data.user_id, data.display_name);
         } catch (error) {
             console.error("Error searching for user:", error);
             alert("An error occurred while searching for the user.");
@@ -77,12 +77,21 @@ export default function ConversationInbox({
                                     {new Date(conv.updated_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                 </span>
                             </div>
-                            <p className="text-sm text-gray-600 truncate">
-                                <span className="font-medium text-gray-400 mr-1">
-                                    {conv.last_sender_id === currentUserId ? 'You:' : `${conv.recipient_name}:`}
-                                </span>
-                                {conv.last_message}
-                            </p>
+                            {conv.last_message ? (
+                                <p className="text-sm text-gray-600 truncate">
+                                    <span className="font-medium text-gray-400 mr-1">
+                                        {conv.last_sender_id === currentUserId 
+                                            ? 'You:' 
+                                            : (conv.recipient_name ? `${conv.recipient_name}:` : `${conv.recipient_id.slice(0, 8)}...:`)
+                                        }
+                                    </span>
+                                    {conv.last_message}
+                                </p>
+                            ) : (
+                                <p className="text-sm text-gray-400 italic">
+                                    Send them a message!
+                                </p>
+                            )}
                         </div>
                     ))
                 )}

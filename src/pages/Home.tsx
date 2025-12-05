@@ -1,9 +1,8 @@
 import { Link } from "react-router-dom";
-import { useContext } from "react";
-import { AuthContext } from "@/context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 
 const Home: React.FC = () => {
-  const { token } = useContext(AuthContext);
+  const { token } = useAuth();
 
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-linear-to-br from-blue-50 to-indigo-100 text-center">

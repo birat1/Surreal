@@ -4,6 +4,7 @@ import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 import { useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
+import { useAuth } from '@/context/AuthContext';
 import type { UserProfileFormProps } from "@/types/types";
 import {
   Select,
@@ -29,6 +30,7 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
   setFormData,
 }) => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [loading, setLoading] = useState(false);
 
   const fileInput = useRef<HTMLInputElement>(null);
@@ -74,6 +76,15 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
       });
 
       if (res.ok) {
+        const data = await res.json();
+
+        if (data.jwt_token) {
+          console.log("Logging in with new token from profile setup");
+          login(data.jwt_token);
+        } else {
+          console.warn("Backend did not return a new token. Nickname will not update until relogin.");
+        }
+
         alert("Profile created successfully!");
         navigate("/friends-finder");
       } else {

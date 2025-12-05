@@ -1,12 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 import surreyLogo from "../assets/surrey_logo.jpg";
-import { useContext } from "react";
-import { AuthContext } from "@/context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import { Users } from "lucide-react";
 
 const Navbar: React.FC = () => {
-  const { token, logout } = useContext(AuthContext);
+  const { token, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {

@@ -106,6 +106,8 @@ async def websocket_endpoint(websocket: WebSocket, token: str = Query(...)) -> N
 
             # Prepare response payload
             response_dict = new_msg.model_dump(mode="json")
+            sender_name = names_dict.get(user_id_str, "Unknown")
+            response_dict["sender_name"] = sender_name
 
             # Send the new message to both sender and recipient
             await manager.send_to_user(user_id_str, response_dict)

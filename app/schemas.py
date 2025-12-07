@@ -38,7 +38,7 @@ class UserProfileResponse(BaseModel):
     full_name: str
     age: int | None = None
     nickname: str | None = None
-    bio: str | None = None
+    bio: str
     course: str | None = None
     accommodation: str | None = None     
     university_year: str | None = None    
@@ -51,5 +51,6 @@ class UserProfileResponse(BaseModel):
     gym_goer: bool | None = None          
 
     class Config:
-        orm_mode = True
-
+        from_attributes = True
+    
+  

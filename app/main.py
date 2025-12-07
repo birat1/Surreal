@@ -246,3 +246,5 @@ def list_user_profiles(db: Session = Depends(get_db)):
     except Exception as e:
         print("Error fetching user profiles", e)
         raise HTTPException(status_code=500, detail="Error fetching user profiles")
+    
+

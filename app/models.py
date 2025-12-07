@@ -1,18 +1,21 @@
-from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey
-from sqlalchemy.dialects.postgresql import ARRAY
-from datetime import datetime, timedelta
+import uuid
+from datetime import datetime, timedelta, timezone
+
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy.dialects.postgresql import ARRAY, UUID
+
 from app.database import Base
 
 
 # This maps the Python User class to the users table in Postgres.
 class User(Base):
-    
+
     __tablename__ = "users" # name of the table in postgres
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
     email_address = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow())
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
 
 class EmailVerificationCode(Base):      # The temporary verification code is stored in this table
@@ -22,8 +25,8 @@ class EmailVerificationCode(Base):      # The temporary verification code is sto
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, nullable=False)
     code = Column(String, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    expires_at = Column(DateTime, default=lambda: datetime.utcnow() + timedelta(minutes=10))
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    expires_at = Column(DateTime, default=lambda: datetime.now(timezone.utc) + timedelta(minutes=10))
     verified = Column(Boolean, default=False)
 
 
@@ -32,7 +35,7 @@ class UserProfile(Base):
     __tablename__ = "user_profiles"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), unique=True)  # this links to the respective user
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), unique=True)  # this links to the respective user
     full_name = Column(String, nullable=False)
     nickname = Column(String, nullable=True)
     age = Column(Integer, nullable=True)
@@ -47,6 +50,4 @@ class UserProfile(Base):
     societies = Column(ARRAY(String), nullable=True)
     sports = Column(ARRAY(String), nullable=True)
     gym_goer = Column(String, nullable=True)
-
-
 

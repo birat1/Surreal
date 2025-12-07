@@ -10,6 +10,8 @@ services:
       - postgres_data:/var/lib/postgresql
     ports:
       - "5432:5432"
+    networks:
+      - auth-internal
 
   user-auth-service:
     build: .
@@ -23,6 +25,15 @@ services:
       - db
     volumes:
       - .:/app
+    networks:
+      - auth-internal
+      - backend
+
+networks:
+  auth-internal:
+    driver: bridge
+  backend:
+    external: true
 
 volumes:
   postgres_data:

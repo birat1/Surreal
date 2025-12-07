@@ -1,63 +1,37 @@
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useEffect, useState } from "react";
+import { UserProfileFriendsFinder } from "@/types/types";
+import FriendsFinderCard from "@/components/FriendsFinderCard";
 import { Button } from "@/components/ui/button";
 
-type UserProfile = {
-  id: number;
-  user_id: number;
-  full_name: string;
-  bio?: string;
-  course?: string;
-};
-
-const PAGE_SIZE = 6;
-
 const FriendsFinderPage = () => {
-  const [profiles, setProfiles] = useState<UserProfile[]>([]);
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [profiles, setProfiles] = useState<UserProfileFriendsFinder[]>([]);
 
+  // use useEffect so that there is no infinite loop from setProfiles
   useEffect(() => {
-    const fetchProfiles = async () => {
+    const getUserProfiles = async () => {
       try {
-        const res = await fetch("http://localhost:8000/user-profiles");
-        const data: UserProfile[] = await res.json();
+        const res = await fetch("http://127.0.0.1:8000/user-profiles");
+        const data: UserProfileFriendsFinder[] = await res.json();
         setProfiles(data);
       } catch (err) {
-        console.error("Failed to fetch profiles:", err);
+        console.error("Failed to fetch profiles", err);
       }
     };
 
-    fetchProfiles();
+    getUserProfiles();
   }, []);
 
-  const visibleProfiles = profiles.slice(0, visibleCount);
-
   return (
-    <div className="p-6 space-y-4">
+    <div className="flex flex-col items-center mt-10 px-6 ">
       <div className="grid grid-cols-4 gap-6">
-        {visibleProfiles.map((user) => (
-          <Card key={user.user_id} className="h-40">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base">{user.full_name}</CardTitle>
-              <p className="text-xs text-muted-foreground">
-                {user.course || ""}
-              </p>
-            </CardHeader>
-            <CardContent className="text-sm text-muted-foreground">
-              {user.bio || ""}
-            </CardContent>
-          </Card>
+        {profiles.slice(0, 8).map((profile) => (
+          <FriendsFinderCard key={profile.user_id} profile={profile} />
         ))}
       </div>
 
-      {profiles.length > visibleCount && (
-        <Button
-          variant="outline"
-          onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
-        >
-          Show more…
-        </Button>
-      )}
+      <Button className="mt-6 px-4 py-2 bg-blue-500 text-white rounded">
+        Show More
+      </Button>
     </div>
   );
 };

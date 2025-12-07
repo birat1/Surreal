@@ -23,6 +23,20 @@ const UserProfilePage = () => {
     sports: [],
     gym_goer: "",
     profile_picture: null,
+    show_full_name: true,
+    show_nickname: true,
+    show_age: true,
+    show_bio: true,
+    show_course: true,
+    show_accommodation: true,
+    show_university_year: true,
+    show_languages: true,
+    show_ethnicities: true,
+    show_home_area: true,
+    show_fun_fact: true,
+    show_societies: true,
+    show_sports: true,
+    show_gym_goer: true
   });
 
   return (

@@ -24,6 +24,7 @@ import {
   SOCIETIES,
   COURSES,
 } from "@/data/dummy_data";
+import VisibilityToggle from "./UserProfileFormVisibilityToggle";
 
 const UserProfileForm: React.FC<UserProfileFormProps> = ({
   formData,
@@ -156,13 +157,23 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
             className="border-blue-300 text-blue-600 focus:ring-blue-500"
           />
 
-          <Input
-            name="nickname"
-            placeholder="Nickname"
-            value={formData.nickname}
-            onChange={handleChange}
-            className="border-blue-300 text-blue-600 focus:ring-blue-500"
-          />
+          <div className="flex flex-col gap-1">
+            <Input
+              name="nickname"
+              placeholder="Nickname"
+              value={formData.nickname}
+              onChange={handleChange}
+              className="border-blue-300 text-blue-600 focus:ring-blue-500"
+            />
+
+            <VisibilityToggle
+              label="Show Nickname"
+              checked={formData.show_nickname}
+              onChange={(value) =>
+                setFormData({ ...formData, show_nickname: value })
+              }
+            />
+          </div>
 
           {/*Course */}
           <Select
@@ -197,36 +208,46 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
           </Select>
 
           {/*accommodations */}
-          <Select
-            value={formData.accommodation}
-            onValueChange={(value) =>
-              setFormData({ ...formData, accommodation: value })
-            }
-          >
-            <SelectTrigger className="w-full border-blue-300 text-blue-600 focus:ring-blue-500">
-              <SelectValue placeholder="Accommodation" />
-            </SelectTrigger>
-
-            <SelectContent
-              className="bg-white border border-gray-200 rounded-md shadow-lg text-blue-600
-             max-h-48 overflow-y-auto"
+          <div className="flex flex-col gap-1">
+            <Select
+              value={formData.accommodation}
+              onValueChange={(value) =>
+                setFormData({ ...formData, accommodation: value })
+              }
             >
-              <SelectGroup>
-                <SelectLabel className="text-blue-700 text-xs px-2">
-                  Accommodation
-                </SelectLabel>
-                {ACCOMMODATIONS.map((accommodation) => (
-                  <SelectItem
-                    key={accommodation}
-                    value={accommodation}
-                    className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
-                  >
-                    {accommodation}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+              <SelectTrigger className="w-full border-blue-300 text-blue-600 focus:ring-blue-500">
+                <SelectValue placeholder="Accommodation" />
+              </SelectTrigger>
+
+              <SelectContent
+                className="bg-white border border-gray-200 rounded-md shadow-lg text-blue-600
+             max-h-48 overflow-y-auto"
+              >
+                <SelectGroup>
+                  <SelectLabel className="text-blue-700 text-xs px-2">
+                    Accommodation
+                  </SelectLabel>
+                  {ACCOMMODATIONS.map((accommodation) => (
+                    <SelectItem
+                      key={accommodation}
+                      value={accommodation}
+                      className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
+                    >
+                      {accommodation}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+
+            <VisibilityToggle
+              label="Show Accommodation"
+              checked={formData.show_accommodation}
+              onChange={(value) =>
+                setFormData({ ...formData, show_accommodation: value })
+              }
+            />
+          </div>
 
           {/*university year */}
           <Select
@@ -258,270 +279,330 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
           </Select>
 
           {/* languages */}
-          <div className="w-full">
-            <Select
-              value=""
-              onValueChange={(value) => {
-                if (formData.languages.includes(value)) return;
-                if (formData.languages.length >= 3) return;
+          <div className="flex flex-col gap-1">
+            <div className="w-full">
+              <Select
+                value=""
+                onValueChange={(value) => {
+                  if (formData.languages.includes(value)) return;
+                  if (formData.languages.length >= 3) return;
 
-                setFormData({
-                  ...formData,
-                  languages: [...formData.languages, value],
-                });
-              }}
-            >
-              <SelectTrigger className="w-full border-blue-300 text-blue-600 focus:ring-blue-500">
-                <SelectValue placeholder="Languages (up to 3)" />
-              </SelectTrigger>
-
-              <SelectContent
-                className="bg-white border border-gray-200 rounded-md shadow-lg text-blue-600
-             max-h-48 overflow-y-auto"
+                  setFormData({
+                    ...formData,
+                    languages: [...formData.languages, value],
+                  });
+                }}
               >
-                <SelectGroup>
-                  <SelectLabel className="text-blue-700 text-xs px-2">
-                    Languages
-                  </SelectLabel>
-                  {LANGUAGES.map((lang) => (
-                    <SelectItem
-                      key={lang}
-                      value={lang}
-                      className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
-                    >
-                      {lang}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+                <SelectTrigger className="w-full border-blue-300 text-blue-600 focus:ring-blue-500">
+                  <SelectValue placeholder="Languages (up to 3)" />
+                </SelectTrigger>
 
-            <div className="flex flex-wrap gap-2 mt-2">
-              {formData.languages.map((lang) => (
-                <div
-                  key={lang}
-                  className="flex items-center bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm"
+                <SelectContent
+                  className="bg-white border border-gray-200 rounded-md shadow-lg text-blue-600
+             max-h-48 overflow-y-auto"
                 >
-                  {lang}
-                  <button
-                    className="ml-2 text-blue-700 hover:text-red-600 font-bold"
-                    onClick={() => handleRemoveItem("languages", lang)}
+                  <SelectGroup>
+                    <SelectLabel className="text-blue-700 text-xs px-2">
+                      Languages
+                    </SelectLabel>
+                    {LANGUAGES.map((lang) => (
+                      <SelectItem
+                        key={lang}
+                        value={lang}
+                        className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
+                      >
+                        {lang}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+
+              <div className="flex flex-wrap gap-2 mt-2">
+                {formData.languages.map((lang) => (
+                  <div
+                    key={lang}
+                    className="flex items-center bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm"
                   >
-                    ×
-                  </button>
-                </div>
-              ))}
+                    {lang}
+                    <button
+                      className="ml-2 text-blue-700 hover:text-red-600 font-bold"
+                      onClick={() => handleRemoveItem("languages", lang)}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
+
+            <VisibilityToggle
+              label="Show Languages"
+              checked={formData.show_languages}
+              onChange={(value) =>
+                setFormData({ ...formData, show_languages: value })
+              }
+            />
           </div>
 
           {/* ethnicities */}
-          <div className="w-full">
-            <Select
-              value=""
-              onValueChange={(value) => {
-                if (formData.ethnicities.includes(value)) return;
-                if (formData.ethnicities.length >= 3) return;
+          <div className="flex flex-col gap-1">
+            <div className="w-full">
+              <Select
+                value=""
+                onValueChange={(value) => {
+                  if (formData.ethnicities.includes(value)) return;
+                  if (formData.ethnicities.length >= 3) return;
 
-                setFormData({
-                  ...formData,
-                  ethnicities: [...formData.ethnicities, value],
-                });
-              }}
+                  setFormData({
+                    ...formData,
+                    ethnicities: [...formData.ethnicities, value],
+                  });
+                }}
+              >
+                <SelectTrigger className="w-full border-blue-300 text-blue-600 focus:ring-blue-500">
+                  <SelectValue placeholder="Ethnicities (up to 3)" />
+                </SelectTrigger>
+
+                <SelectContent
+                  className="bg-white border border-gray-200 rounded-md shadow-lg text-blue-600
+             max-h-48 overflow-y-auto"
+                >
+                  <SelectGroup>
+                    <SelectLabel className="text-blue-700 text-xs px-2">
+                      Ethnicities
+                    </SelectLabel>
+                    {ETHNICITIES.map((ethnicity) => (
+                      <SelectItem
+                        key={ethnicity}
+                        value={ethnicity}
+                        className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
+                      >
+                        {ethnicity}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+
+              <div className="flex flex-wrap gap-2 mt-2">
+                {formData.ethnicities.map((ethnicity) => (
+                  <div
+                    key={ethnicity}
+                    className="flex items-center bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm"
+                  >
+                    {ethnicity}
+                    <button
+                      className="ml-2 text-blue-700 hover:text-red-600 font-bold"
+                      onClick={() => handleRemoveItem("ethnicities", ethnicity)}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <VisibilityToggle
+              label="Show Ethnicities"
+              checked={formData.show_ethnicities}
+              onChange={(value) =>
+                setFormData({ ...formData, show_ethnicities: value })
+              }
+            />
+          </div>
+
+          {/* sports */}
+          <div className="flex flex-col gap-1">
+            <div className="w-full">
+              <Select
+                value=""
+                onValueChange={(value) => {
+                  if (formData.sports.includes(value)) return;
+                  if (formData.sports.length >= 3) return;
+
+                  setFormData({
+                    ...formData,
+                    sports: [...formData.sports, value],
+                  });
+                }}
+              >
+                <SelectTrigger className="w-full border-blue-300 text-blue-600 focus:ring-blue-500">
+                  <SelectValue placeholder="Sports (up to 3)" />
+                </SelectTrigger>
+
+                <SelectContent
+                  className="bg-white border border-gray-200 rounded-md shadow-lg text-blue-600
+             max-h-48 overflow-y-auto"
+                >
+                  <SelectGroup>
+                    <SelectLabel className="text-blue-700 text-xs px-2">
+                      Sports
+                    </SelectLabel>
+                    {SPORTS.map((sport) => (
+                      <SelectItem
+                        key={sport}
+                        value={sport}
+                        className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
+                      >
+                        {sport}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+
+              <div className="flex flex-wrap gap-2 mt-2">
+                {formData.sports.map((sport) => (
+                  <div
+                    key={sport}
+                    className="flex items-center bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm"
+                  >
+                    {sport}
+                    <button
+                      className="ml-2 text-blue-700 hover:text-red-600 font-bold"
+                      onClick={() => handleRemoveItem("sports", sport)}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <VisibilityToggle
+              label="Show Sports"
+              checked={formData.show_sports}
+              onChange={(value) =>
+                setFormData({ ...formData, show_sports: value })
+              }
+            />
+          </div>
+
+          {/* Societiies */}
+          <div className="flex flex-col gap-1">
+            <div className="w-full">
+              <Select
+                value=""
+                onValueChange={(value) => {
+                  if (formData.societies.includes(value)) return;
+                  if (formData.societies.length >= 5) return;
+
+                  setFormData({
+                    ...formData,
+                    societies: [...formData.societies, value],
+                  });
+                }}
+              >
+                <SelectTrigger className="w-full border-blue-300 text-blue-600 focus:ring-blue-500">
+                  <SelectValue placeholder="Societies (up to 5)" />
+                </SelectTrigger>
+
+                <SelectContent
+                  className="bg-white border border-gray-200 rounded-md shadow-lg text-blue-600
+             max-h-48 overflow-y-auto"
+                >
+                  <SelectGroup>
+                    <SelectLabel className="text-blue-700 text-xs px-2">
+                      Societies
+                    </SelectLabel>
+                    {SOCIETIES.map((society) => (
+                      <SelectItem
+                        key={society}
+                        value={society}
+                        className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
+                      >
+                        {society}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+
+              <div className="flex flex-wrap gap-2 mt-2">
+                {formData.societies.map((society) => (
+                  <div
+                    key={society}
+                    className="flex items-center bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm"
+                  >
+                    {society}
+                    <button
+                      className="ml-2 text-blue-700 hover:text-red-600 font-bold"
+                      onClick={() => handleRemoveItem("societies", society)}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <VisibilityToggle
+              label="Show Societies"
+              checked={formData.show_societies}
+              onChange={(value) =>
+                setFormData({ ...formData, show_societies: value })
+              }
+            />
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <Input
+              name="home_area"
+              placeholder="Home Area"
+              value={formData.home_area}
+              onChange={handleChange}
+              className="border-blue-300 text-blue-600 focus:ring-blue-500"
+            />
+
+            <VisibilityToggle
+              label="Show Home Area"
+              checked={formData.show_home_area}
+              onChange={(value) =>
+                setFormData({ ...formData, show_home_area: value })
+              }
+            />
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <Select
+              value={formData.gym_goer}
+              onValueChange={(value) =>
+                setFormData({ ...formData, gym_goer: value })
+              }
             >
-              <SelectTrigger className="w-full border-blue-300 text-blue-600 focus:ring-blue-500">
-                <SelectValue placeholder="Ethnicity (up to 3)" />
+              <SelectTrigger className="w-full border-blue-300 text-blue-600">
+                <SelectValue placeholder="Do you go to the gym?" />
               </SelectTrigger>
 
-              <SelectContent
-                className="bg-white border border-gray-200 rounded-md shadow-lg text-blue-600
-             max-h-48 overflow-y-auto"
-              >
+              <SelectContent className="bg-white border border-gray-200 rounded-md shadow-lg text-blue-600">
                 <SelectGroup>
                   <SelectLabel className="text-blue-700 text-xs px-2">
-                    Ethnicities
+                    Do you go to the gym?
                   </SelectLabel>
-                  {ETHNICITIES.map((ethnicity) => (
-                    <SelectItem
-                      key={ethnicity}
-                      value={ethnicity}
-                      className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
-                    >
-                      {ethnicity}
-                    </SelectItem>
-                  ))}
+                  <SelectItem
+                    className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
+                    value="yes"
+                  >
+                    Yes
+                  </SelectItem>
+                  <SelectItem
+                    className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
+                    value="no"
+                  >
+                    No
+                  </SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
 
-            <div className="flex flex-wrap gap-2 mt-2">
-              {formData.ethnicities.map((ethnicity) => (
-                <div
-                  key={ethnicity}
-                  className="flex items-center bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm"
-                >
-                  {ethnicity}
-                  <button
-                    className="ml-2 text-blue-700 hover:text-red-600 font-bold"
-                    onClick={() => handleRemoveItem("ethnicities", ethnicity)}
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-            </div>
+            <VisibilityToggle
+              label="Show Gym Status"
+              checked={formData.show_gym_goer}
+              onChange={(value) =>
+                setFormData({ ...formData, show_gym_goer: value })
+              }
+            />
           </div>
-
-          {/* societies */}
-          <div className="w-full">
-            <Select
-              value=""
-              onValueChange={(value) => {
-                if (formData.sports.includes(value)) return;
-                if (formData.sports.length >= 3) return;
-
-                setFormData({
-                  ...formData,
-                  sports: [...formData.sports, value],
-                });
-              }}
-            >
-              <SelectTrigger className="w-full border-blue-300 text-blue-600 focus:ring-blue-500">
-                <SelectValue placeholder="Sports (up to 3)" />
-              </SelectTrigger>
-
-              <SelectContent
-                className="bg-white border border-gray-200 rounded-md shadow-lg text-blue-600
-             max-h-48 overflow-y-auto"
-              >
-                <SelectGroup>
-                  <SelectLabel className="text-blue-700 text-xs px-2">
-                    Sports
-                  </SelectLabel>
-                  {SPORTS.map((sport) => (
-                    <SelectItem
-                      key={sport}
-                      value={sport}
-                      className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
-                    >
-                      {sport}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-
-            <div className="flex flex-wrap gap-2 mt-2">
-              {formData.sports.map((sport) => (
-                <div
-                  key={sport}
-                  className="flex items-center bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm"
-                >
-                  {sport}
-                  <button
-                    className="ml-2 text-blue-700 hover:text-red-600 font-bold"
-                    onClick={() => handleRemoveItem("sports", sport)}
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="w-full">
-            <Select
-              value=""
-              onValueChange={(value) => {
-                if (formData.societies.includes(value)) return;
-                if (formData.societies.length >= 5) return;
-
-                setFormData({
-                  ...formData,
-                  societies: [...formData.societies, value],
-                });
-              }}
-            >
-              <SelectTrigger className="w-full border-blue-300 text-blue-600 focus:ring-blue-500">
-                <SelectValue placeholder="Societies (up to 5)" />
-              </SelectTrigger>
-
-              <SelectContent
-                className="bg-white border border-gray-200 rounded-md shadow-lg text-blue-600
-             max-h-48 overflow-y-auto"
-              >
-                <SelectGroup>
-                  <SelectLabel className="text-blue-700 text-xs px-2">
-                    Societies
-                  </SelectLabel>
-                  {SOCIETIES.map((society) => (
-                    <SelectItem
-                      key={society}
-                      value={society}
-                      className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
-                    >
-                      {society}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-
-            <div className="flex flex-wrap gap-2 mt-2">
-              {formData.societies.map((society) => (
-                <div
-                  key={society}
-                  className="flex items-center bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm"
-                >
-                  {society}
-                  <button
-                    className="ml-2 text-blue-700 hover:text-red-600 font-bold"
-                    onClick={() => handleRemoveItem("societies", society)}
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <Input
-            name="home_area"
-            placeholder="Home Area"
-            value={formData.home_area}
-            onChange={handleChange}
-            className="border-blue-300 text-blue-600 focus:ring-blue-500"
-          />
-
-          <Select
-            value={formData.gym_goer}
-            onValueChange={(value) =>
-              setFormData({ ...formData, gym_goer: value })
-            }
-          >
-            <SelectTrigger className="w-full border-blue-300 text-blue-600">
-              <SelectValue placeholder="Do you go to the gym?" />
-            </SelectTrigger>
-
-            <SelectContent className="bg-white border border-gray-200 rounded-md shadow-lg text-blue-600">
-              <SelectGroup>
-                <SelectLabel className="text-blue-700 text-xs px-2">
-                  Do you go to the gym?
-                </SelectLabel>
-                <SelectItem
-                  className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
-                  value="yes"
-                >
-                  Yes
-                </SelectItem>
-                <SelectItem
-                  className="cursor-pointer hover:bg-blue-100 hover:text-blue-700"
-                  value="no"
-                >
-                  No
-                </SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
         </div>
 
         <div className="flex flex-col mt-2">

@@ -7,15 +7,29 @@ export interface ProfilePreviewUser {
   bio?: string;
   course: string;
   accommodation?: string;
-  university_year?: string;
+  university_year: string;
   languages?: string[];
   ethnicities?: string[];
   home_area?: string;
-  fun_fact?: string;
+  fun_fact: string;
   societies?: string[];
   sports?: string[];
   gym_goer?: string;
-  profile_picture?: ProfilePicture;
+  profile_picture: ProfilePicture;
+  show_full_name: boolean;
+  show_nickname: boolean;
+  show_age: boolean;
+  show_bio: boolean;
+  show_course: boolean;
+  show_accommodation: boolean;
+  show_university_year: boolean;
+  show_languages: boolean;
+  show_ethnicities: boolean;
+  show_home_area: boolean;
+  show_fun_fact: boolean;
+  show_societies: boolean;
+  show_sports: boolean;
+  show_gym_goer: boolean;
 }
 
 export interface ProfilePreviewProps {
@@ -29,7 +43,7 @@ export interface UserProfileFormData {
   bio: string;
   course: string;
   accommodation?: string;
-  university_year?: string;
+  university_year: string;
   languages: string[];
   ethnicities: string[];
   home_area: string;
@@ -38,6 +52,21 @@ export interface UserProfileFormData {
   sports: string[];
   gym_goer: string;
   profile_picture: ProfilePicture;
+
+  show_full_name: boolean;
+  show_nickname: boolean;
+  show_age: boolean;
+  show_bio: boolean;
+  show_course: boolean;
+  show_accommodation: boolean;
+  show_university_year: boolean;
+  show_languages: boolean;
+  show_ethnicities: boolean;
+  show_home_area: boolean;
+  show_fun_fact: boolean;
+  show_societies: boolean;
+  show_sports: boolean;
+  show_gym_goer: boolean;
 }
 
 export interface UserProfileFormProps {
@@ -79,3 +108,27 @@ export interface ConversationInboxProps {
   token: string;
 }
 
+
+
+export interface UserProfileFriendsFinder {
+  id: number,
+  user_id: number,
+  full_name: string,
+  age: number,
+  nickname?: string,
+  bio: string
+  course: string,
+  accommodation?: string,
+  university_year: string   
+  languages?: string[]   
+  ethnicities?: string[] 
+  home_area?: string
+  fun_fact?: string          
+  societies?: string[]    
+  sports?: string[]       
+  gym_goer?: boolean  
+}
+
+export interface UserProfileFriendsFinderProps {
+  profile: UserProfileFriendsFinder  
+}

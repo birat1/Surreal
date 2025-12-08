@@ -57,13 +57,14 @@ async def get_conversation(conversation_id: str, current_user: Annotated[str, De
     # Fetch the conversation
     conversation = await Conversation.get(conversation_id)
 
-    # Validate conversation existence and user participation
-    if not conversation:
-        if current_user not in conversation_id:
+    # Verify user participation in the conversation
+    if conversation:
+        if user_id not in conversation.participants:
             raise HTTPException(status_code=403, detail="You are not a participant in this conversation")
+    else:
+        if current_user not in conversation_id:
+            raise HTTPException(status_code=403, detail="Access denied to this conversation")
         return []
-    if user_id not in conversation.participants:
-        raise HTTPException(status_code=403, detail="You are not a participant in this conversation")
 
     # Fetch messages in the conversation
     messages = await Message.find(

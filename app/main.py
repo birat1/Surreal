@@ -290,3 +290,37 @@ def retrieve_users(payload: BatchIDRequest, db: Annotated[Session, Depends(get_d
 @app.get("/validate-token")
 def validate_token(request: Request, db: Annotated[Session, Depends(get_db)]):
     return get_matching_user(request, db)
+
+@app.get("/current-user-profile")   # consider removing this (come back to it)
+def get_current_user_profile_details(current_user: User = Depends(get_matching_user)):
+    
+    p = current_user.user_profile
+
+    id = p.user_id
+    age = p.age
+    course = p.course
+    accommodation = p.accommodation
+    university_year = p.university_year
+    languages = p.languages # array
+    ethnicities = p.ethnicities # array
+    societies = p.societies # array
+    sports = p.sports # array
+    gym_goer = p.gym_goer
+
+    return {
+        "id": id,
+        "age": age,
+        "course": course,
+        "accommodation": accommodation,
+        "university_year": university_year,
+        "languages": languages,
+        "ethnicities": ethnicities,
+        "societies": societies,
+        "sports": sports,
+        "gym_goer": gym_goer
+    }
+
+def compare_profiles():
+
+    # list_user_profiles
+    pass

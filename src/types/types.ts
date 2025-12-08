@@ -108,6 +108,11 @@ export interface ConversationInboxProps {
   token: string;
 }
 
+export interface ChatInputProps {
+  onSend: (message: string) => void;
+  disabled?: boolean;
+}
+
 
 
 export interface UserProfileFriendsFinder {

@@ -4,6 +4,7 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
 import importPlugin from 'eslint-plugin-import'
+import eslintConfigPrettier from 'eslint-config-prettier'
 import { defineConfig } from 'eslint/config'
 
 export default defineConfig([
@@ -63,4 +64,5 @@ export default defineConfig([
       ],
     },
   },
+  eslintConfigPrettier,
 ])

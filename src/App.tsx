@@ -64,6 +64,14 @@ function App() {
               }
             />
             <Route
+              path="/messages/:conversationId"
+              element={
+                <ProtectedRoute>
+                  <MessagesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/events-and-societies"
               element={
                 <EventsAndSocietiesPage />

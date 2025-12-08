@@ -5,13 +5,11 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 
-
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
-
   const { login } = useAuth();
 
   const handleLogin = async () => {
@@ -25,7 +23,7 @@ const LoginPage: React.FC = () => {
       if (res.ok) {
         const data = await res.json();
         login(data.jwt_token);
-        navigate("/friends-finder")
+        navigate("/friends-finder");
       } else {
         const errorData = await res.json();
         alert(errorData.detail);
@@ -45,19 +43,29 @@ const LoginPage: React.FC = () => {
           </h2>
         </CardHeader>
 
-        <CardContent className="flex flex-col gap-4">
-          <Input
-            placeholder="Enter your Surrey email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <Input
-            type="password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <Button onClick={handleLogin}>Login</Button>
+        <CardContent>
+          <form
+            className="flex flex-col gap-4"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleLogin();
+            }}
+          >
+            <Input
+              placeholder="Enter your Surrey email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+
+            <Input
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+
+            <Button type="submit">Login</Button>
+          </form>
         </CardContent>
       </Card>
     </div>

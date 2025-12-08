@@ -178,10 +178,10 @@ def login_user(request: LoginRequest, db: Annotated[Session, Depends(get_db)]):
     if not pwd_context.verify(request.password, user.password):
         raise HTTPException(status_code=401, detail="Incorrect password")
 
-    display_name = "Placeholder Name"
+    display_name = "Placeholder"
     profile  = db.query(models.UserProfile).filter(models.UserProfile.user_id == user.id).first()
     if profile:
-        display_name = profile.username or profile.full_name or "Placeholder Name"
+        display_name = profile.username or profile.full_name or "Placeholder"
 
     jwt_token = create_jwt_token(data={
         "sub": str(user.id),
@@ -225,7 +225,7 @@ def setup_user_profile(request: UserProfileRequest, db: Annotated[Session, Depen
             bio=request.bio,
             course=request.course,
             accommodation=request.accommodation,
-            nickname=request.nickname,
+            username=request.username,
             university_year=request.university_year,
             languages=request.languages,
             ethnicities=request.ethnicities,
@@ -243,7 +243,7 @@ def setup_user_profile(request: UserProfileRequest, db: Annotated[Session, Depen
         new_token = create_jwt_token(data={
             "sub": str(matching_user.id),
             "email": matching_user.email_address,
-            "name": new_user_profile.nickname,
+            "name": new_user_profile.username,
         })
 
         return {
@@ -271,21 +271,21 @@ def list_user_profiles(db: Annotated[Session, Depends(get_db)]):
         raise HTTPException(status_code=500, detail="Error fetching user profiles")
 
 @app.get("/users/search")
-def search_user(nickname: str, db: Annotated[Session, Depends(get_db)]):
-    """Find a user ID via their nickname."""
-    user = db.query(models.UserProfile).filter(models.UserProfile.nickname == nickname).first()
+def search_user(username: str, db: Annotated[Session, Depends(get_db)]):
+    """Find a user ID via their username."""
+    user = db.query(models.UserProfile).filter(models.UserProfile.username == username).first()
 
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    return {"user_id": str(user.user_id), "display_name": user.nickname}
+    return {"user_id": str(user.user_id), "display_name": user.username}
 
 @app.post("/users/retrieve")
 def retrieve_users(payload: BatchIDRequest, db: Annotated[Session, Depends(get_db)]):
     """Retrieve UUIDs to names in batches."""
     profiles = db.query(models.UserProfile).filter(models.UserProfile.user_id.in_(payload.user_ids)).all()
 
-    return {str(p.user_id): p.nickname for p in profiles}
+    return {str(p.user_id): p.username for p in profiles}
 
 @app.get("/validate-token")
 def validate_token(request: Request, db: Annotated[Session, Depends(get_db)]):
@@ -293,7 +293,7 @@ def validate_token(request: Request, db: Annotated[Session, Depends(get_db)]):
 
 @app.get("/current-user-profile")   # consider removing this (come back to it)
 def get_current_user_profile_details(current_user: User = Depends(get_matching_user)):
-    
+
     p = current_user.user_profile
 
     id = p.user_id

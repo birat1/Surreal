@@ -87,7 +87,7 @@ for _ in range(25):
 
     first, last = parts[0], parts[-1]
 
-    nickname = first.lower()
+    username = first.lower()
     email = f"{first.lower()}{last.lower()}@surrey.ac.uk"
 
     ethnicity = random.choice(list(ethnicity_language_map.keys()))
@@ -106,7 +106,7 @@ for _ in range(25):
         "profile": {
             "full_name": full_name,
             "age": random.randint(18, 23),
-            "nickname": nickname,
+            "username": username,
             "bio": bio,
             "fun_fact": fun_fact,
             "course": course,

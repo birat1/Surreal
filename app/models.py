@@ -34,10 +34,11 @@ class UserProfile(Base):
 
     __tablename__ = "user_profiles"
 
+    # Profile Fields
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), unique=True)  # this links to the respective user
     full_name = Column(String, nullable=False)
-    nickname = Column(String, nullable=True)
+    username = Column(String, nullable=False)
     age = Column(Integer, nullable=True)
     bio = Column(String, nullable=True)
     course = Column(String, nullable=True)
@@ -50,4 +51,19 @@ class UserProfile(Base):
     societies = Column(ARRAY(String), nullable=True)
     sports = Column(ARRAY(String), nullable=True)
     gym_goer = Column(String, nullable=True)
+
+    # Visibility toggles
+    show_username = Column(Boolean, default=True)
+    show_age = Column(Boolean, default=True)
+    show_bio = Column(Boolean, default=True)
+    show_course = Column(Boolean, default=True)
+    show_accommodation = Column(Boolean, default=True)
+    show_university_year = Column(Boolean, default=True)
+    show_languages = Column(Boolean, default=True)
+    show_ethnicities = Column(Boolean, default=True)
+    show_home_area = Column(Boolean, default=True)
+    show_fun_fact = Column(Boolean, default=True)
+    show_societies = Column(Boolean, default=True)
+    show_sports = Column(Boolean, default=True)
+    show_gym_goer = Column(Boolean, default=True)
 

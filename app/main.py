@@ -181,7 +181,7 @@ def login_user(request: LoginRequest, db: Annotated[Session, Depends(get_db)]):
     display_name = "Placeholder Name"
     profile  = db.query(models.UserProfile).filter(models.UserProfile.user_id == user.id).first()
     if profile:
-        display_name = profile.nickname or profile.full_name or "Placeholder Name"
+        display_name = profile.username or profile.full_name or "Placeholder Name"
 
     jwt_token = create_jwt_token(data={
         "sub": str(user.id),

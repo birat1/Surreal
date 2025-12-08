@@ -6,7 +6,7 @@
             "profile": {
                 "full_name": "Sharmika Nirmalan",
                 "age": 21,
-                "nickname": "sharmix",
+                "username": "sharmix",
                 "bio": "Hey :)",
                 "fun_fact": "I have a strange talent for naming the model and year of any classic car I see.",
                 "course": "Chemistry",
@@ -26,7 +26,7 @@
             "profile": {
                 "full_name": "Test User",
                 "age": 20,
-                "nickname": "user",
+                "username": "user",
                 "bio": "Hey :)",
                 "fun_fact": "My preferred stress-reliever during deadlines is baking excessively complicated desserts.",
                 "course": "Computer Science",
@@ -46,7 +46,7 @@
             "profile": {
                 "full_name": "Manu M",
                 "age": 21,
-                "nickname": "manu",
+                "username": "manu",
                 "bio": "I love Surrey!",
                 "fun_fact": "I once participated in a week-long silent meditation retreat and survived without speaking a word.",
                 "course": "Computer Science",
@@ -66,7 +66,7 @@
             "profile": {
                 "full_name": "Athavi S",
                 "age": 19,
-                "nickname": "athavi",
+                "username": "athavi",
                 "bio": "welcome to my profile",
                 "fun_fact": "I can solve a Rubik's Cube in under two minutes.",
                 "course": "Games Design",
@@ -86,7 +86,7 @@
             "profile": {
                 "full_name": "Enisa S",
                 "age": 20,
-                "nickname": "enisa",
+                "username": "enisa",
                 "bio": "Hi",
                 "fun_fact": "I have a collection of over 100 unique tea blends from around the world.",
                 "course": "Economics and Finance",
@@ -106,7 +106,7 @@
             "profile": {
                 "full_name": "Birat A",
                 "age": 20,
-                "nickname": "birat",
+                "username": "birat",
                 "bio": "hey im birat",
                 "fun_fact": "I once hiked to the summit of Mount Kilimanjaro and camped overnight at the peak.",
                 "course": "Computer Science",
@@ -126,7 +126,7 @@
             "profile": {
                 "full_name": "Yuken R",
                 "age": 22,
-                "nickname": "yuken",
+                "username": "yuken",
                 "bio": "Hi I'm Yuken",
                 "fun_fact": "I can play the piano blindfolded.",
                 "course": "Chemistry",
@@ -146,7 +146,7 @@
             "profile": {
                 "full_name": "Test User 2",
                 "age": 19,
-                "nickname": "user 2",
+                "username": "user 2",
                 "bio": "Hi",
                 "fun_fact": "I have a knack for remembering random trivia about historical events.",
                 "course": "Games Design",
@@ -166,7 +166,7 @@
             "profile": {
                 "full_name": "Raymond Knight",
                 "age": 19,
-                "nickname": "raymond",
+                "username": "raymond",
                 "bio": "New to Surrey and excited to make friends :)",
                 "fun_fact": "I've rewatched The Office at least 9 times.",
                 "course": "Politics",
@@ -186,7 +186,7 @@
             "profile": {
                 "full_name": "Maria Lamb",
                 "age": 19,
-                "nickname": "maria",
+                "username": "maria",
                 "bio": "Always looking for study buddies! I'm doing Chemistry.",
                 "fun_fact": "I can solve a simple Rubik's Cube in under two minutes.",
                 "course": "Chemistry",
@@ -206,7 +206,7 @@
             "profile": {
                 "full_name": "Jonathan Sanchez",
                 "age": 22,
-                "nickname": "jonathan",
+                "username": "jonathan",
                 "bio": "Always looking for study buddies! I'm doing Chemistry.",
                 "fun_fact": "I'm a massive Formula 1 fan, even though I don't have a driver's license.",
                 "course": "Chemistry",
@@ -226,7 +226,7 @@
             "profile": {
                 "full_name": "Jacob Mahoney",
                 "age": 19,
-                "nickname": "jacob",
+                "username": "jacob",
                 "bio": "I love meeting new people and exploring campus. Studying Computer Science.",
                 "fun_fact": "I'm a massive Formula 1 fan, even though I don't have a driver's license.",
                 "course": "Computer Science",
@@ -246,7 +246,7 @@
             "profile": {
                 "full_name": "Anna Swanson",
                 "age": 23,
-                "nickname": "anna",
+                "username": "anna",
                 "bio": "You'll usually find me at the library or grabbing coffee on Stag Hill!",
                 "fun_fact": "I've rewatched The Office at least 9 times.",
                 "course": "Psychology",
@@ -266,7 +266,7 @@
             "profile": {
                 "full_name": "Melissa Jordan",
                 "age": 19,
-                "nickname": "melissa",
+                "username": "melissa",
                 "bio": "Hi! I'm Melissa, currently studying Psychology. Always up for a chat!",
                 "fun_fact": "I've rewatched The Office at least 9 times.",
                 "course": "Psychology",
@@ -286,7 +286,7 @@
             "profile": {
                 "full_name": "Michelle Stewart",
                 "age": 21,
-                "nickname": "michelle",
+                "username": "michelle",
                 "bio": "Balancing uni life and hobbies one day at a time!",
                 "fun_fact": "I played the Triangle in my school band.",
                 "course": "Computer Science",
@@ -306,7 +306,7 @@
             "profile": {
                 "full_name": "Derek Moreno",
                 "age": 23,
-                "nickname": "derek",
+                "username": "derek",
                 "bio": "New to Surrey and excited to make friends :)",
                 "fun_fact": "I can solve a simple Rubik's Cube in under two minutes.",
                 "course": "Physics",
@@ -326,7 +326,7 @@
             "profile": {
                 "full_name": "Jeffrey Bates",
                 "age": 22,
-                "nickname": "jeffrey",
+                "username": "jeffrey",
                 "bio": "Love gaming, movies, and late-night discussions. Doing History.",
                 "fun_fact": "I've rewatched The Office at least 9 times.",
                 "course": "History",
@@ -346,7 +346,7 @@
             "profile": {
                 "full_name": "Anita Simpson",
                 "age": 18,
-                "nickname": "anita",
+                "username": "anita",
                 "bio": "I love meeting new people and exploring campus. Studying Law.",
                 "fun_fact": "I have a pet cat who thinks they are a dog.",
                 "course": "Law",
@@ -366,7 +366,7 @@
             "profile": {
                 "full_name": "Shelby Nguyen",
                 "age": 20,
-                "nickname": "shelby",
+                "username": "shelby",
                 "bio": "Always looking for study buddies! I'm doing Politics.",
                 "fun_fact": "I have a pet cat who thinks they are a dog.",
                 "course": "Politics",
@@ -386,7 +386,7 @@
             "profile": {
                 "full_name": "Abigail Graham",
                 "age": 18,
-                "nickname": "abigail",
+                "username": "abigail",
                 "bio": "Always looking for study buddies! I'm doing Psychology.",
                 "fun_fact": "I can solve a simple Rubik's Cube in under two minutes.",
                 "course": "Psychology",
@@ -406,7 +406,7 @@
             "profile": {
                 "full_name": "Michelle Davis",
                 "age": 21,
-                "nickname": "michelle",
+                "username": "michelle",
                 "bio": "Hi! I'm Michelle, currently studying Physics. Always up for a chat!",
                 "fun_fact": "I'm a massive Formula 1 fan, even though I don't have a driver's license.",
                 "course": "Physics",
@@ -426,7 +426,7 @@
             "profile": {
                 "full_name": "John Cole",
                 "age": 19,
-                "nickname": "john",
+                "username": "john",
                 "bio": "Balancing uni life and hobbies one day at a time!",
                 "fun_fact": "I have a pet cat who thinks they are a dog.",
                 "course": "Economics",
@@ -446,7 +446,7 @@
             "profile": {
                 "full_name": "Jamie Decker",
                 "age": 20,
-                "nickname": "jamie",
+                "username": "jamie",
                 "bio": "Always looking for study buddies! I'm doing Politics.",
                 "fun_fact": "I've rewatched The Office at least 9 times.",
                 "course": "Politics",
@@ -466,7 +466,7 @@
             "profile": {
                 "full_name": "Rebecca Rodriguez",
                 "age": 18,
-                "nickname": "rebecca",
+                "username": "rebecca",
                 "bio": "You'll usually find me at the library or grabbing coffee on Stag Hill!",
                 "fun_fact": "I drink more coffee than any human should, mainly just for the warmth.",
                 "course": "Computer Science",
@@ -486,7 +486,7 @@
             "profile": {
                 "full_name": "Holly Rasmussen",
                 "age": 22,
-                "nickname": "holly",
+                "username": "holly",
                 "bio": "Hi! I'm Holly, currently studying Law. Always up for a chat!",
                 "fun_fact": "I can solve a simple Rubik's Cube in under two minutes.",
                 "course": "Law",
@@ -506,7 +506,7 @@
             "profile": {
                 "full_name": "Anne Hester",
                 "age": 22,
-                "nickname": "anne",
+                "username": "anne",
                 "bio": "Always looking for study buddies! I'm doing Computer Science.",
                 "fun_fact": "I've rewatched The Office at least 9 times.",
                 "course": "Computer Science",
@@ -526,7 +526,7 @@
             "profile": {
                 "full_name": "Kelly Rodriguez",
                 "age": 18,
-                "nickname": "kelly",
+                "username": "kelly",
                 "bio": "Always looking for study buddies! I'm doing Physics.",
                 "fun_fact": "I have a pet cat who thinks they are a dog.",
                 "course": "Physics",
@@ -546,7 +546,7 @@
             "profile": {
                 "full_name": "Allison Johnson",
                 "age": 22,
-                "nickname": "allison",
+                "username": "allison",
                 "bio": "Love gaming, movies, and late-night discussions. Doing Chemistry.",
                 "fun_fact": "I played the Triangle in my school band.",
                 "course": "Chemistry",
@@ -566,7 +566,7 @@
             "profile": {
                 "full_name": "Alan Powell",
                 "age": 20,
-                "nickname": "alan",
+                "username": "alan",
                 "bio": "Hi! I'm Alan, currently studying Physics. Always up for a chat!",
                 "fun_fact": "I played the Triangle in my school band.",
                 "course": "Physics",
@@ -586,7 +586,7 @@
             "profile": {
                 "full_name": "Emily Martin",
                 "age": 20,
-                "nickname": "emily",
+                "username": "emily",
                 "bio": "I love meeting new people and exploring campus. Studying Mathematics.",
                 "fun_fact": "I'm a massive Formula 1 fan, even though I don't have a driver's license.",
                 "course": "Mathematics",
@@ -606,7 +606,7 @@
             "profile": {
                 "full_name": "Christopher Livingston",
                 "age": 19,
-                "nickname": "christopher",
+                "username": "christopher",
                 "bio": "Hi! I'm Christopher, currently studying Economics. Always up for a chat!",
                 "fun_fact": "I played the Triangle in my school band.",
                 "course": "Economics",
@@ -626,7 +626,7 @@
             "profile": {
                 "full_name": "Tracey Williams",
                 "age": 21,
-                "nickname": "tracey",
+                "username": "tracey",
                 "bio": "You'll usually find me at the library or grabbing coffee on Stag Hill!",
                 "fun_fact": "I have a pet cat who thinks they are a dog.",
                 "course": "Physics",
@@ -646,7 +646,7 @@
             "profile": {
                 "full_name": "Sara Huynh",
                 "age": 22,
-                "nickname": "sara",
+                "username": "sara",
                 "bio": "I love meeting new people and exploring campus. Studying Law.",
                 "fun_fact": "I've rewatched The Office at least 9 times.",
                 "course": "Law",

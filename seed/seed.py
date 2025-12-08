@@ -42,7 +42,7 @@ def seed():
                     user_id=user.id,
                     full_name=user_p.get("full_name"),
                     age=user_p.get("age"),
-                    nickname=user_p.get("nickname"),
+                    username=user_p.get("username"),
                     bio=user_p.get("bio"),
                     fun_fact=user_p.get("fun_fact"),
                     course=user_p.get("course"),

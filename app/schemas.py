@@ -17,7 +17,7 @@ class LoginRequest(BaseModel):
 
 class UserProfileRequest(BaseModel):
     full_name: str
-    nickname: str
+    username: str
     age: int
     bio: str
     course: str
@@ -37,7 +37,7 @@ class UserProfileResponse(BaseModel):
     user_id: UUID
     full_name: str
     age: int | None = None
-    nickname: str | None = None
+    username: str
     bio: str
     course: str | None = None
     accommodation: str | None = None
@@ -51,7 +51,7 @@ class UserProfileResponse(BaseModel):
     gym_goer: bool | None = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class BatchIDRequest(BaseModel):
     user_ids: list[str]

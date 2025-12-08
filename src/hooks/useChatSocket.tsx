@@ -62,9 +62,9 @@ export function useChatSocket(
                         : data.sender_id;
                 const isIncoming = data.sender_id !== currentUserId;
 
-                console.log(
-                    `Msg from: ${chattingWith}, Current Ref: ${recipientRef.current}, Match? ${chattingWith === recipientRef.current}`
-                );
+                //console.log(
+                //`Msg from: ${chattingWith}, Current Ref: ${recipientRef.current}, Match? ${chattingWith === recipientRef.current}`
+                //);
 
                 // If the message is for the currently open chat, add it to messages immediately
                 if (chattingWith === recipientRef.current) {

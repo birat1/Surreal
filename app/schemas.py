@@ -1,3 +1,4 @@
+from uuid import UUID
 from pydantic import BaseModel, EmailStr
 
 class EmailRequest(BaseModel):
@@ -33,7 +34,7 @@ class UserProfileRequest(BaseModel):
 
 class UserProfileResponse(BaseModel):
     id: int
-    user_id: int
+    user_id: UUID
     full_name: str
     age: int | None = None
     nickname: str | None = None

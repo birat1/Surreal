@@ -108,27 +108,26 @@ export interface ConversationInboxProps {
   token: string;
 }
 
-
-
 export interface UserProfileFriendsFinder {
-  id: number,
-  user_id: number,
-  full_name: string,
-  age: number,
-  nickname?: string,
-  bio: string
-  course: string,
-  accommodation?: string,
-  university_year: string   
-  languages?: string[]   
-  ethnicities?: string[] 
-  home_area?: string
-  fun_fact?: string          
-  societies?: string[]    
-  sports?: string[]       
-  gym_goer?: boolean  
+  id: number;
+  user_id: number;
+  full_name: string;
+  age: number;
+  nickname?: string;
+  bio: string;
+  course: string;
+  accommodation?: string;
+  university_year: string;
+  languages?: string[];
+  ethnicities?: string[];
+  home_area?: string;
+  fun_fact?: string;
+  societies?: string[];
+  sports?: string[];
+  gym_goer?: boolean;
+  profile_picture: ProfilePicture;
 }
 
 export interface UserProfileFriendsFinderProps {
-  profile: UserProfileFriendsFinder  
+  profile: UserProfileFriendsFinder;
 }

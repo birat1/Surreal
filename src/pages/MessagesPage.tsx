@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import type { Message, Conversation } from '@/types/types';
 import MessageBubble from '@/components/MessageBubble';
 import ConversationInbox from '@/components/ConversationInbox';
 import { getConversationId } from '@/lib/utils';
 import { useAuth } from '@/context/AuthContext';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 const WS_URL = 'ws://localhost:8001/ws';
 const API_URL = 'http://localhost:8001';
@@ -12,16 +13,46 @@ export default function MessagesPage() {
     const { token, userId, userName } = useAuth();
     const currentUserId = userId || '';
 
+    const { conversationId } = useParams<{ conversationId: string }>();
+    const navigate = useNavigate();
+    const location = useLocation();
+
     // Data
     const [conversations, setConversations] = useState<Conversation[]>([]);
     const [messages, setMessages] = useState<Message[]>([]);
-    const [recipientId, setRecipientId] = useState('');
     const [inputMessage, setInputMessage] = useState('');
     const [isConnected, setIsConnected] = useState(false);
     const [connectionError, setConnectionError] = useState('');
 
+    const activeConversation = useMemo(() => {
+        if (!conversationId) return null;
+        
+        const found = conversations.find(c => c.id === conversationId || getConversationId(currentUserId, c.recipient_id) === conversationId);
+        if (found) return found;
+
+        const locState = location.state as { recipientId: string; recipientName?: string } | null;
+        if (locState?.recipientId) {
+            return {
+                id: conversationId,
+                recipient_id: locState.recipientId,
+                recipient_name: locState.recipientName,
+                last_message: '',
+                last_sender_id: '',
+                updated_at: new Date().toISOString(),
+            } as Conversation;
+        }
+
+        return null;
+    }, [conversationId, conversations, currentUserId, location.state]);
+
+    const recipientId = activeConversation?.recipient_id || '';
+
     // Refs
     const recipientRef = useRef('');
+    useEffect(() => {
+        recipientRef.current = recipientId;
+    }, [recipientId]);
+
     const socketRef = useRef<WebSocket | null>(null);
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -71,7 +102,6 @@ export default function MessagesPage() {
                     const existingName = existingIndex !== -1 ? prevConversations[existingIndex].recipient_name : undefined;
 
                     let display_name = existingName;
-
                     if (!display_name && isIncoming) {
                         console.log("WS Message Received:", data);
 
@@ -81,7 +111,7 @@ export default function MessagesPage() {
 
                     // Create the updated conversation object
                     const updatedConversation: Conversation = {
-                        id: existingIndex !== -1 ? prevConversations[existingIndex].id : Date.now().toString(),
+                        id: existingIndex !== -1 ? prevConversations[existingIndex].id : getConversationId(currentUserId, chattingWith),
                         recipient_id: chattingWith,
                         recipient_name: display_name,
                         last_message: data.body,
@@ -147,19 +177,24 @@ export default function MessagesPage() {
     // Fetch messages for selected conversation
     useEffect(() => {
         let active = true;
-        recipientRef.current = recipientId;
 
-        if (!recipientId || !token || !currentUserId) {
+        if (!conversationId || !token) {
+            setMessages([]);
             return;
         }
 
         // Fetch messages for this conversation
         const fetchMessages = async () => {
-            const conversationId = getConversationId(currentUserId, recipientId);
             try {
                 const res = await fetch(`${API_URL}/conversations/${conversationId}/messages`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
+
+                if (res.status === 403 || res.status === 404) {
+                    navigate('/messages');
+                    return;
+                }
+
                 if (res.ok) {
                     const data = await res.json();
                     if (active && Array.isArray(data)) {
@@ -176,7 +211,7 @@ export default function MessagesPage() {
         return () => {
             active = false;
         }
-    }, [recipientId, token, currentUserId]);
+    }, [conversationId, token, navigate]);
 
     // Send Message
     const handleSendMessage = useCallback(() => {
@@ -191,16 +226,23 @@ export default function MessagesPage() {
         setInputMessage('');
     }, [recipientId, inputMessage]);
 
-    const handleSelectConversation = (recipientId: string, recipientName?: string) => {
-        setRecipientId(recipientId);
+    const handleSelectConversation = (selectedRecipientId: string, recipientName?: string) => {
+        const targetConversationId = getConversationId(currentUserId, selectedRecipientId);
+
+        navigate(`/messages/${targetConversationId}`, { 
+            state: { 
+                recipientId: selectedRecipientId, 
+                recipientName: recipientName 
+            } 
+        });
 
         if (recipientName) {
             setConversations((prevConversations) => {
-                const exists = prevConversations.some(c => c.recipient_id === recipientId);
+                const exists = prevConversations.some(c => c.recipient_id === selectedRecipientId);
                 if (!exists) {
                     const newConversation: Conversation = {
-                        id: `temp-${Date.now()}`,
-                        recipient_id: recipientId,
+                        id: targetConversationId,
+                        recipient_id: selectedRecipientId,
                         recipient_name: recipientName,
                         last_message: '',
                         last_sender_id: '',
@@ -213,7 +255,6 @@ export default function MessagesPage() {
         }
     };
 
-    const activeConversation = conversations.find(c => c.recipient_id === recipientId);
     const activeRecipientName = activeConversation?.recipient_name || activeConversation?.recipient_id.slice(0, 8) + '...' || 'Unknown';
 
     // Chat UI

@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { Card, CardHeader, CardContent } from "./ui/card";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import { AuthContext } from "@/context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 
 
 const LoginPage: React.FC = () => {
@@ -13,7 +12,7 @@ const LoginPage: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const { login } = useContext(AuthContext);
+  const { login } = useAuth();
 
   const handleLogin = async () => {
     try {

@@ -1,25 +1,25 @@
-import Home from "@/components/Home";
-import LoginPage from "@/components/LoginPage";
+import Home from "@/pages/Home";
+import LoginPage from "@/pages/LoginPage";
 import ProtectedRoute from "@/routes/ProtectedRoute";
-import SignUpPage from "@/components/SignUpPage";
-import UserProfilePage from "@/components/UserProfileSetupPage";
-import FriendsFinderPage from "@/components/FriendsFinderPage";
-import MessagesPage from "@/components/MessagesPage";
-import EventsAndSocietiesPage from "@/components/EventsAndSocietiesPage";
+import SignUpPage from "@/pages/SignUpPage";
+import UserProfilePage from "@/pages/UserProfileSetupPage";
+import FriendsFinderPage from "@/pages/FriendsFinderPage";
+import MessagesPage from "@/pages/MessagesPage";
+import EventsAndSocietiesPage from "@/pages/EventsAndSocietiesPage";
 import Navbar from "@/components/Navbar";
 
 import "./index.css";
 
 import { Routes, Route, BrowserRouter } from "react-router-dom";
-import RequireLoggedOut from "./routes/RequireLoggedOut";
-import { AuthProvider } from "./context/AuthContext";
+import RequireLoggedOut from "@/routes/RequireLoggedOut";
+import { AuthProvider } from "@/context/AuthContext";
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Navbar />
-        <main className="pt-20">
+        <main className="pt-16">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route
@@ -58,7 +58,17 @@ function App() {
             <Route
               path="/messages"
               element={
-                <MessagesPage />
+                <ProtectedRoute>
+                  <MessagesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/messages/:conversationId"
+              element={
+                <ProtectedRoute>
+                  <MessagesPage />
+                </ProtectedRoute>
               }
             />
             <Route

@@ -11,7 +11,7 @@ import Navbar from "@/components/Navbar";
 
 import "./index.css";
 
-import { Routes, Route, BrowserRouter, useLocation } from "react-router-dom";
+import { Routes, Route, BrowserRouter, useLocation, Navigate } from "react-router-dom";
 import RequireLoggedOut from "@/routes/RequireLoggedOut";
 import { AuthProvider } from "@/context/AuthContext";
 
@@ -26,7 +26,7 @@ function AppLayout() {
     <>
       {!shouldHideNavbar && <Navbar />}
 
-      <main className="pt-16">
+      <main className={shouldHideNavbar ? "" : "pt-16" }>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route
@@ -84,7 +84,7 @@ function AppLayout() {
           />
 
           <Route path="/404" element={<NotFoundPage />} />
-          <Route path="*" element={<NotFoundPage />} />
+          <Route path="*" element={<Navigate to="/404" replace/>} />
         </Routes>
       </main>
     </>

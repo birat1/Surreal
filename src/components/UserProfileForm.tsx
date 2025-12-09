@@ -90,17 +90,21 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
         }
     };
 
-  return (
-    <Card className="w-full h-full shadow-lg p-4 bg-white overflow-y-auto border border-blue-700">
-      <CardHeader>
-        <h2 className="text-blue-600 text-2xl font-bold text-center">
-          Set Up Your Profile
-        </h2>
-        <p className="text-blue-700 text-center text-sm mt-2">
-          Welcome to Surreal! Don't worry — you can change these later.
-        </p>
-        <p className="text-blue-700 font-bold">Use the toggle under the optional fields to decide which fields you want others to be able to view  </p>
-      </CardHeader>
+    return (
+        <Card className="w-full h-full shadow-lg p-4 bg-white overflow-y-auto border border-blue-700">
+            <CardHeader>
+                <h2 className="text-blue-600 text-2xl font-bold text-center">
+                    Set Up Your Profile
+                </h2>
+                <p className="text-blue-700 text-center text-sm mt-2">
+                    Welcome to Surreal! Don't worry — you can change these
+                    later.
+                </p>
+                <p className="text-blue-700 font-bold">
+                    Use the toggle under the optional fields to decide which
+                    fields you want others to be able to view{' '}
+                </p>
+            </CardHeader>
 
             <CardContent className="flex flex-col gap-3">
                 <div className="grid grid-cols-2 gap-4">
@@ -151,16 +155,15 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
                         className="border-blue-300 text-blue-600 focus:ring-blue-500"
                     />
 
-          <div className="flex flex-col gap-1">
-            <Input
-              name="username"
-              placeholder="Username"
-              value={formData.username}
-              onChange={handleChange}
-              className="border-blue-300 text-blue-600 focus:ring-blue-500"
-            />
-
-          </div>
+                    <div className="flex flex-col gap-1">
+                        <Input
+                            name="username"
+                            placeholder="Username"
+                            value={formData.username}
+                            onChange={handleChange}
+                            className="border-blue-300 text-blue-600 focus:ring-blue-500"
+                        />
+                    </div>
 
                     {/*Course */}
                     <Select

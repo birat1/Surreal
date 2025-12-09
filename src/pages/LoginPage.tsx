@@ -1,16 +1,17 @@
-import { useState } from "react";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/context/AuthContext";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { useAuth } from '@/context/AuthContext';
 
 const LoginPage: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-  const navigate = useNavigate();
-  const { login } = useAuth();
+    const navigate = useNavigate();
+    const { login } = useAuth();
 
     const handleLogin = async () => {
         try {
@@ -44,33 +45,33 @@ const LoginPage: React.FC = () => {
                     </h2>
                 </CardHeader>
 
-        <CardContent>
-          <form
-            className="flex flex-col gap-4"
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleLogin();
-            }}
-          >
-            <Input
-              placeholder="Enter your Surrey email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+                <CardContent>
+                    <form
+                        className="flex flex-col gap-4"
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            handleLogin();
+                        }}
+                    >
+                        <Input
+                            placeholder="Enter your Surrey email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
 
-            <Input
-              type="password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+                        <Input
+                            type="password"
+                            placeholder="Enter your password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
 
-            <Button type="submit">Login</Button>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
-  );
+                        <Button type="submit">Login</Button>
+                    </form>
+                </CardContent>
+            </Card>
+        </div>
+    );
 };
 
 export default LoginPage;

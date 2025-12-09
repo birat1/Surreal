@@ -4,7 +4,7 @@ import logging
 import os
 
 import httpx
-from fastapi import APIRouter, Query, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from pydantic import ValidationError
 
 from app.connection_manager import manager
@@ -35,8 +35,10 @@ async def fetch_names_from_auth_service(user_ids: list[str]) -> dict[str, str]:
     return {}
 
 @router.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket, token: str = Query(...)) -> None:
+async def websocket_endpoint(websocket: WebSocket) -> None:
     # Authenicate via JWT
+    token = websocket.cookies.get("access_token")
+
     user_id = await get_ws_user_id(token)
 
     if user_id is None:

@@ -1,17 +1,20 @@
 import os
 from uuid import UUID
 
-from fastapi import Depends, HTTPException, Query
-from fastapi.security import OAuth2PasswordBearer
+from fastapi import HTTPException, Request
 from jose import JWTError, jwt
 
 SECRET_KEY = os.getenv("JWT_SECRET")
 ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-def get_current_user(token: str = Depends(oauth2_scheme)) -> str:
+def get_current_user(request: Request) -> str:
     """Validates JWT and returns UserID as string"""
+    token = request.cookies.get("access_token")
+
+    if not token:
+        print("DEBUG: No token found in cookies")
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id: str = payload.get("sub")
@@ -26,8 +29,11 @@ def get_current_user(token: str = Depends(oauth2_scheme)) -> str:
         print(f"DEBUG: Token value - {token[:10]}...")
         raise HTTPException(status_code=401, detail="Could not validate credentials") from e
 
-async def get_ws_user_id(token: str = Query(...)) -> UUID | None:
+async def get_ws_user_id(token: str | None) -> UUID | None:
     """Validates JWT for WebSocket and returns UserID"""
+    if not token:
+        return None
+
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id = payload.get("sub")

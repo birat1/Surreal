@@ -3,7 +3,7 @@ import secrets
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
-from fastapi import Depends, FastAPI, HTTPException, Request, status
+from fastapi import Depends, FastAPI, HTTPException, Request, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 from passlib.context import CryptContext
@@ -160,10 +160,22 @@ def verify_code(request: VerifyCodeRequest, db: Annotated[Session, Depends(get_d
         "name": "New User", # default name until they set up profile
     })
 
-    return {"message": "Email verified successfully",
-            "jwt_token": jwt_token,
-            "token_type": "bearer",
-            }
+    response = JSONResponse(content={
+        "message": "Email verified successfully",
+        "user_id": str(new_user.id),
+        "user_name": "New User",
+    })
+
+    response.set_cookie(
+        key="access_token",
+        value=jwt_token,
+        httponly=True,
+        secure=False,  # Set to True in production with HTTPS
+        samesite="lax",
+        max_age=3600,
+    )
+
+    return response
 
 
 # This method is to handle a user login (checks if the email exists and the entered password (hashed) matches that in the database)
@@ -178,31 +190,56 @@ def login_user(request: LoginRequest, db: Annotated[Session, Depends(get_db)]):
     if not pwd_context.verify(request.password, user.password):
         raise HTTPException(status_code=401, detail="Incorrect password")
 
+    # Get profile info
     display_name = "Placeholder"
     profile  = db.query(models.UserProfile).filter(models.UserProfile.user_id == user.id).first()
     if profile:
         display_name = profile.username or profile.full_name or "Placeholder"
 
+    # Generate JWT token
     jwt_token = create_jwt_token(data={
         "sub": str(user.id),
         "email": user.email_address,
         "name": display_name,
     })
+
+    # Create response
+    response = JSONResponse(content={
+        "message": "Login successful",
+        "user_id": str(user.id),
+        "user_name": display_name,
+    })
+
+    # Set cookie
+    response.set_cookie(
+        key="access_token",
+        value=jwt_token,
+        httponly=True,
+        secure=False,  # Set to True in production with HTTPS
+        samesite="lax",
+        max_age=3600,
+    )
+
     # print(f"User {request.email} logged in successfully w jwt token: {jwt_token}")
 
-    return {"jwt_token": jwt_token, "token_type": "bearer"}
+    return response
+
+@app.post("/logout")
+def logout(response: Response):
+    response.delete_cookie(key="access_token")
+    return {"message": "Logged out successfully"}
 
 
-def get_matching_user(request: Request, db: Annotated[Session, Depends(get_db)]):
-    auth_header = request.headers.get("Authorization")
-    if not auth_header or not auth_header.startswith("Bearer "):
+def get_current_user(request: Request, db: Annotated[Session, Depends(get_db)]):
+    token = request.cookies.get("access_token")
+
+    if not token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Missing or invalid Authorization header",
+            detail="Not authenticated",
         )
 
-    token = auth_header.split(" ")[1]
-    user_id = verify_jwt_token(token)  # this now raises 401 if token invalid
+    user_id = verify_jwt_token(token)
 
     user = db.query(models.User).filter(models.User.id == user_id).first()
     if not user:
@@ -216,10 +253,10 @@ def get_matching_user(request: Request, db: Annotated[Session, Depends(get_db)])
 
 # This method handles submission of the original user profile setup (basically just takes the data from the frontend and stores it in the database)
 @app.post("/user-profile-setup")
-def setup_user_profile(request: UserProfileRequest, db: Annotated[Session, Depends(get_db)], matching_user: Annotated[User, Depends(get_matching_user)]):
+def setup_user_profile(request: UserProfileRequest, db: Annotated[Session, Depends(get_db)], current_user: Annotated[User, Depends(get_current_user)]):
     try:
         new_user_profile = models.UserProfile(
-            user_id = matching_user.id,
+            user_id = current_user.id,
             full_name = request.full_name,
             age = request.age,
             bio=request.bio,
@@ -241,8 +278,8 @@ def setup_user_profile(request: UserProfileRequest, db: Annotated[Session, Depen
         db.refresh(new_user_profile)
 
         new_token = create_jwt_token(data={
-            "sub": str(matching_user.id),
-            "email": matching_user.email_address,
+            "sub": str(current_user.id),
+            "email": current_user.email_address,
             "name": new_user_profile.username,
         })
 
@@ -260,9 +297,7 @@ def setup_user_profile(request: UserProfileRequest, db: Annotated[Session, Depen
 # This gets user profiles from the db and is used to display them on the friends-finder page.
 @app.get("/user-profiles", response_model=list[UserProfileResponse])
 def list_user_profiles(db: Annotated[Session, Depends(get_db)]):
-    """
-    Return a list of all user profiles.
-    """
+    """Return a list of all user profiles."""
     try:
         profiles = db.query(models.UserProfile).all()
         return profiles
@@ -288,11 +323,14 @@ def retrieve_users(payload: BatchIDRequest, db: Annotated[Session, Depends(get_d
     return {str(p.user_id): p.username for p in profiles}
 
 @app.get("/validate-token")
-def validate_token(request: Request, db: Annotated[Session, Depends(get_db)]):
-    return get_matching_user(request, db)
+def validate_token(current_user: Annotated[User, Depends(get_current_user)]):
+    return {
+        "user_id": str(current_user.id),
+        "user_name": current_user.user_profile.username if current_user.user_profile else "Unknown",
+    }
 
 @app.get("/current-user-profile")   # consider removing this (come back to it)
-def get_current_user_profile_details(current_user: User = Depends(get_matching_user)):
+def get_current_user_profile_details(current_user: User = Depends(get_current_user)):
 
     p = current_user.user_profile
 

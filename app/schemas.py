@@ -48,7 +48,7 @@ class UserProfileResponse(BaseModel):
     fun_fact: str | None = None
     societies: list[str] | None = None
     sports: list[str] | None = None
-    gym_goer: bool | None = None
+    gym_goer: str | None = None
 
     class Config:
         from_attributes = True

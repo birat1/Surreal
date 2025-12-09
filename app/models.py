@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import ARRAY, UUID
+from sqlalchemy.orm import relationship
 
 from app.database import Base
 
@@ -16,6 +17,8 @@ class User(Base):
     email_address = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+    user_profile = relationship("UserProfile", back_populates="user", uselist=False)
 
 
 class EmailVerificationCode(Base):      # The temporary verification code is stored in this table
@@ -67,3 +70,4 @@ class UserProfile(Base):
     show_sports = Column(Boolean, default=True)
     show_gym_goer = Column(Boolean, default=True)
 
+    user = relationship("User", back_populates="user_profile")

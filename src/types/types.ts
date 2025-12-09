@@ -108,6 +108,30 @@ export interface ConversationInboxProps {
     isAuthenticated: boolean;
 }
 
+<<<<<<< HEAD
+export interface UserProfileFriendsFinder {
+  id: number;
+  user_id: number;
+  full_name: string;
+  age: number;
+  nickname?: string;
+  bio: string;
+  course: string;
+  accommodation?: string;
+  university_year: string;
+  languages?: string[];
+  ethnicities?: string[];
+  home_area?: string;
+  fun_fact?: string;
+  societies?: string[];
+  sports?: string[];
+  gym_goer?: boolean;
+  profile_picture: ProfilePicture;
+}
+
+export interface UserProfileFriendsFinderProps {
+  profile: UserProfileFriendsFinder;
+=======
 export interface ChatInputProps {
     onSend: (message: string) => void;
     disabled?: boolean;
@@ -134,4 +158,5 @@ export interface UserProfileFriendsFinder {
 
 export interface UserProfileFriendsFinderProps {
     profile: UserProfileFriendsFinder;
+>>>>>>> ef528d6d76084c1effca5282d178ea61fd79eafd
 }

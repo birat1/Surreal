@@ -84,66 +84,86 @@ const SignUpPage = () => {
                     </h2>
                 </CardHeader>
 
-                <CardContent className="flex flex-col gap-4">
-                    {step === 'signup' && (
-                        <div className="flex flex-col gap-4">
-                            {error && (
-                                <div className="p-3 bg-red-100 border border-red-300 text-red-700 rounded-lg">
-                                    {error}
-                                    {error.includes('already exists') && ( // display this box specifically if the error is the 'user already exists' error
-                                        <button
-                                            onClick={() => navigate('/login')}
-                                            className="block mt-2 text-blue-600 underline font-medium cursor-pointer"
-                                        >
-                                            Log in instead
-                                        </button>
-                                    )}
-                                </div>
-                            )}
-                            <Input
-                                placeholder="Enter your Surrey email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                            <Input
-                                type="password"
-                                placeholder="Choose a password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-                            <Button onClick={handleSendCode} disabled={loading}>
-                                {loading ? 'Sending' : 'Sign Up'}
-                            </Button>
-                        </div>
-                    )}
+        <CardContent className="flex flex-col gap-4">
 
-                    {step === 'verify' && (
-                        <div className="flex flex-col gap-4">
-                            <p className="text-center text-gray-600">
-                                We sent a code to{' '}
-                                <span className="font-semibold">{email}</span>
-                            </p>
-                            <Input
-                                placeholder="Enter 6-digit code"
-                                value={code}
-                                onChange={(e) => setCode(e.target.value)}
-                            />
-                            <Button onClick={handleVerifyCode}>Verify</Button>
-                            <p className="text-sm text-gray-500 text-center">
-                                Didn't get the code?{' '}
-                                <span
-                                    onClick={handleSendCode}
-                                    className="text-blue-600 hover:underline cursor-pointer"
-                                >
-                                    Resend
-                                </span>
-                            </p>
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
-        </div>
-    );
+          {step === "signup" && (
+            <form
+              className="flex flex-col gap-4"
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSendCode();
+              }}
+            >
+              {error && (
+                <div className="p-3 bg-red-100 border border-red-300 text-red-700 rounded-lg">
+                  {error}
+                  {error.includes("already exists") && (
+                    <button
+                      onClick={() => navigate("/login")}
+                      className="block mt-2 text-blue-600 underline font-medium cursor-pointer"
+                    >
+                      Log in instead
+                    </button>
+                  )}
+                </div>
+              )}
+
+              <Input
+                placeholder="Enter your Surrey email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+
+              <Input
+                type="password"
+                placeholder="Choose a password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+
+              <Button type="submit" disabled={loading}>
+                {loading ? "Sending" : "Sign Up"}
+              </Button>
+            </form>
+          )}
+
+         
+          {step === "verify" && (
+            <form
+              className="flex flex-col gap-4"
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleVerifyCode();
+              }}
+            >
+              <p className="text-center text-gray-600">
+                We sent a code to <span className="font-semibold">{email}</span>
+              </p>
+
+              <Input
+                placeholder="Enter 6-digit code"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+              />
+
+              <Button type="submit">Verify</Button>
+
+              <p className="text-sm text-gray-500 text-center">
+                Didn't get the code?{" "}
+                <span
+                  onClick={handleSendCode}
+                  className="text-blue-600 hover:underline cursor-pointer"
+                >
+                  Resend
+                </span>
+              </p>
+            </form>
+          )}
+
+        </CardContent>
+      </Card>
+    </div>
+  );
 };
 
 export default SignUpPage;

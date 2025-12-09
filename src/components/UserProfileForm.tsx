@@ -33,7 +33,7 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
     setFormData,
 }) => {
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const { login, userId } = useAuth();
     const [loading, setLoading] = useState(false);
 
     const fileInput = useRef<HTMLInputElement>(null);
@@ -60,37 +60,20 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
     };
 
     const handleSubmit = async () => {
-        const token = localStorage.getItem('jwt_token');
-        if (!token) {
-            alert('You must be logged in to set up your profile.');
-            navigate('/login');
-            return;
-        }
-
         setLoading(true);
         try {
-            const res = await fetch(
-                'http://127.0.0.1:8000/user-profile-setup',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify(formData),
-                }
-            );
+            const res = await fetch('/auth/user-profile-setup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify(formData),
+            });
 
             if (res.ok) {
-                const data = await res.json();
-
-                if (data.jwt_token) {
-                    console.log('Logging in with new token from profile setup');
-                    login(data.jwt_token);
-                } else {
-                    console.warn(
-                        'Backend did not return a new token. Username will not update until relogin.'
-                    );
+                if (userId && formData.username) {
+                    login(userId, formData.username);
                 }
 
                 alert('Profile created successfully!');

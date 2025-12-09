@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 import type { ConversationInboxProps } from '@/types/types';
 
 export default function ConversationInbox({
@@ -7,7 +8,7 @@ export default function ConversationInbox({
     currentUserId,
     currentUserName,
     onSelect,
-    token,
+    isAuthenticated,
 }: ConversationInboxProps) {
     const [isSearching, setIsSearching] = useState(false);
 
@@ -20,9 +21,9 @@ export default function ConversationInbox({
         setIsSearching(true);
         try {
             const response = await fetch(
-                `http://localhost:8000/users/search?username=${username}`,
+                `/auth/users/search?username=${username}`,
                 {
-                    headers: { Authorization: `Bearer ${token}` },
+                    credentials: 'include',
                 }
             );
 

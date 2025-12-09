@@ -105,7 +105,7 @@ export interface ConversationInboxProps {
     currentUserId: string;
     currentUserName: string;
     onSelect: (recipientId: string, recipientName?: string) => void;
-    token: string;
+    isAuthenticated: boolean;
 }
 
 export interface ChatInputProps {

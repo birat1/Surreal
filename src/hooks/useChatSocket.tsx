@@ -5,7 +5,7 @@ import type { Conversation, Message } from '@/types/types';
 
 export function useChatSocket(
     url: string,
-    token: string | null,
+    isAuthenticated: boolean,
     currentUserId: string,
     recipientId: string,
     setMessages: React.Dispatch<React.SetStateAction<Message[]>>,
@@ -25,9 +25,9 @@ export function useChatSocket(
     }, []);
 
     useEffect(() => {
-        if (!token || !currentUserId) return;
+        if (!isAuthenticated || !currentUserId) return;
 
-        const ws = new WebSocket(`${url}?token=${token}`);
+        const ws = new WebSocket(url);
 
         ws.onopen = () => {
             console.log('Connected to WebSocket as:', currentUserId);
@@ -123,11 +123,9 @@ export function useChatSocket(
         socketRef.current = ws;
 
         return () => {
-            if (ws.readyState === WebSocket.OPEN) {
-                ws.close();
-            }
+            ws.close();
         };
-    }, [url, token, currentUserId, setMessages, setConversations]);
+    }, [url, isAuthenticated, currentUserId, setMessages, setConversations]);
 
     const sendMessage = useCallback((recipient: string, body: string) => {
         if (socketRef.current?.readyState === WebSocket.OPEN) {

@@ -9,11 +9,13 @@ import { useChatSocket } from '@/hooks/useChatSocket';
 import { getConversationId } from '@/lib/utils';
 import type { Message, Conversation } from '@/types/types';
 
-const WS_URL = 'ws://localhost:8001/ws';
-const API_URL = 'http://localhost:8001';
+const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+const WS_URL = `${protocol}://${window.location.host}/messaging/ws`;
+
+const API_URL = '/messaging';
 
 export default function MessagesPage() {
-    const { token, userId, userName } = useAuth();
+    const { isAuthenticated, userId, userName } = useAuth();
     const currentUserId = userId || '';
     const { conversationId } = useParams<{ conversationId: string }>();
     const navigate = useNavigate();
@@ -57,7 +59,7 @@ export default function MessagesPage() {
 
     const { sendMessage } = useChatSocket(
         WS_URL,
-        token,
+        isAuthenticated,
         currentUserId,
         recipientId,
         setMessages,
@@ -71,12 +73,12 @@ export default function MessagesPage() {
 
     // Fetch conversations (Inbox)
     useEffect(() => {
-        if (!token) return;
+        if (!isAuthenticated) return;
 
         const fetchConversations = async () => {
             try {
                 const res = await fetch(`${API_URL}/inbox`, {
-                    headers: { Authorization: `Bearer ${token}` },
+                    credentials: 'include',
                 });
                 if (res.ok) {
                     const data = await res.json();
@@ -89,13 +91,13 @@ export default function MessagesPage() {
             }
         };
         fetchConversations();
-    }, [token]);
+    }, [isAuthenticated]);
 
     // Fetch messages for selected conversation
     useEffect(() => {
         let active = true;
 
-        if (!conversationId || !token) {
+        if (!conversationId || !isAuthenticated) {
             setMessages([]);
             return;
         }
@@ -106,7 +108,7 @@ export default function MessagesPage() {
                 const res = await fetch(
                     `${API_URL}/conversations/${conversationId}/messages`,
                     {
-                        headers: { Authorization: `Bearer ${token}` },
+                        credentials: 'include',
                     }
                 );
 
@@ -131,7 +133,7 @@ export default function MessagesPage() {
         return () => {
             active = false;
         };
-    }, [conversationId, token, navigate]);
+    }, [conversationId, isAuthenticated, navigate]);
 
     // Send Message
     const handleSendMessage = useCallback(
@@ -190,7 +192,7 @@ export default function MessagesPage() {
                     currentUserId={currentUserId}
                     currentUserName={userName || 'Me'}
                     onSelect={handleSelectConversation}
-                    token={token || ''}
+                    isAuthenticated={isAuthenticated}
                 />
 
                 {/* Chat Area */}

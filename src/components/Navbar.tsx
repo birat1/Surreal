@@ -1,11 +1,13 @@
-import { Users } from 'lucide-react';
+import { Users, Inbox } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@/context/AuthContext';
 
 import surreyLogo from '../assets/surrey_logo.jpg';
 
+import NotificationBell from './NotificationBell';
 import { Button } from './ui/button';
+
 
 const Navbar: React.FC = () => {
     const { isAuthenticated, logout } = useAuth();
@@ -34,10 +36,17 @@ const Navbar: React.FC = () => {
                     <div className="flex items-center gap-6">
                         <Link
                             to="/friends-finder"
-                            className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition"
+                            className="flex items-center gap-2 p-1.5 px-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200 transition"
                         >
-                            <Users className="w-5 h-5" />
+                            <Users/>
                             <span>Friends Finder</span>
+                        </Link>
+                        <Link
+                            to="/messages"
+                            className="flex items-center gap-2 p-1.5 px-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200 transition"
+                        >
+                            <Inbox/>
+                            <span>Inbox</span>
                         </Link>
                     </div>
                 )}
@@ -46,12 +55,15 @@ const Navbar: React.FC = () => {
                     <div className="flex items-center gap-4">
                         {isAuthenticated ? (
                             // If logged in → show Logout
-                            <Button
-                                variant="destructive"
-                                onClick={handleLogout}
-                            >
-                                Logout
-                            </Button>
+                            <>
+                                <NotificationBell />
+                                <Button
+                                    variant="destructive"
+                                    onClick={handleLogout}
+                                >
+                                    Logout
+                                </Button>
+                            </>
                         ) : (
                             // If NOT logged in => show Login + Signup
                             <>

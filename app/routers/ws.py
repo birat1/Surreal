@@ -2,6 +2,7 @@ import contextlib
 import datetime
 import logging
 import os
+from uuid import UUID
 
 import httpx
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
@@ -53,6 +54,33 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
         while True:
             # Receive and validate incoming message
             raw_data = await websocket.receive_json()
+
+            # Check for read receipt
+            if raw_data.get("type") == "read_receipt":
+                try:
+                    # ID of the sender whose message has been read
+                    sender_id_message = raw_data["sender_id"]
+
+                    cid = conv_id(user_id_str, sender_id_message)
+
+                    curr_time = datetime.datetime.now(datetime.timezone.utc)
+
+                    # Update all messages sent to user_id from sender_id as read
+                    await Message.find({
+                        "conversation_id": cid,
+                        "recipient_id": UUID(user_id_str),
+                        "read_at": None,
+                    }).update({"$set": {"read_at": curr_time}})
+
+                    # Notify the original sender about the read receipt
+                    await manager.send_to_user(sender_id_message, {
+                        "type": "read_receipt",
+                        "reader_id": user_id_str,
+                        "read_at": str(curr_time),
+                    })
+                except KeyError:
+                    pass
+                continue
 
             try:
                 data = MessageCreate(**raw_data)

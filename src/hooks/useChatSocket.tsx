@@ -24,6 +24,14 @@ export function useChatSocket(
         };
     }, []);
 
+    const sendReadReceipt = useCallback((senderId: string) => {
+        if (socketRef.current?.readyState === WebSocket.OPEN) {
+            socketRef.current.send(
+                JSON.stringify({ type: 'read_receipt', sender_id: senderId })
+            );
+        }
+    }, []);
+
     useEffect(() => {
         if (!isAuthenticated || !currentUserId) return;
 
@@ -56,6 +64,21 @@ export function useChatSocket(
                     return;
                 }
 
+                if (data.type === 'read_receipt') {
+                    setMessages((prevMessages) =>
+                        prevMessages.map((msg) => {
+                            if (
+                                msg.recipient_id === data.reader_id &&
+                                !msg.read_at
+                            ) {
+                                return { ...msg, read_at: data.read_at };
+                            }
+                            return msg;
+                        })
+                    );
+                    return;
+                }
+
                 const chattingWith =
                     data.sender_id === currentUserId
                         ? data.recipient_id
@@ -69,6 +92,10 @@ export function useChatSocket(
                 // If the message is for the currently open chat, add it to messages immediately
                 if (chattingWith === recipientRef.current) {
                     setMessages((prevMessages) => [...prevMessages, data]);
+
+                    if (isIncoming) {
+                        sendReadReceipt(data.sender_id);
+                    }
                 }
 
                 // Update conversations inbox
@@ -125,7 +152,14 @@ export function useChatSocket(
         return () => {
             ws.close();
         };
-    }, [url, isAuthenticated, currentUserId, setMessages, setConversations]);
+    }, [
+        url,
+        isAuthenticated,
+        currentUserId,
+        setMessages,
+        setConversations,
+        sendReadReceipt,
+    ]);
 
     const sendMessage = useCallback((recipient: string, body: string) => {
         if (socketRef.current?.readyState === WebSocket.OPEN) {
@@ -135,5 +169,5 @@ export function useChatSocket(
         }
     }, []);
 
-    return { sendMessage };
+    return { sendMessage, sendReadReceipt };
 }

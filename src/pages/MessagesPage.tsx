@@ -57,7 +57,7 @@ export default function MessagesPage() {
     const recipientId = activeConversation?.recipient_id || '';
     const activeRecipientName = activeConversation?.recipient_name || 'Unknown';
 
-    const { sendMessage } = useChatSocket(
+    const { sendMessage, sendReadReceipt } = useChatSocket(
         WS_URL,
         isAuthenticated,
         currentUserId,
@@ -70,6 +70,12 @@ export default function MessagesPage() {
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
+
+    useEffect(() => {
+        if (recipientId && isAuthenticated) {
+            sendReadReceipt(recipientId);
+        }
+    }, [recipientId, isAuthenticated, sendReadReceipt]);
 
     // Fetch conversations (Inbox)
     useEffect(() => {

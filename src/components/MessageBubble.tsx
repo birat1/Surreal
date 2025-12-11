@@ -10,6 +10,16 @@ const MessageBubble = memo(({ msg, isMe, senderName }: MessageBubbleProps) => {
           })
         : '';
 
+    const getStatusIcon = () => {
+        if (!isMe) return null;
+
+        if (msg.read_at) {
+            return <span className="text-blue-500 font-bold ml-1">✓✓</span>;
+        }
+
+        return <span className="text-gray-500 font-bold ml-1">✓</span>;
+    };
+
     return (
         <div className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
             <div
@@ -24,6 +34,7 @@ const MessageBubble = memo(({ msg, isMe, senderName }: MessageBubbleProps) => {
             <div className="text-xs text-gray-400 mt-1 px-1 flex gap-2">
                 <span>{isMe ? 'You' : senderName}</span>
                 {timestamp && <span>{timestamp}</span>}
+                {getStatusIcon()}
             </div>
         </div>
     );

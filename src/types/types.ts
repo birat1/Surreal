@@ -82,6 +82,7 @@ export interface Message {
     body: string;
     type?: string;
     created_at?: string;
+    read_at?: string | null;
 }
 
 export interface MessageBubbleProps {

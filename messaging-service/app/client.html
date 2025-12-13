@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Tester</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .box { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; }
+        #messages { height: 300px; overflow-y: scroll; border: 1px solid #333; padding: 10px; background: #f9f9f9; }
+        .left { color: blue; text-align: left; }
+        .right { color: green; text-align: right; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h2>WebSocket Chat Tester</h2>
+    
+    <div class="box">
+        <label>Login as:</label>
+        <input type="text" id="username" value="alice" placeholder="Enter username">
+        <button onclick="connect()">Connect</button>
+        <span id="status">Disconnected</span>
+    </div>
+
+    <div class="box">
+        <label>To:</label>
+        <input type="text" id="recipient" value="bob">
+        <label>Message:</label>
+        <input type="text" id="message" placeholder="Hello...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <div id="messages"></div>
+
+    <script>
+        let ws = null;
+        
+        function connect() {
+            const username = document.getElementById("username").value;
+            const url = `ws://localhost:8001/ws/${username}`;
+            
+            ws = new WebSocket(url);
+
+            ws.onopen = () => {
+                document.getElementById("status").innerText = "Connected as " + username;
+                document.getElementById("status").style.color = "green";
+            };
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                const msgDiv = document.getElementById("messages");
+                
+                if (data.type === "error") {
+                    msgDiv.innerHTML += `<div class="error">Error: ${data.message || JSON.stringify(data.details)}</div>`;
+                } else {
+                    const align = data.sender === username ? "right" : "left";
+                    msgDiv.innerHTML += `<div class="${align}"><b>${data.sender}:</b> ${data.body}</div>`;
+                }
+                msgDiv.scrollTop = msgDiv.scrollHeight; 
+            };
+
+            ws.onclose = (event) => {
+                document.getElementById("status").innerText = `Disconnected (Code: ${event.code})`;
+                document.getElementById("status").style.color = "red";
+            };
+        }
+
+        function sendMessage() {
+            if (!ws) return alert("Not connected!");
+            const recipient = document.getElementById("recipient").value;
+            const body = document.getElementById("message").value;
+            
+            const payload = {
+                recipient: recipient,
+                body: body
+            };
+            ws.send(JSON.stringify(payload));
+            document.getElementById("message").value = '';
+        }
+    </script>
+</body>
+</html>

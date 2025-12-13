@@ -7,6 +7,11 @@ import UserProfilePage from "@/pages/UserProfileSetupPage";
 import FriendsFinderPage from "@/pages/FriendsFinderPage";
 import MessagesPage from "@/pages/MessagesPage";
 import EventsAndSocietiesPage from "@/pages/EventsAndSocietiesPage";
+
+// REMOVE BELOW 2 IMPORTS
+import FriendsFinderTempPage from "@/pages/FriendsFinderTempPage";
+import FriendsFinderSQLTempPage from "@/pages/FriendsFinderSQLTempPage";
+
 import Navbar from "@/components/Navbar";
 
 import './index.css';
@@ -62,6 +67,24 @@ function AppLayout() {
               </ProtectedRoute>
             }
           />
+          {/* REMOVE TEMPORARY ROUTES */}
+          <Route
+            path="/friends-finder-temp"
+            element={
+              <ProtectedRoute>
+                <FriendsFinderTempPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/friends-finder-sql-temp"
+            element={
+              <ProtectedRoute>
+                <FriendsFinderSQLTempPage />
+              </ProtectedRoute>
+            }
+          />
+          {/* NORMAL ROUTES - KEEP */}
           <Route
             path="/messages"
             element={

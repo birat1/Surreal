@@ -1,6 +1,6 @@
-import React from 'react';
-import type { ProfilePreviewProps } from '@/types/types';
-import { Card, CardHeader, CardContent } from './ui/card';
+import React from "react";
+import type { ProfilePreviewProps } from "@/types/types";
+import { Card, CardHeader, CardContent } from "./ui/card";
 
 const ProfilePreviewFullScreen: React.FC<ProfilePreviewProps> = ({
     user_data,
@@ -23,7 +23,6 @@ const ProfilePreviewFullScreen: React.FC<ProfilePreviewProps> = ({
         profile_picture,
     } = user_data;
 
-    // helper function for profile picture
     const renderProfileImage = () => {
         if (!profile_picture) {
             return (
@@ -34,52 +33,52 @@ const ProfilePreviewFullScreen: React.FC<ProfilePreviewProps> = ({
         }
 
         const src =
-            typeof profile_picture === 'string'
+            typeof profile_picture === "string"
                 ? profile_picture
                 : profile_picture instanceof File
-                  ? URL.createObjectURL(profile_picture)
-                  : undefined;
+                ? URL.createObjectURL(profile_picture)
+                : undefined;
 
         return (
             <img
                 src={src}
-                alt={full_name || 'Profile Picture'}
+                alt={full_name || "Profile Picture"}
                 className="w-28 h-28 rounded-full object-cover"
             />
         );
     };
 
     return (
-        <Card className="w-full h-full shadow-lg p-4 flex flex-col overflow-hidden">
+        <Card className="w-full max-w-2xl shadow-lg p-4 flex flex-col">
             <CardHeader>
-                <div className="flex flex-col items-center">
+                <div className="flex flex-col items-center text-center">
                     {renderProfileImage()}
                     <h2 className="text-xl font-bold mt-2">
-                        {full_name || 'Full Name'}
+                        {full_name || "Full Name"}
                     </h2>
                     {username && <p className="text-gray-500">{username}</p>}
                     <p className="text-gray-600">
-                        {age ? `Age: ${age}` : 'Age: -'}
+                        {age ? `Age: ${age}` : "Age: -"}
                     </p>
                 </div>
             </CardHeader>
 
             <CardContent>
                 <p className="text-gray-700 mb-2">
-                    {bio || 'Bio goes here...'}
+                    {bio || "Bio goes here..."}
                 </p>
 
                 <div className="grid grid-cols-2 gap-2 text-sm text-gray-600">
-                    <p>Course: {course || '-'}</p>
-                    <p>Accommodation: {accommodation || '-'}</p>
-                    <p>Year: {university_year || '-'}</p>
-                    <p>Languages: {languages || '-'}</p>
-                    <p>Ethnicity: {ethnicities || '-'}</p>
-                    <p>Sports: {sports || '-'}</p>
-                    <p>Societies: {societies || '-'}</p>
-                    <p>Home Area: {home_area || '-'}</p>
-                    <p>Gym Goer: {gym_goer || '-'}</p>
-                    <p>Fun Fact: {fun_fact || '-'}</p>
+                    <p>Course: {course || "-"}</p>
+                    <p>Accommodation: {accommodation || "-"}</p>
+                    <p>Year: {university_year || "-"}</p>
+                    <p>Languages: {languages || "-"}</p>
+                    <p>Ethnicity: {ethnicities || "-"}</p>
+                    <p>Sports: {sports || "-"}</p>
+                    <p>Societies: {societies || "-"}</p>
+                    <p>Home Area: {home_area || "-"}</p>
+                    <p>Gym Goer: {gym_goer || "-"}</p>
+                    <p>Fun Fact: {fun_fact || "-"}</p>
                 </div>
             </CardContent>
         </Card>

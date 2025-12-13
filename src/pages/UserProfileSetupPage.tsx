@@ -24,6 +24,8 @@ const UserProfilePage = () => {
         sports: [],
         gym_goer: '',
         profile_picture: null,
+
+        // add a show profile_picture
         show_full_name: true,
         show_username: true,
         show_age: true,

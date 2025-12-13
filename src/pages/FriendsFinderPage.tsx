@@ -1,14 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
-import FriendsFinderCard from '@/components/FriendsFinderCard';
-import { Button } from '@/components/ui/button';
-import { UserProfileFriendsFinder } from '@/types/types';
+import FriendsFinderCard from "@/components/FriendsFinderCard";
+import ProfilePreviewFullScreen from "@/components/ProfileCardFullScreen";
+import { Button } from "@/components/ui/button";
+import { UserProfileFriendsFinder } from "@/types/types";
 
 const FriendsFinderPage = () => {
     const [profiles, setProfiles] = useState<UserProfileFriendsFinder[]>([]);
     const [visibleCount, setVisibleCount] = useState(8);
 
-    // use useEffect so that there is no infinite loop from setProfiles
+    // NEW: state for fullscreen profile
+    const [selectedProfile, setSelectedProfile] =
+        useState<UserProfileFriendsFinder | null>(null);
+
     useEffect(() => {
         const getUserProfiles = async () => {
             try {
@@ -16,7 +20,7 @@ const FriendsFinderPage = () => {
                 const data: UserProfileFriendsFinder[] = await res.json();
                 setProfiles(data);
             } catch (err) {
-                console.error('Failed to fetch profiles', err);
+                console.error("Failed to fetch profiles", err);
             }
         };
 
@@ -27,6 +31,22 @@ const FriendsFinderPage = () => {
         setVisibleCount((prev) => prev + 8);
     };
 
+    // 👇 If a card is maximised, ONLY show fullscreen
+    if (selectedProfile) {
+        return (
+            <div className="p-6 flex flex-col items-center">
+                <ProfilePreviewFullScreen user_data={selectedProfile} />
+
+                <Button
+                    onClick={() => setSelectedProfile(null)}
+                    className="mt-6"
+                >
+                    Close
+                </Button>
+            </div>
+        );
+    }
+
     return (
         <div className="flex flex-col items-center mt-10 px-6">
             <div className="grid grid-cols-4 gap-6">
@@ -34,11 +54,11 @@ const FriendsFinderPage = () => {
                     <FriendsFinderCard
                         key={profile.user_id}
                         profile={profile}
+                        onMaximise={() => setSelectedProfile(profile)}
                     />
                 ))}
             </div>
 
-            {/* Only show button if there are more profiles */}
             {visibleCount < profiles.length && (
                 <Button
                     onClick={handleShowMore}

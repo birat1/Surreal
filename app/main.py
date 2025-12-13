@@ -277,6 +277,8 @@ def setup_user_profile(request: UserProfileRequest, db: Annotated[Session, Depen
         db.commit()
         db.refresh(new_user_profile)
 
+        insert_matched_users(db, current_user)
+
         new_token = create_jwt_token(data={
             "sub": str(current_user.id),
             "email": current_user.email_address,
@@ -437,13 +439,13 @@ def get_matched_profiles(
     current_user: Annotated[User, Depends(get_current_user)]
 ):
     try:
-        # 1. Find all matches where current user is involved
+        # Rows where current user is involved
         matches = db.query(models.MatchedUsers).filter(
             (models.MatchedUsers.user1_id == current_user.id) |
             (models.MatchedUsers.user2_id == current_user.id)
         ).all()
 
-        # 2. Extract the OTHER user IDs
+        # The other user of those matched_user pairings
         matched_user_ids = []
         for match in matches:
             if match.user1_id == current_user.id:
@@ -454,7 +456,7 @@ def get_matched_profiles(
         if not matched_user_ids:
             return []
 
-        # 3. Fetch profiles for matched users
+        # Fetch profiles for matched users
         profiles = db.query(models.UserProfile).filter(
             models.UserProfile.user_id.in_(matched_user_ids)
         ).all()

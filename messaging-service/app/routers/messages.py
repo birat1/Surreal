@@ -60,7 +60,7 @@ async def get_conversation(conversation_id: str, current_user: Annotated[str, De
     # Verify user participation in the conversation
     if conversation:
         if user_id not in conversation.participants:
-            raise HTTPException(status_code=403, detail="You are not a participant in this conversation")
+            raise HTTPException(status_code=403, detail="Access denied to this conversation")
     else:
         if current_user not in conversation_id:
             raise HTTPException(status_code=403, detail="Access denied to this conversation")

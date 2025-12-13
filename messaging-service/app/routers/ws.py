@@ -37,7 +37,7 @@ async def fetch_names_from_auth_service(user_ids: list[str]) -> dict[str, str]:
 
 async def get_participant_names(cid: str, user_ids: list[str]) -> dict[str, str]:
     """Fetch names from local db first. If not found, fetch from auth service."""
-    existing_conv = await Conversation.find_one(Conversation.id == cid)
+    existing_conv = await Conversation.get(cid)
 
     if existing_conv and existing_conv.participant_names:
         if all(uid in existing_conv.participant_names for uid in user_ids):
@@ -122,7 +122,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
 
             # Update conversation metadata
             curr_time = datetime.datetime.now(datetime.timezone.utc)
-            await Conversation.find_one(Conversation.id == cid).upsert(
+            await Conversation.find_one({"_id": cid}).upsert(
                 {
                     "$set": {
                         "last_msg": data.body[:100],

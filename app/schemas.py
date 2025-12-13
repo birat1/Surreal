@@ -55,3 +55,8 @@ class UserProfileResponse(BaseModel):
 
 class BatchIDRequest(BaseModel):
     user_ids: list[str]
+
+# REMOVE IF NOT USED
+class MatchedUsersResponse(BaseModel):
+    logged_in_user_id: UUID # ID of currently logged in user
+    other_user_id: UUID # ID of the matched user

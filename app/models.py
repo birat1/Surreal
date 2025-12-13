@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime, timedelta, timezone
 
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.dialects.postgresql import ARRAY, UUID
 from sqlalchemy.orm import relationship
 
@@ -19,6 +19,9 @@ class User(Base):
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     user_profile = relationship("UserProfile", back_populates="user", uselist=False)
+
+    matches_as_user1 = relationship("MatchedUsers", foreign_keys="MatchedUsers.user1_id", back_populates="user1")
+    matches_as_user2 = relationship("MatchedUsers", foreign_keys="MatchedUsers.user2_id", back_populates="user2")
 
 
 class EmailVerificationCode(Base):      # The temporary verification code is stored in this table
@@ -71,3 +74,20 @@ class UserProfile(Base):
     show_gym_goer = Column(Boolean, default=True)
 
     user = relationship("User", back_populates="user_profile")
+
+
+class MatchedUsers(Base):
+
+    __tablename__ = "matched_users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user1_id = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+    user2_id = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+
+    user1 = relationship("User", foreign_keys=[user1_id], back_populates="matches_as_user1")
+    user2 = relationship("User", foreign_keys=[user2_id], back_populates="matches_as_user2")
+
+    # Ensures that a pair of matched users only appears once
+    __table_args__ = (
+        UniqueConstraint("user1_id", "user2_id", name="unique_user_pair"),
+    )

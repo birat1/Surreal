@@ -12,7 +12,7 @@ from starlette.responses import JSONResponse
 
 from app import models
 from app.database import SessionLocal, engine
-from app.models import User
+from app.models import User, MatchedUsers
 from app.schemas import (
     BatchIDRequest,
     EmailRequest,
@@ -329,36 +329,138 @@ def validate_token(current_user: Annotated[User, Depends(get_current_user)]):
         "user_name": current_user.user_profile.username if current_user.user_profile else "Unknown",
     }
 
-@app.get("/current-user-profile")   # consider removing this (come back to it)
-def get_current_user_profile_details(current_user: User = Depends(get_current_user)):
 
-    p = current_user.user_profile
+def compare_profiles(current_user: User, db: Session):
 
-    id = p.user_id
-    age = p.age
-    course = p.course
-    accommodation = p.accommodation
-    university_year = p.university_year
-    languages = p.languages # array
-    ethnicities = p.ethnicities # array
-    societies = p.societies # array
-    sports = p.sports # array
-    gym_goer = p.gym_goer
+    profile = current_user.user_profile  
 
-    return {
-        "id": id,
-        "age": age,
-        "course": course,
-        "accommodation": accommodation,
-        "university_year": university_year,
-        "languages": languages,
-        "ethnicities": ethnicities,
-        "societies": societies,
-        "sports": sports,
-        "gym_goer": gym_goer
+    logged_in_profile = {
+        "id": profile.user_id,
+        "age": profile.age,
+        "course": profile.course,
+        "accommodation": profile.accommodation,
+        "university_year": profile.university_year,
+        "languages": profile.languages, # array
+        "ethnicities": profile.ethnicities, # array
+        "societies": profile.societies, # array
+        "sports": profile.sports, # array
+        "gym_goer": profile.gym_goer,
     }
 
-def compare_profiles():
+    all_profiles = db.query(models.UserProfile).all()
 
-    # list_user_profiles
-    pass
+    single_attrs = ["age", "course", "accommodation", "university_year", "gym_goer"]
+    list_attrs = ["languages", "ethnicities", "societies", "sports"]
+
+    matched_user_ids = []  # UUIDs of matched users
+
+
+    for p in all_profiles:
+
+        # Don't compare with own profile
+        if str(p.user_id) == str(logged_in_profile["id"]):
+            continue
+
+        match = False
+
+        for attr in single_attrs:
+            if getattr(p, attr) == logged_in_profile[attr]:
+                match = True
+                break
+
+        if not match:
+            for attr in list_attrs:
+                other_values = getattr(p, attr) or []
+                logged_values = logged_in_profile[attr] or []
+
+                if set(other_values) & set(logged_values):  # any common value?
+                    match = True
+                    break
+
+        if match:
+            matched_user_ids.append(str(p.user_id))
+
+    return matched_user_ids
+
+
+@app.get("/compare-profiles")
+def compare_profiles_route(
+    db: Annotated[Session, Depends(get_db)],
+    current_user: User = Depends(get_current_user)
+):
+    return compare_profiles(current_user, db)
+
+
+# function to insert data into matched_users table
+@app.post("/insert-matched-users")
+# def insert_matched_users(db: Session, current_user: User):
+def insert_matched_users(
+    db: Annotated[Session, Depends(get_db)],
+    current_user: Annotated[User, Depends(get_current_user)]
+):
+
+    try:
+        matched_ids = compare_profiles(current_user, db)
+
+        for other_user_id in matched_ids:
+            exists = db.query(models.MatchedUsers).filter(
+                ((models.MatchedUsers.user1_id == current_user.id) &
+                (models.MatchedUsers.user2_id == other_user_id)) |
+                ((models.MatchedUsers.user1_id == other_user_id) &
+                (models.MatchedUsers.user2_id == current_user.id))
+            ).first()
+
+            if not exists:
+                new_row = models.MatchedUsers(
+                    user1_id=current_user.id,
+                    user2_id=other_user_id
+                )
+                db.add(new_row)
+
+        db.commit()
+
+        return {
+            "message": "Matched user pair successfully saved"
+            # "logged_in_user": str(current_user.id),
+            # "matched_profiles": matched_ids,
+            # "match_count": len(matched_ids)
+        }
+    
+    except Exception as e:
+        print("Error inserting matched users", e)
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/matched-profiles", response_model=list[UserProfileResponse])
+def get_matched_profiles(
+    db: Annotated[Session, Depends(get_db)],
+    current_user: Annotated[User, Depends(get_current_user)]
+):
+    try:
+        # 1. Find all matches where current user is involved
+        matches = db.query(models.MatchedUsers).filter(
+            (models.MatchedUsers.user1_id == current_user.id) |
+            (models.MatchedUsers.user2_id == current_user.id)
+        ).all()
+
+        # 2. Extract the OTHER user IDs
+        matched_user_ids = []
+        for match in matches:
+            if match.user1_id == current_user.id:
+                matched_user_ids.append(match.user2_id)
+            else:
+                matched_user_ids.append(match.user1_id)
+
+        if not matched_user_ids:
+            return []
+
+        # 3. Fetch profiles for matched users
+        profiles = db.query(models.UserProfile).filter(
+            models.UserProfile.user_id.in_(matched_user_ids)
+        ).all()
+
+        return profiles
+
+    except Exception as e:
+        print("Error fetching matched profiles", e)
+        raise HTTPException(status_code=500, detail="Error fetching matched profiles")

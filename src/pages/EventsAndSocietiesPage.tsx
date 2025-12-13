@@ -1,18 +1,23 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { useEffect, useState } from "react";
+import EventsCard from "@/components/EventsCard";
+import type { Event } from "@/types/types";
 
 const EventsAndSocietiesPage = () => {
-  // array for 8 cards
-  const dummyCards = Array.from({ length: 8 });
+  const [events, setEvents] = useState<Event[]>([]);
 
+  useEffect(() => {
+    fetch("http://localhost:8000/events")
+      .then((res) => res.json())
+      .then((data: Event[]) => setEvents(data))
+      .catch((err) => console.error(err));
+  }, []);
+
+//Show all the events avaliable
   return (
-    <div className="p-8">
+    <div className="flex flex-col items-center mt-10 px-6">
       <div className="grid grid-cols-4 gap-6">
-        {dummyCards.map((_, idx) => (
-          <Card key={idx} className="h-40">
-            <CardContent className="flex items-center justify-center text-gray-400">
-              User Card
-            </CardContent>
-          </Card>
+        {events.map((event, index) => (
+          <EventsCard key={index} event={event} />
         ))}
       </div>
     </div>

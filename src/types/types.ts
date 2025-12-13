@@ -136,3 +136,15 @@ export interface UserProfileFriendsFinder {
 export interface UserProfileFriendsFinderProps {
     profile: UserProfileFriendsFinder;
 }
+
+export interface Event {
+    name_of_event : string;
+    event_date : string;
+    event_time : string;
+    event_location : string;
+    event_organiser : string;
+}
+
+export interface EventsPageProps {
+    events: Event;
+}

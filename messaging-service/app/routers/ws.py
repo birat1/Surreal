@@ -35,6 +35,16 @@ async def fetch_names_from_auth_service(user_ids: list[str]) -> dict[str, str]:
         logger.error(f"Error fetching names from auth service: {e}")
     return {}
 
+async def get_participant_names(cid: str, user_ids: list[str]) -> dict[str, str]:
+    """Fetch names from local db first. If not found, fetch from auth service."""
+    existing_conv = await Conversation.find_one(Conversation.id == cid)
+
+    if existing_conv and existing_conv.participant_names:
+        if all(uid in existing_conv.participant_names for uid in user_ids):
+            return existing_conv.participant_names
+
+    return await fetch_names_from_auth_service(user_ids)
+
 @router.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket) -> None:
     # Authenicate via JWT
@@ -98,7 +108,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
             cid = conv_id(user_id_str, recipient_id_str)
 
             # Fetch participant id-name mapping
-            names_dict = await fetch_names_from_auth_service([user_id_str, recipient_id_str])
+            names_dict = await get_participant_names(cid, [user_id_str, recipient_id_str])
 
             # Create and insert new message document
             new_msg = Message(

@@ -1,6 +1,6 @@
 import logging
 
-from fastapi import HTTPException, WebSocket
+from fastapi import WebSocket, WebSocketDisconnect
 
 logger = logging.getLogger(__name__)
 
@@ -25,9 +25,13 @@ class ConnectionManager:
     # Send a payload to all active connections of a user
     async def send_to_user(self, user_id: str, payload: dict) -> None:
         """Send a JSON payload to all active WebSocket connections for a user."""
-        for ws in list(self.active.get(user_id, [])):
+        active_sockets = self.active.get(user_id, [])[:]
+
+        for ws in list(active_sockets):
             try:
                 await ws.send_json(payload)
+            except (WebSocketDisconnect, RuntimeError):
+                self.disconnect(user_id, ws)
             except Exception as e:
                 logger.exception(f"Error sending message to {user_id}: {e}")
                 self.disconnect(user_id, ws)

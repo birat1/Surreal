@@ -1,11 +1,7 @@
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
 
-interface VisibilityToggleProps {
-    label: string
-    checked: boolean
-    onChange: (value: boolean) => void
-}
+import { VisibilityToggleProps } from "@/types/types";
 
 const VisibilityToggle = ({ label, checked, onChange }: VisibilityToggleProps) => {
   return (

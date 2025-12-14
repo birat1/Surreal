@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import FriendsFinderCard from "@/components/FriendsFinderCard";
-import ProfilePreviewFullScreen from "@/components/ProfileCardFullScreen";
+import ProfileCardFullScreen from "@/components/ProfileCardFullScreen";
 import { Button } from "@/components/ui/button";
 import { UserProfileFriendsFinder } from "@/types/types";
 
@@ -35,7 +35,7 @@ const FriendsFinderPage = () => {
     if (selectedProfile) {
         return (
             <div className="p-6 flex flex-col items-center">
-                <ProfilePreviewFullScreen user_data={selectedProfile} />
+                <ProfileCardFullScreen user_data={selectedProfile} />
 
                 <Button
                     onClick={() => setSelectedProfile(null)}

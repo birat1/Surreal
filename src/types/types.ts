@@ -1,6 +1,7 @@
 export type ProfilePicture = File | string | null | undefined;
 
 export interface UserProfile {
+    profile_picture?: ProfilePicture;
     full_name: string;
     username: string;
     age: number | string;
@@ -8,26 +9,19 @@ export interface UserProfile {
     course: string;
     accommodation?: string;
     university_year: string;
-    languages?: string[];
-    ethnicities?: string[];
+    languages: string[];
+    ethnicities: string[];
     home_area?: string;
     fun_fact?: string;
-    societies?: string[];
-    sports?: string[];
-    gym_goer?: string | boolean;
-    profile_picture?: ProfilePicture;
-
-    show_full_name: boolean;
-    show_username: boolean;
-    show_age: boolean;
+    societies: string[];
+    sports: string[];
+    gym_goer: string;
+    
     show_bio: boolean;
-    show_course: boolean;
     show_accommodation: boolean;
-    show_university_year: boolean;
     show_languages: boolean;
     show_ethnicities: boolean;
     show_home_area: boolean;
-    show_fun_fact: boolean;
     show_societies: boolean;
     show_sports: boolean;
     show_gym_goer: boolean;
@@ -42,6 +36,12 @@ export interface UserProfileFormData extends UserProfile {}
 export interface UserProfileFormProps {
     formData: UserProfileFormData;
     setFormData: React.Dispatch<React.SetStateAction<UserProfileFormData>>;
+}
+
+export interface VisibilityToggleProps {
+    label: string
+    checked: boolean
+    onChange: (value: boolean) => void
 }
 
 export interface Message {

@@ -3,7 +3,8 @@
 import { useState } from 'react';
 
 // import { useNavigate } from "react-router-dom";
-import ProfilePreviewFullScreen from '@/components/ProfileCardFullScreen';
+import ProfileCardFullScreen from '@/components/ProfileCardFullScreen';
+// import FriendsFinderCard from '@/components/FriendsFinderCard';
 import UserProfileForm from '@/components/UserProfileForm';
 import type { UserProfileFormData } from '@/types/types';
 
@@ -26,17 +27,11 @@ const UserProfilePage = () => {
         profile_picture: null,
 
         // add a show profile_picture
-        show_full_name: true,
-        show_username: true,
-        show_age: true,
         show_bio: true,
-        show_course: true,
         show_accommodation: true,
-        show_university_year: true,
         show_languages: true,
         show_ethnicities: true,
         show_home_area: true,
-        show_fun_fact: true,
         show_societies: true,
         show_sports: true,
         show_gym_goer: true,
@@ -52,7 +47,7 @@ const UserProfilePage = () => {
             </div>
 
             <div className="min-h-0 bg-white rounded-xl shadow p-4 overflow-auto">
-                <ProfilePreviewFullScreen user_data={formData} />
+                <ProfileCardFullScreen user_data={formData} />
             </div>
         </div>
     );

@@ -9,9 +9,6 @@ import MessagesPage from "@/pages/MessagesPage";
 import EventsAndSocietiesPage from "@/pages/EventsAndSocietiesPage";
 import CreateEventPage from "@/pages/CreateEventPage";
 
-// REMOVE BELOW 2 IMPORTS
-import FriendsFinderTempPage from "@/pages/FriendsFinderTempPage";
-import FriendsFinderSQLTempPage from "@/pages/FriendsFinderSQLTempPage";
 
 import Navbar from "@/components/Navbar";
 
@@ -51,7 +48,7 @@ function AppLayout() {
               </RequireLoggedOut>
             }
           />
-
+          
           <Route
             path="/user-profile"
             element={

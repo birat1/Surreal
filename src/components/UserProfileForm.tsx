@@ -26,7 +26,7 @@ import { Button } from './ui/button';
 import { Card, CardHeader, CardContent } from './ui/card';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
-import VisibilityToggle from './UserProfileFormVisibilityToggle';
+import VisibilityToggle from '@/components/VisibilityToggle';
 
 const UserProfileForm: React.FC<UserProfileFormProps> = ({
     formData,
@@ -609,7 +609,7 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
                             value={formData.gym_goer}
                             onValueChange={(value) =>
                                 setFormData({ ...formData, gym_goer: value })
-                            }
+                                                            }
                         >
                             <SelectTrigger className="w-full border-blue-300 text-blue-600">
                                 <SelectValue placeholder="Do you go to the gym?" />
@@ -664,6 +664,8 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
                         onChange={handleChange}
                         className="border-orange-400 text-orange-300 focus:ring-blue-500"
                     />
+
+                    
                 </div>
 
                 <div className="flex flex-col mt-2">
@@ -681,6 +683,17 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
                         onChange={handleChange}
                         className="border-blue-300 text-blue-600 focus:ring-blue-500"
                     />
+
+                    <VisibilityToggle
+                            label="Show Bio"
+                            checked={formData.show_bio}
+                            onChange={(value) =>
+                                setFormData({
+                                    ...formData,
+                                    show_bio: value,
+                                })
+                            }
+                        />
                 </div>
 
                 <Button

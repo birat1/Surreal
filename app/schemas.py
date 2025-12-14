@@ -31,6 +31,19 @@ class UserProfileRequest(BaseModel):
     sports: list[str]
     gym_goer: str
 
+    show_username: bool = True
+    show_age: bool = True
+    show_bio: bool = True
+    show_course: bool = True
+    show_accommodation: bool = True
+    show_university_year: bool = True
+    show_languages: bool = True
+    show_ethnicities: bool = True
+    show_home_area: bool = True
+    show_fun_fact: bool = True
+    show_societies: bool = True
+    show_sports: bool = True
+    show_gym_goer: bool = True
 
 class UserProfileResponse(BaseModel):
     id: int
@@ -49,6 +62,17 @@ class UserProfileResponse(BaseModel):
     societies: list[str] | None = None
     sports: list[str] | None = None
     gym_goer: str | None = None
+
+    
+    show_age: bool 
+    show_bio: bool 
+    show_accommodation: bool 
+    show_languages: bool 
+    show_ethnicities: bool 
+    show_home_area: bool 
+    show_societies: bool
+    show_sports: bool
+    show_gym_goer: bool
 
     class Config:
         from_attributes = True

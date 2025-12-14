@@ -271,6 +271,14 @@ def setup_user_profile(request: UserProfileRequest, db: Annotated[Session, Depen
             societies = request.societies,
             sports = request.sports,
             gym_goer = request.gym_goer,
+            show_bio = request.show_bio,
+            show_accommodation = request.show_accommodation,
+            show_languages = request.show_languages,
+            show_ethnicities = request.show_ethnicities,
+            show_home_area = request.show_home_area,
+            show_societies = request.show_societies,
+            show_sports = request.show_sports,
+            show_gym_goer = request.show_gym_goer
         )
 
         db.add(new_user_profile)

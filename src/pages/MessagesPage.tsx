@@ -25,6 +25,40 @@ export default function MessagesPage() {
     const [messages, setMessages] = useState<Message[]>([]);
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
+    useEffect(() => {
+        const state = location.state as {
+            recipientId: string;
+            recipientName: string;
+        } | null;
+
+        if (state?.recipientId && state.recipientName && currentUserId) {
+            setConversations((prevConversations) => {
+                const targetId = getConversationId(
+                    currentUserId,
+                    state.recipientId
+                );
+                const exists = prevConversations.some(
+                    (c) =>
+                        c.id === targetId ||
+                        c.recipient_id === state.recipientId
+                );
+
+                if (!exists) {
+                    const newConversation: Conversation = {
+                        id: targetId,
+                        recipient_id: state.recipientId,
+                        recipient_name: state.recipientName,
+                        last_message: '',
+                        last_sender_id: '',
+                        updated_at: new Date().toISOString(),
+                    };
+                    return [newConversation, ...prevConversations];
+                }
+                return prevConversations;
+            });
+        }
+    }, [location.state, currentUserId]);
+
     const activeConversation = useMemo(() => {
         if (!conversationId) return null;
 
@@ -62,6 +96,7 @@ export default function MessagesPage() {
         isAuthenticated,
         currentUserId,
         recipientId,
+        activeRecipientName,
         setMessages,
         setConversations
     );
@@ -89,7 +124,22 @@ export default function MessagesPage() {
                 if (res.ok) {
                     const data = await res.json();
                     if (data.conversations) {
-                        setConversations(data.conversations);
+                        setConversations((currentConv) => {
+                            const convList =
+                                data.conversations as Conversation[];
+
+                            const activeConv = currentConv.find(
+                                (c) =>
+                                    c.id === conversationId &&
+                                    !convList.some((nc) => nc.id === c.id)
+                            );
+
+                            if (activeConv) {
+                                return [activeConv, ...convList];
+                            }
+
+                            return convList;
+                        });
                     }
                 }
             } catch (error) {
@@ -97,7 +147,7 @@ export default function MessagesPage() {
             }
         };
         fetchConversations();
-    }, [isAuthenticated]);
+    }, [isAuthenticated, conversationId]);
 
     // Fetch messages for selected conversation
     useEffect(() => {

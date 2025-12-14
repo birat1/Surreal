@@ -1,17 +1,51 @@
-import { Card, CardContent, CardHeader } from "./ui/card";
-import { UserProfileFriendsFinderProps } from "@/types/types";
-import defaultProfile from "../assets/default_profile.jpeg";
-import { Maximize2 } from "lucide-react";
+import { MessageCircle, Maximize2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+
+import { useAuth } from '@/context/AuthContext';
+import { getConversationId } from '@/lib/utils';
+import { UserProfileFriendsFinderProps } from '@/types/types';
+
+import defaultProfile from '../assets/default_profile.jpeg';
+
+import { Card, CardContent, CardHeader } from './ui/card';
 
 const FriendsFinderCard = ({
     profile,
     onMaximise,
 }: UserProfileFriendsFinderProps) => {
+    const navigate = useNavigate();
+    const { userId: currentUserId } = useAuth();
+
     const imageSrc =
-        typeof profile.profile_picture === "string" &&
-        profile.profile_picture.trim() !== ""
+        typeof profile.profile_picture === 'string' &&
+        profile.profile_picture.trim() !== ''
             ? profile.profile_picture
             : defaultProfile;
+
+    const handleSendMessage = (event: React.MouseEvent) => {
+        event.stopPropagation();
+
+        if (!currentUserId || !profile.user_id) {
+            console.error('Missing user IDs for messaging.');
+            return;
+        }
+
+        console.log('Current User ID:', currentUserId);
+        console.log('Recipient User ID:', profile.user_id);
+        console.log('Recipient Name:', profile.username);
+
+        const conversationId = getConversationId(
+            currentUserId,
+            String(profile.user_id)
+        );
+
+        navigate(`/messages/${conversationId}`, {
+            state: {
+                recipientId: profile.user_id,
+                recipientName: profile.username,
+            },
+        });
+    };
 
     return (
         <Card className="relative bg-blue-50 rounded-xl shadow-md hover:shadow-lg transition-shadow">
@@ -40,15 +74,31 @@ const FriendsFinderCard = ({
                     alt={profile.full_name}
                     className="w-14 h-14 rounded-full object-cover"
                 />
-                <h2 className="text-lg font-semibold">
-                    {profile.full_name}
-                </h2>
+                <h2 className="text-lg font-semibold">{profile.full_name}</h2>
             </CardHeader>
 
             <CardContent className="px-4 pb-4 pt-0 space-y-1">
                 <p>Age: {profile.age}</p>
                 <p>Course: {profile.course}</p>
                 <p>Fun Fact: {profile.fun_fact}</p>
+
+                <button
+                    onClick={handleSendMessage}
+                    aria-label="Send Message"
+                    className="
+                        w-full mt-4
+                        flex items-center justify-center gap-2
+                        bg-blue-600 text-white
+                        py-2 px-4 rounded-md
+                        font-medium text-xs
+                        hover:bg-blue-700 active:bg-blue-800
+                        transition-colors
+                        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1
+                    "
+                >
+                    <MessageCircle size={16} />
+                    Send Message
+                </button>
             </CardContent>
         </Card>
     );

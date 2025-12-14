@@ -44,7 +44,6 @@ export interface UserProfileFormProps {
     setFormData: React.Dispatch<React.SetStateAction<UserProfileFormData>>;
 }
 
-
 export interface Message {
     id?: string;
     conversation_id?: string;
@@ -85,7 +84,6 @@ export interface ChatInputProps {
     disabled?: boolean;
 }
 
-
 export interface UserProfileFriendsFinder extends UserProfile {
     id: number;
     user_id: number;
@@ -97,11 +95,11 @@ export interface UserProfileFriendsFinderProps {
 }
 
 export interface Event {
-    name_of_event : string;
-    event_date : string;
-    event_time : string;
-    event_location : string;
-    event_organiser : string;
+    name_of_event: string;
+    event_date: string;
+    event_time: string;
+    event_location: string;
+    event_organiser: string;
 }
 
 export interface EventsPageProps {
@@ -109,14 +107,14 @@ export interface EventsPageProps {
 }
 
 export interface CreateEventFormData {
-  name_of_event: string;
-  event_date: string;
-  event_time: string;
-  event_location: string;
-  event_organiser: string;
+    name_of_event: string;
+    event_date: string;
+    event_time: string;
+    event_location: string;
+    event_organiser: string;
 }
 
 export interface CreateEventFormProps {
-  formData: CreateEventFormData;
-  setFormData: React.Dispatch<React.SetStateAction<CreateEventFormData>>;
+    formData: CreateEventFormData;
+    setFormData: React.Dispatch<React.SetStateAction<CreateEventFormData>>;
 }

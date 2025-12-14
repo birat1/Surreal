@@ -8,15 +8,18 @@ export function useChatSocket(
     isAuthenticated: boolean,
     currentUserId: string,
     recipientId: string,
+    recipientName: string,
     setMessages: React.Dispatch<React.SetStateAction<Message[]>>,
     setConversations: React.Dispatch<React.SetStateAction<Conversation[]>>
 ) {
     const socketRef = useRef<WebSocket | null>(null);
     const recipientRef = useRef(recipientId);
+    const nameRef = useRef(recipientName);
 
     useEffect(() => {
         recipientRef.current = recipientId;
-    }, [recipientId]);
+        nameRef.current = recipientName;
+    }, [recipientId, recipientName]);
 
     useEffect(() => {
         return () => {
@@ -104,33 +107,24 @@ export function useChatSocket(
                     const existingIndex = prevConversations.findIndex(
                         (c) => c.recipient_id === chattingWith
                     );
-                    const existingName =
-                        existingIndex !== -1
-                            ? prevConversations[existingIndex].recipient_name
-                            : undefined;
+                    const existing = prevConversations[existingIndex];
 
-                    let display_name = existingName;
-                    if (!display_name && isIncoming) {
-                        console.log('WS Message Received:', data);
-
-                        if (!data.sender_name)
-                            console.error(
-                                'Sender name missing in WS message data'
-                            );
-                        display_name = data.sender_name;
+                    let display_name = existing?.recipient_name;
+                    if (!display_name) {
+                        if (isIncoming) {
+                            display_name = data.sender_name;
+                        } else if (chattingWith === recipientRef.current) {
+                            display_name = nameRef.current;
+                        }
                     }
 
                     // Create the updated conversation object
                     const updatedConversation: Conversation = {
-                        id:
-                            existingIndex !== -1
-                                ? prevConversations[existingIndex].id
-                                : getConversationId(
-                                      currentUserId,
-                                      chattingWith
-                                  ),
+                        id: existing
+                            ? existing.id
+                            : getConversationId(currentUserId, chattingWith),
                         recipient_id: chattingWith,
-                        recipient_name: display_name,
+                        recipient_name: display_name || 'Unknown',
                         last_message: data.body,
                         last_sender_id: data.sender_id,
                         updated_at: new Date().toISOString(),

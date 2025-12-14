@@ -28,7 +28,7 @@ const FriendsFinderPage = () => {
     }, []);
 
     const handleShowMore = () => {
-        setVisibleCount((prev) => prev + 8);
+        setVisibleCount((prev) => prev + 4);
     };
 
     // 👇 If a card is maximised, ONLY show fullscreen

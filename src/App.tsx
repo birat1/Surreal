@@ -68,24 +68,7 @@ function AppLayout() {
               </ProtectedRoute>
             }
           />
-          {/* REMOVE TEMPORARY ROUTES */}
-          <Route
-            path="/friends-finder-temp"
-            element={
-              <ProtectedRoute>
-                <FriendsFinderTempPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/friends-finder-sql-temp"
-            element={
-              <ProtectedRoute>
-                <FriendsFinderSQLTempPage />
-              </ProtectedRoute>
-            }
-          />
-          {/* NORMAL ROUTES - KEEP */}
+          
           <Route
             path="/messages"
             element={

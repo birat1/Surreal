@@ -7,6 +7,7 @@ import surreyLogo from '../assets/surrey_logo.jpg';
 
 import NotificationBell from './NotificationBell';
 import { Button } from './ui/button';
+import { NotificationProvider } from '@/context/NotificationContext';
 
 
 const Navbar: React.FC = () => {
@@ -56,7 +57,9 @@ const Navbar: React.FC = () => {
                         {isAuthenticated ? (
                             // If logged in → show Logout
                             <>
-                                <NotificationBell />
+                                <NotificationProvider>
+                                    <NotificationBell />
+                                </NotificationProvider>
                                 <Button
                                     variant="destructive"
                                     onClick={handleLogout}

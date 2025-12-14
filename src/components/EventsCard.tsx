@@ -13,6 +13,15 @@ const EventsCard = ({ event }: EventsCardProps) => {
         <p>Time: {event.event_time}</p>
         <p>Location: {event.event_location}</p>
         <p>Organiser: {event.event_organiser}</p>
+
+        <div className="flex justify-center mt-4">
+          <button
+            className="bg-blue-500 text-white px-3 py-1 rounded"
+            onClick={() => rsvp(event.id)}>
+            I'm going
+          </button>
+        </div>
+
       </CardContent>
     </Card>
   );

@@ -107,3 +107,16 @@ export interface Event {
 export interface EventsPageProps {
     events: Event;
 }
+
+export interface CreateEventFormData {
+  name_of_event: string;
+  event_date: string;
+  event_time: string;
+  event_location: string;
+  event_organiser: string;
+}
+
+export interface CreateEventFormProps {
+  formData: CreateEventFormData;
+  setFormData: React.Dispatch<React.SetStateAction<CreateEventFormData>>;
+}

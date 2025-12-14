@@ -7,6 +7,7 @@ import UserProfilePage from "@/pages/UserProfileSetupPage";
 import FriendsFinderPage from "@/pages/FriendsFinderPage";
 import MessagesPage from "@/pages/MessagesPage";
 import EventsAndSocietiesPage from "@/pages/EventsAndSocietiesPage";
+import CreateEventPage from "@/pages/CreateEventPage";
 
 // REMOVE BELOW 2 IMPORTS
 import FriendsFinderTempPage from "@/pages/FriendsFinderTempPage";
@@ -103,7 +104,15 @@ function AppLayout() {
           />
           <Route
             path="/events-and-societies"
-            element={<EventsAndSocietiesPage />}
+            element={
+                <EventsAndSocietiesPage />
+            }
+          />
+          <Route
+            path="/create-event"
+            element={
+                <CreateEventPage />
+            }
           />
 
           <Route path="/404" element={<NotFoundPage />} />

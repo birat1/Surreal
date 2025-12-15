@@ -25,6 +25,7 @@ export default function MessagesPage() {
     const [messages, setMessages] = useState<Message[]>([]);
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
+    // Optimistically add new conversation if from friends finder
     useEffect(() => {
         const state = location.state as {
             recipientId: string;
@@ -59,6 +60,7 @@ export default function MessagesPage() {
         }
     }, [location.state, currentUserId]);
 
+    // Active Conversation details
     const activeConversation = useMemo(() => {
         if (!conversationId) return null;
 
@@ -106,6 +108,7 @@ export default function MessagesPage() {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
 
+    // Send read receipt on opening conversation
     useEffect(() => {
         if (recipientId && isAuthenticated) {
             sendReadReceipt(recipientId);
@@ -151,10 +154,12 @@ export default function MessagesPage() {
 
     // Fetch messages for selected conversation
     useEffect(() => {
-        let active = true;
+        const controller = new AbortController();
+        const { signal } = controller;
+
+        setMessages([]);
 
         if (!conversationId || !isAuthenticated) {
-            setMessages([]);
             return;
         }
 
@@ -165,29 +170,32 @@ export default function MessagesPage() {
                     `${API_URL}/conversations/${conversationId}/messages`,
                     {
                         credentials: 'include',
+                        signal: signal,
                     }
                 );
 
                 if (res.status === 403 || res.status === 404) {
-                    navigate('/messages');
+                    if (!signal.aborted) navigate('/messages');
                     return;
                 }
 
                 if (res.ok) {
                     const data = await res.json();
-                    if (active && Array.isArray(data)) {
+                    if (!signal.aborted && Array.isArray(data)) {
                         setMessages(data);
                     }
                 }
-            } catch (error) {
-                console.error('Error fetching messages:', error);
+            } catch (error: any) {
+                if (error.name !== 'AbortError') {
+                    console.error('Error fetching messages:', error);
+                }
             }
         };
 
         fetchMessages();
 
         return () => {
-            active = false;
+            controller.abort();
         };
     }, [conversationId, isAuthenticated, navigate]);
 

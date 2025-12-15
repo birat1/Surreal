@@ -93,7 +93,7 @@ export default function MessagesPage() {
     const recipientId = activeConversation?.recipient_id || '';
     const activeRecipientName = activeConversation?.recipient_name || 'Unknown';
 
-    const { sendMessage, sendReadReceipt } = useChatSocket(
+    const { sendMessage, sendReadReceipt, isReady } = useChatSocket(
         WS_URL,
         isAuthenticated,
         currentUserId,
@@ -110,10 +110,10 @@ export default function MessagesPage() {
 
     // Send read receipt on opening conversation
     useEffect(() => {
-        if (recipientId && isAuthenticated) {
+        if (recipientId && isAuthenticated && isReady) {
             sendReadReceipt(recipientId);
         }
-    }, [recipientId, isAuthenticated, sendReadReceipt]);
+    }, [recipientId, isAuthenticated, isReady, sendReadReceipt]);
 
     // Fetch conversations (Inbox)
     useEffect(() => {

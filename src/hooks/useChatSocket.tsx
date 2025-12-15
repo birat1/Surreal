@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { getConversationId } from '@/lib/utils';
 import type { Conversation, Message } from '@/types/types';
@@ -12,6 +12,7 @@ export function useChatSocket(
     setMessages: React.Dispatch<React.SetStateAction<Message[]>>,
     setConversations: React.Dispatch<React.SetStateAction<Conversation[]>>
 ) {
+    const [isReady, setIsReady] = useState(false);
     const socketRef = useRef<WebSocket | null>(null);
     const recipientRef = useRef(recipientId);
     const nameRef = useRef(recipientName);
@@ -42,9 +43,11 @@ export function useChatSocket(
 
         ws.onopen = () => {
             console.log('Connected to WebSocket as:', currentUserId);
+            setIsReady(true);
         };
 
         ws.onclose = (event) => {
+            setIsReady(false);
             if (event.code === 1008) {
                 console.warn('Connection rejected: Invalid user.');
             } else if (event.code === 1006) {
@@ -163,5 +166,5 @@ export function useChatSocket(
         }
     }, []);
 
-    return { sendMessage, sendReadReceipt };
+    return { sendMessage, sendReadReceipt, isReady };
 }

@@ -59,6 +59,7 @@ class UserProfile(Base):
     gym_goer = Column(String, nullable=True)
 
     # optional fields
+    show_age = Column(Boolean, default=True)
     show_bio = Column(Boolean, default=True)
     show_accommodation = Column(Boolean, default=True)
     show_languages = Column(Boolean, default=True)

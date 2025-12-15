@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { formatDate } from '@/lib/utils';
 import type { ConversationInboxProps } from '@/types/types';
 
 export default function ConversationInbox({
@@ -85,13 +86,8 @@ export default function ConversationInbox({
                                     {conv.recipient_name ||
                                         conv.recipient_id.slice(0, 8) + '...'}
                                 </span>
-                                <span className="text-xs text-gray-400">
-                                    {new Date(
-                                        conv.updated_at
-                                    ).toLocaleTimeString([], {
-                                        hour: '2-digit',
-                                        minute: '2-digit',
-                                    })}
+                                <span className="text-xs text-gray-400 whitespace-nowrap">
+                                    {formatDate(conv.updated_at)}
                                 </span>
                             </div>
                             {conv.last_message ? (

@@ -1,23 +1,25 @@
+import { Check, CheckCheck } from 'lucide-react';
 import { memo } from 'react';
 
+import { formatDate } from '@/lib/utils';
 import type { MessageBubbleProps } from '@/types/types';
 
 const MessageBubble = memo(({ msg, isMe, senderName }: MessageBubbleProps) => {
-    const timestamp = msg.created_at
-        ? new Date(msg.created_at).toLocaleTimeString([], {
-              hour: '2-digit',
-              minute: '2-digit',
-          })
-        : '';
+    const timestamp = formatDate(msg.created_at);
 
     const getStatusIcon = () => {
         if (!isMe) return null;
 
         if (msg.read_at) {
-            return <span className="text-blue-500 font-bold ml-1">✓✓</span>;
+            return (
+                <CheckCheck
+                    size={16}
+                    className="text-blue-500 font-bold ml-1"
+                />
+            );
         }
 
-        return <span className="text-gray-500 font-bold ml-1">✓</span>;
+        return <Check size={16} className="text-gray-400" />;
     };
 
     return (

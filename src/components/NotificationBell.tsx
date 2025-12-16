@@ -1,9 +1,10 @@
 import { Bell, CheckCheck, MessagesSquare, X } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 
-import { useNotifications, Notification } from '../context/NotificationContext';
+import { useNotifications, NotificationGroup } from '../context/NotificationContext';
 
 import { Button } from './ui/button';
+import { Link } from 'react-router-dom';
 
 export default function NotificationBell() {
     const { notifications, unreadCount, markAllRead, markRead } = useNotifications();
@@ -54,23 +55,37 @@ export default function NotificationBell() {
                         {notifications.length === 0 ? (
                             <div className='flex flex-col justify-center items-center my-auto'>
                                 <CheckCheck  size={50} className='text-gray-400' />
-                                <p className="p-1 text-gray-500 text-sm">No new notifications</p>
+                                <p className="p-1 text-gray-500 text-sm">No new notifications.</p>
                             </div>
                         ) : (
-                            notifications.map((notif: Notification) => (
-                                <div
-                                    key={notif.id}
-                                    className="flex justify-between items-center gap-4 bg-gray-100 hover:bg-gray-200 hover:cursor-pointer min-h-20 w-[95%] mx-auto rounded-xl p-3"
-                                >   
-                                    <div className='flex items-center gap-4'>
-                                        <MessagesSquare className="text-gray-500"/>
-                                        <p className="text-sm">{notif.message}</p>
+                            notifications.map((notif: NotificationGroup) => (
+                                <Link to={`messages/${notif.conversationId}`}>
+                                    <div
+                                        key={notif.id}
+                                        className="relative flex justify-between items-center gap-4 bg-gray-100 hover:bg-gray-200 hover:cursor-pointer min-h-20 w-[95%] mx-auto rounded-xl p-3"
+                                    >   
+                                        {notif.unreadCount > 1 && (
+                                            <span
+                                                className="
+                                                absolute -top-1 -right-1 bg-red-500 text-white text-xs font-semibold rounded-full min-w-[18px] h-[18px]
+                                                flex items-center justify-center
+                                                ">
+                                                {notif.unreadCount}
+                                            </span>
+                                        )}
+                                        <div className='flex items-center gap-4'>
+                                            <MessagesSquare className="text-gray-500"/>
+                                            <div>
+                                                <p className='text-sm font-semibold'>{notif.senderId}</p>
+                                                <p className="text-sm">{notif.lastMessagePreview}</p>
+                                            </div>
+                                        </div>
+                                        <X
+                                            className="text-gray-500 hover:text-gray-700 hover:cursor-pointer"
+                                            onClick={() => markRead(notif.id)}
+                                        />
                                     </div>
-                                    <X
-                                        className="text-gray-500 hover:text-gray-700 hover:cursor-pointer"
-                                        onClick={() => markRead(notif.id)}
-                                    />
-                                </div>
+                                </Link>
                             ))
                         )}
                     </div>

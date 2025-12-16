@@ -2,16 +2,17 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 const baseUrl = 'http://localhost:8081';
 
-export interface Notification {
+export interface NotificationGroup {
   id: string;
-  message: string;
-  type: string;
-  timeStamp: number;
-  read: boolean;
+  senderId: string;
+  conversationId: string;
+  unreadCount: number;
+  lastMessagePreview: string;
+  lastMessageAt: number;
 }
 
 interface NotificationState {
-  notifications: Notification[];
+  notifications: NotificationGroup[];
   unreadCount: number;
   connected: boolean;
   markAllRead: () => Promise<void>;
@@ -23,11 +24,17 @@ interface NotificationProviderProps {
 }
 
 
-const NotificationContext = createContext<NotificationState | null>(null);
+const NotificationContext = createContext<NotificationState>({
+    notifications: [],
+    unreadCount: 0,
+    connected: false,
+    markAllRead: async () => {},
+    markRead: async () => {}
+});
 
 export const  NotificationProvider: React.FC<NotificationProviderProps> = ({ children }) => {
 
-    const [notifications, setNotifications] = useState<Notification[]>([]);
+    const [notifications, setNotifications] = useState<NotificationGroup[]>([]);
     const [connected, setConnected] = useState(false);
 
     useEffect(() => {
@@ -38,7 +45,7 @@ export const  NotificationProvider: React.FC<NotificationProviderProps> = ({ chi
 
                 if (!res.ok) throw new Error('Failed to fetch notifications');
 
-                const data: Notification[] = await res.json();
+                const data: NotificationGroup[] = await res.json();
 
                 setNotifications(data);
             } catch (err) {
@@ -55,11 +62,18 @@ export const  NotificationProvider: React.FC<NotificationProviderProps> = ({ chi
         eventSource.onopen = () => setConnected(true);
 
         eventSource.onmessage = (event) => {
-            const notification = JSON.parse(event.data);
+            const incoming: NotificationGroup = JSON.parse(event.data);
 
-            if (notification.type == "system") return;
+            setNotifications(prev => {
+                const updated = prev
+                    .filter(n => n.id !== incoming.id)
+                    .concat(incoming)
+                    .filter(n => n.unreadCount > 0)
+                    .sort((a, b) => b.lastMessageAt - a.lastMessageAt);
+                return updated
+            });
 
-            setNotifications(prev => [notification, ...prev]);
+
         }
 
         eventSource.onerror = () => {
@@ -70,7 +84,9 @@ export const  NotificationProvider: React.FC<NotificationProviderProps> = ({ chi
         return () => eventSource.close()
     }, []);
 
-    const unreadCount = notifications.filter(n => !n.read).length;
+    const unreadCount = notifications.reduce(
+        (sum, n) => sum + n.unreadCount, 0
+    );
     
     const markAllRead = async () => {
 
@@ -93,7 +109,7 @@ export const  NotificationProvider: React.FC<NotificationProviderProps> = ({ chi
                 credentials: "include"
             });
         } catch (err) {
-            console.error("Failed to mark notification as read:", err);
+            console.error("Failed to mark notification group as read:", err);
         }
     };
     

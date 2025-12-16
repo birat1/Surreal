@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 const EventsAndSocietiesPage = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const navigate = useNavigate();
+  const [organiserFilter, setOrganiserFilter] = useState('');
 
   useEffect(() => {
     fetch("http://localhost:8000/events")
@@ -14,9 +15,33 @@ const EventsAndSocietiesPage = () => {
       .catch((err) => console.error(err));
   }, []);
 
+//filter by organiser
+ const fetchEvents = async () => {
+  const params = new URLSearchParams();
+
+  if (organiserFilter) {
+    params.append('organiser', organiserFilter);
+  }
+
+  const res = await fetch(`http://localhost:8000/events?${params.toString()}`);
+  const data = await res.json();
+  setEvents(data);
+};
+
+useEffect(() => {
+  fetchEvents();
+}, [organiserFilter]);
+
 //Show all the events avaliable
   return (
-    <div className="flex flex-col items-center mt-10 px-6">
+    <div className="mt-10 px-6">
+      <input
+        type="text"
+        placeholder="Filter by organiser"
+        value={organiserFilter}
+        onChange={(e) => setOrganiserFilter(e.target.value)}
+        className="border px-3 py-2 rounded w-64 mb-6"
+      />
       <div className="grid grid-cols-4 gap-6">
         {events.map((event, index) => (
           <EventsCard key={index} event={event} />

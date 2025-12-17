@@ -61,27 +61,55 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
 
     const handleSubmit = async () => {
         setLoading(true);
+
         try {
+            const { profile_picture, ...profileDataNoPic } = formData;
+
             const res = await fetch('/auth/user-profile-setup', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
-                body: JSON.stringify(formData),
+                body: JSON.stringify(profileDataNoPic),
             });
 
-            if (res.ok) {
-                if (userId && formData.username) {
-                    login(userId, formData.username);
+            if (!res.ok) {
+                const errText = await res.text();
+                console.error(errText);
+                alert('Error creating profile.');
+                return;
+            }
+
+            if (profile_picture instanceof File) {
+                const fileForm = new FormData();
+                fileForm.append('file', profile_picture);
+
+                const uploadRes = await fetch('/auth/user-profile-picture', {
+                    method: 'POST',
+                    body: fileForm,
+                    credentials: 'include',
+                });
+
+                if (!uploadRes.ok) {
+                    const errText = await uploadRes.text();
+                    console.error(errText);
+                    alert('Profile created, but picture upload failed.');
+                    return;
                 }
 
-                alert('Profile created successfully!');
-                navigate('/friends-finder');
-            } else {
-                const errData = await res.json();
-                alert(errData.detail || 'Error creating profile.');
+                const uploaded = await uploadRes.json();
+
+                setFormData({
+                    ...formData,
+                    profile_picture: uploaded.profile_picture,
+                });
             }
+
+            if (userId && formData.username) {
+                login(userId, formData.username);
+            }
+
+            alert('Profile created successfully!');
+            navigate('/friends-finder');
         } catch (err) {
             console.error(err);
             alert('Something went wrong while creating your profile.');
@@ -609,7 +637,7 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
                             value={formData.gym_goer}
                             onValueChange={(value) =>
                                 setFormData({ ...formData, gym_goer: value })
-                                                            }
+                            }
                         >
                             <SelectTrigger className="w-full border-blue-300 text-blue-600">
                                 <SelectValue placeholder="Do you go to the gym?" />
@@ -664,8 +692,6 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
                         onChange={handleChange}
                         className="border-orange-400 text-orange-300 focus:ring-blue-500"
                     />
-
-                    
                 </div>
 
                 <div className="flex flex-col mt-2">
@@ -685,15 +711,15 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
                     />
 
                     <VisibilityToggle
-                            label="Show Bio"
-                            checked={formData.show_bio}
-                            onChange={(value) =>
-                                setFormData({
-                                    ...formData,
-                                    show_bio: value,
-                                })
-                            }
-                        />
+                        label="Show Bio"
+                        checked={formData.show_bio}
+                        onChange={(value) =>
+                            setFormData({
+                                ...formData,
+                                show_bio: value,
+                            })
+                        }
+                    />
                 </div>
 
                 <Button

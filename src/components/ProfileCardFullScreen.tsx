@@ -2,6 +2,8 @@ import React from 'react';
 import type { ProfilePreviewProps } from '@/types/types';
 import { Card, CardHeader, CardContent } from './ui/card';
 
+import defaultProfile from '../assets/default_profile.jpeg';
+
 const ProfileCardFullScreen: React.FC<ProfilePreviewProps> = ({
     user_data,
 }) => {
@@ -32,20 +34,25 @@ const ProfileCardFullScreen: React.FC<ProfilePreviewProps> = ({
     } = user_data;
 
     const renderProfileImage = () => {
-        if (!profile_picture) {
-            return (
-                <div className="w-28 h-28 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
-                    No image
-                </div>
-            );
-        }
+        const src = (() => {
+            // File (preview before upload)
+            if (profile_picture instanceof File) {
+                return URL.createObjectURL(profile_picture);
+            }
 
-        const src =
-            typeof profile_picture === 'string'
-                ? profile_picture
-                : profile_picture instanceof File
-                  ? URL.createObjectURL(profile_picture)
-                  : undefined;
+            // String path/URL from backend
+            if (typeof profile_picture === 'string') {
+                const s = profile_picture.trim();
+
+                // guard against bad strings
+                if (s && s !== 'null' && s !== 'undefined') {
+                    return s.startsWith('/uploads/') ? `/auth${s}` : s;
+                }
+            }
+
+            // Fallback
+            return defaultProfile;
+        })();
 
         return (
             <img

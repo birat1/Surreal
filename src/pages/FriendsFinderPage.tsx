@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import FriendsFinderCard from "@/components/FriendsFinderCard";
-import ProfileCardFullScreen from "@/components/ProfileCardFullScreen";
-import { Button } from "@/components/ui/button";
-import { UserProfileFriendsFinder } from "@/types/types";
+import FriendsFinderCard from '@/components/FriendsFinderCard';
+import ProfileCardFullScreen from '@/components/ProfileCardFullScreen';
+import { Button } from '@/components/ui/button';
+import { UserProfileFriendsFinder } from '@/types/types';
 
 const FriendsFinderPage = () => {
     const [profiles, setProfiles] = useState<UserProfileFriendsFinder[]>([]);
@@ -20,7 +20,7 @@ const FriendsFinderPage = () => {
                 const data: UserProfileFriendsFinder[] = await res.json();
                 setProfiles(data);
             } catch (err) {
-                console.error("Failed to fetch profiles", err);
+                console.error('Failed to fetch profiles', err);
             }
         };
 
@@ -31,7 +31,6 @@ const FriendsFinderPage = () => {
         setVisibleCount((prev) => prev + 4);
     };
 
-    // 👇 If a card is maximised, ONLY show fullscreen
     if (selectedProfile) {
         return (
             <div className="p-6 flex flex-col items-center">

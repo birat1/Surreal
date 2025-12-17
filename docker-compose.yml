@@ -11,6 +11,8 @@ services:
             - /app/node_modules
         networks:
             - backend
+        environment:
+            - VITE_AUTH_TARGET=http://host.docker.internal:8002
 
 networks:
     backend:

@@ -19,7 +19,9 @@ const FriendsFinderCard = ({
     const imageSrc =
         typeof profile.profile_picture === 'string' &&
         profile.profile_picture.trim() !== ''
-            ? profile.profile_picture
+            ? profile.profile_picture.startsWith('/uploads/')
+                ? `/auth${profile.profile_picture}`
+                : profile.profile_picture
             : defaultProfile;
 
     const handleSendMessage = (event: React.MouseEvent) => {

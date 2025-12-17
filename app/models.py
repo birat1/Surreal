@@ -57,6 +57,7 @@ class UserProfile(Base):
     societies = Column(ARRAY(String), nullable=True)
     sports = Column(ARRAY(String), nullable=True)
     gym_goer = Column(String, nullable=True)
+    profile_picture = Column(String, nullable=True)
 
     # optional fields
     show_age = Column(Boolean, default=True)

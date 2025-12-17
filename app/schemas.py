@@ -58,6 +58,7 @@ class UserProfileResponse(BaseModel):
     societies: list[str] | None = None
     sports: list[str] | None = None
     gym_goer: str | None = None
+    profile_picture: str | None = None
 
     show_age: bool
     show_bio: bool

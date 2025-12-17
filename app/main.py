@@ -1,12 +1,15 @@
 import os
+import uuid
 import secrets
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
-from fastapi import Depends, FastAPI, HTTPException, Request, Response, status
+from fastapi import Depends, FastAPI, HTTPException, Request, Response, status, UploadFile, File
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 from passlib.context import CryptContext
+from pathlib import Path
 from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
 
@@ -24,6 +27,11 @@ from app.schemas import (
 from app.utils.jwt_handler import create_jwt_token, verify_jwt_token
 
 app = FastAPI()
+
+UPLOAD_DIR = Path("uploads")
+UPLOAD_DIR.mkdir(exist_ok=True)
+
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 # CORS settings
 origins = [
@@ -474,3 +482,38 @@ def get_matched_profiles(
     except Exception as e:
         print("Error fetching matched profiles", e)
         raise HTTPException(status_code=500, detail="Error fetching matched profiles")
+
+@app.post("/user-profile-picture")
+async def upload_profile_picture(
+    file: UploadFile = File(...),
+    db: Annotated[Session, Depends(get_db)] = None,
+    current_user: Annotated[User, Depends(get_current_user)] = None,
+):
+    allowed_types = {"image/jpeg", "image/png", "image/webp"}
+    if file.content_type not in allowed_types:
+        raise HTTPException(status_code=400, detail="Only JPG/PNG/WEBP allowed")
+
+    ext_map = {"image/jpeg": ".jpg", "image/png": ".png", "image/webp": ".webp"}
+    ext = ext_map[file.content_type]
+
+    filename = f"{current_user.id}_{uuid.uuid4().hex}{ext}"
+    filepath = UPLOAD_DIR / filename
+
+    content = await file.read()
+    with open(filepath, "wb") as f:
+        f.write(content)
+
+    profile = (
+        db.query(models.UserProfile)
+        .filter(models.UserProfile.user_id == current_user.id)
+        .first()
+    )
+    if not profile:
+        raise HTTPException(status_code=400, detail="Create profile first, then upload picture")
+
+    public_path = f"/uploads/{filename}"
+    profile.profile_picture = public_path
+    db.commit()
+    db.refresh(profile)
+
+    return {"message": "Profile picture updated", "profile_picture": public_path}

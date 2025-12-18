@@ -6,6 +6,8 @@ from pydantic import UUID4, Field
 
 
 class Message(Document):
+    """Message model."""
+
     id: UUID = Field(default_factory=uuid4)
     sender_id: UUID4
     recipient_id: UUID4
@@ -20,6 +22,8 @@ class Message(Document):
         name = "messages"
 
 class Conversation(Document):
+    """Conversation model."""
+
     id: UUID = Field(default_factory=uuid4)
 
     participants: list[UUID4]

@@ -29,14 +29,15 @@ async def fetch_names_from_auth_service(user_ids: list[str]) -> dict[str, str]:
                 f"{USER_AUTH_SERVICE_URL}/users/retrieve",
                 json={"user_ids": user_ids},
             )
-            if response.status_code == 200:
+            if response.status_code == 200: # Successful response
                 return response.json()
     except Exception as e:
-        logger.error(f"Error fetching names from auth service: {e}")
+        logger.exception(f"Error fetching names from auth service: {e}")
     return {}
 
 @router.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket) -> None:
+    """WebSocket endpoint for real-time messaging."""
     # Authenicate via JWT
     token = websocket.cookies.get("access_token")
 
@@ -91,7 +92,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
                             "conversationId": cid,
                             "readerId": user_id_str,
                             "readAt": read_at,
-                        }
+                        },
                     }
                     await publisher.publish_event(read_event)
 

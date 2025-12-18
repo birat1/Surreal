@@ -89,7 +89,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
                     read_event = {
                         "eventType": "MessageRead",
                         "messageRead": {
-                            "conversationId": cid,
+                            "conversationId": str(cid),
                             "readerId": user_id_str,
                             "readAt": read_at,
                         },
@@ -163,7 +163,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
                 "eventType": "MessageCreated",
                 "messageCreated":{
                     "messageId": message_id,
-                    "conversationId": cid,
+                    "conversationId": str(cid),
                     "senderId": str(user_id),
                     "senderUsername": sender_username,
                     "recipientId": str(data.recipient_id),

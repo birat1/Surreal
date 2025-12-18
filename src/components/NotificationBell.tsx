@@ -61,7 +61,10 @@ export default function NotificationBell() {
                             notifications.map((notif: NotificationGroup) => (
                                 <Link
                                     to={`messages/${notif.conversationId}`}
-                                    onClick={() => markRead(notif.id)}
+                                    onClick={() => {
+                                        markRead(notif.id);
+                                        setOpen(!open);
+                                    }}
                                 >
                                     <div
                                         key={notif.id}

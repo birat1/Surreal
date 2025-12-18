@@ -136,12 +136,14 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
 
             message_id = str(uuid4())
             time_stamp = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
+            sender_username = names_dict.get(user_id_str, "unknown")
             created_event = {
                 "eventType": "MessageCreated",
                 "messageCreated":{
                     "messageId": message_id,
                     "conversationId": cid,
                     "senderId": str(user_id),
+                    "senderUsername": sender_username,
                     "recipientId": str(data.recipient_id),
                     "preview": data.body[:30],
                     "timeStamp": time_stamp

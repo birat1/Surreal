@@ -49,7 +49,7 @@ async def get_user_inbox(current_user: Annotated[str, Depends(get_current_user)]
 
 # Messages in a conversation endpoint
 @router.get("/conversations/{conversation_id}/messages")
-async def get_conversation(conversation_id: str, current_user: Annotated[str, Depends(get_current_user)]):
+async def get_conversation(conversation_id: UUID, current_user: Annotated[str, Depends(get_current_user)]):
     """Fetch all messages in a conversation."""
 
     user_id = UUID(current_user)

@@ -10,7 +10,7 @@ class Message(Document):
     sender_id: UUID4
     recipient_id: UUID4
 
-    conversation_id: str = Indexed()
+    conversation_id: UUID = Indexed()
     body: str
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
@@ -20,7 +20,7 @@ class Message(Document):
         name = "messages"
 
 class Conversation(Document):
-    id: str
+    id: UUID = Field(default_factory=uuid4)
 
     participants: list[UUID4]
     participant_names: dict[str, str]

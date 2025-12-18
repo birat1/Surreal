@@ -1,19 +1,20 @@
 import json
 import logging
+import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-from app.database import SessionLocal
-from app.models import MatchedUsers, User, UserProfile
-from passlib.context import CryptContext
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(CURRENT_DIR)
+sys.path.append(PROJECT_ROOT)
+
+from app.database import SessionLocal  # noqa: E402
+from app.models import MatchedUsers, User, UserProfile  # noqa: E402
+from passlib.context import CryptContext  # noqa: E402
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-CURRENT_DIR = Path(Path(__file__).resolve()).parent
-PROJECT_ROOT = Path(CURRENT_DIR).parent
-sys.path.append(PROJECT_ROOT)
 
 pwd_context = CryptContext(schemes=["argon2"])
 

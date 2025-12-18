@@ -36,24 +36,6 @@ services:
       - auth-internal
       - backend
 
-  user-auth-seeder:
-    build: .
-    command: python ./seed/seed.py
-    env_file:
-      - .env
-    environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - PYTHONPATH=.
-    volumes:
-      - .:/app
-    depends_on:
-      user-auth-service:
-        condition: service_started
-      db:
-        condition: service_healthy
-    networks:
-      - auth-internal
-
 networks:
   auth-internal:
     driver: bridge

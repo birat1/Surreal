@@ -97,7 +97,6 @@ def seed():
     if new_matches:
         db.add_all(new_matches)
         db.commit()
-        logger.info(f"Seeded {len(new_matches)} matched user pairs.")  # noqa: G004
     else:
         logger.info("No matches found among seeded users.")
 

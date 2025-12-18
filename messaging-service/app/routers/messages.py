@@ -62,8 +62,6 @@ async def get_conversation(conversation_id: UUID, current_user: Annotated[str, D
         if user_id not in conversation.participants:
             raise HTTPException(status_code=403, detail="Access denied to this conversation")
     else:
-        if current_user not in conversation_id:
-            raise HTTPException(status_code=403, detail="Access denied to this conversation")
         return []
 
     # Fetch messages in the conversation

@@ -10,9 +10,9 @@ import { getConversationId } from '@/lib/utils';
 import type { Message, Conversation } from '@/types/types';
 
 const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-const WS_URL = `${protocol}://${window.location.host}/messaging/ws`;
+const WS_URL = `${protocol}://localhost:8080/messaging/ws`;
 
-const API_URL = '/messaging';
+const API_URL = 'http://localhost:8080/messaging';
 
 export default function MessagesPage() {
     const { isAuthenticated, userId, userName } = useAuth();

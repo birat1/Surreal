@@ -46,7 +46,7 @@ const ProfileCardFullScreen: React.FC<ProfilePreviewProps> = ({
 
                 // guard against bad strings
                 if (s && s !== 'null' && s !== 'undefined') {
-                    return s.startsWith('/uploads/') ? `/auth${s}` : s;
+                    return s.startsWith('/uploads/') ? `http://localhost:8080/auth${s}` : s;
                 }
             }
 

@@ -16,7 +16,10 @@ const FriendsFinderPage = () => {
     useEffect(() => {
         const getUserProfiles = async () => {
             try {
-                const res = await fetch('/auth/matched-profiles');
+                const res = await fetch('http://localhost:8080/auth/matched-profiles', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
                 const data: UserProfileFriendsFinder[] = await res.json();
                 setProfiles(data);
             } catch (err) {

@@ -29,7 +29,7 @@ const SignUpPage = () => {
         setLoading(true);
 
         try {
-            const res = await fetch('/auth/send-verification-code', {
+            const res = await fetch('http://localhost:8080/auth/send-verification-code', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email }),
@@ -53,7 +53,7 @@ const SignUpPage = () => {
 
     const handleVerifyCode = async () => {
         try {
-            const res = await fetch('/auth/verify-code', {
+            const res = await fetch('http://localhost:8080/auth/verify-code', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password, code }),

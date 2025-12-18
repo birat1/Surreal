@@ -39,7 +39,7 @@ export default function ConversationInbox({
 
         try {
             const response = await fetch(
-                `/auth/users/search?username=${searchQuery.trim()}`,
+                `http://localhost:8080/auth/users/search?username=${searchQuery.trim()}`,
                 {
                     credentials: 'include',
                 }

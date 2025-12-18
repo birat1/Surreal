@@ -65,7 +65,7 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
         try {
             const { profile_picture, ...profileDataNoPic } = formData;
 
-            const res = await fetch('/auth/user-profile-setup', {
+            const res = await fetch('http://localhost:8080/auth/user-profile-setup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -83,7 +83,7 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
                 const fileForm = new FormData();
                 fileForm.append('file', profile_picture);
 
-                const uploadRes = await fetch('/auth/user-profile-picture', {
+                const uploadRes = await fetch('http://localhost:8080/auth/user-profile-picture', {
                     method: 'POST',
                     body: fileForm,
                     credentials: 'include',

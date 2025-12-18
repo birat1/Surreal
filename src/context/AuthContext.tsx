@@ -49,7 +49,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Check if user is logged in via cookie
     const checkAuthStatus = async () => {
         try {
-            const response = await fetch('/auth/validate-token', {
+            const response = await fetch('http://localhost:8080/auth/validate-token', {
                 method: 'GET',
                 credentials: 'include', // include cookies
                 headers: {
@@ -92,7 +92,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     const logout = async () => {
         try {
-            await fetch('/auth/logout', {
+            await fetch('http://localhost:8080/auth/logout', {
                 method: 'POST',
                 credentials: 'include', // include cookies
             });

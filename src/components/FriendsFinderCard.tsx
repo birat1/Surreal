@@ -20,7 +20,7 @@ const FriendsFinderCard = ({
         typeof profile.profile_picture === 'string' &&
         profile.profile_picture.trim() !== ''
             ? profile.profile_picture.startsWith('/uploads/')
-                ? `/auth${profile.profile_picture}`
+                ? `http://localhost:8000/auth${profile.profile_picture}`
                 : profile.profile_picture
             : defaultProfile;
 

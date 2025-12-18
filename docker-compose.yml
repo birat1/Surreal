@@ -12,6 +12,11 @@ services:
       - "5432:5432"
     networks:
       - auth-internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d userauthdb"]
+      interval: 1s
+      timeout: 10s
+      retries: 10
 
   user-auth-service:
     build: .
@@ -22,13 +27,32 @@ services:
     environment:
       - DATABASE_URL=${DATABASE_URL}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     volumes:
       - .:/app
       - ./uploads:/app/uploads
     networks:
       - auth-internal
       - backend
+
+  user-auth-seeder:
+    build: .
+    command: python ./seed/seed.py
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - PYTHONPATH=.
+    volumes:
+      - .:/app
+    depends_on:
+      user-auth-service:
+        condition: service_started
+      db:
+        condition: service_healthy
+    networks:
+      - auth-internal
 
 networks:
   auth-internal:

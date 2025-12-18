@@ -5,6 +5,8 @@ from fastapi import WebSocket, WebSocketDisconnect
 logger = logging.getLogger(__name__)
 
 class ConnectionManager:
+    """Class to manage active WebSocket connections for users."""
+
     def __init__(self) -> None:
         """Initialise an empty active connections dictionary."""
         self.active: dict[str, list[WebSocket]] = {}

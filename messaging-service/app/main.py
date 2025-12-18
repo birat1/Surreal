@@ -11,6 +11,7 @@ from app.utils.rabbitmq_publisher import publisher
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    """Lifespan context manager to handle startup and shutdown events."""
     await init_db()
     await publisher.start()
     try:
@@ -29,7 +30,8 @@ app.add_middleware(
 )
 
 @app.get("/")
-def health():
+def health() -> dict:
+    """Health check endpoint."""
     return {"blank page": "This is a blank page"}
 
 app.include_router(messages.router)

@@ -2,15 +2,13 @@ import contextlib
 import datetime
 import logging
 import os
-from uuid import UUID
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 import httpx
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from pydantic import ValidationError
 
 from app.connection_manager import manager
-from app.db import conv_id
 from app.models import Conversation, Message
 from app.schemas import MessageCreate
 from app.utils.jwt_handler import get_ws_user_id
@@ -31,24 +29,15 @@ async def fetch_names_from_auth_service(user_ids: list[str]) -> dict[str, str]:
                 f"{USER_AUTH_SERVICE_URL}/users/retrieve",
                 json={"user_ids": user_ids},
             )
-            if response.status_code == 200:
+            if response.status_code == 200: # Successful response
                 return response.json()
     except Exception as e:
-        logger.error(f"Error fetching names from auth service: {e}")
+        logger.exception(f"Error fetching names from auth service: {e}")
     return {}
-
-async def get_participant_names(cid: str, user_ids: list[str]) -> dict[str, str]:
-    """Fetch names from local db first. If not found, fetch from auth service."""
-    existing_conv = await Conversation.find_one(Conversation.id == cid)
-
-    if existing_conv and existing_conv.participant_names:
-        if all(uid in existing_conv.participant_names for uid in user_ids):
-            return existing_conv.participant_names
-
-    return await fetch_names_from_auth_service(user_ids)
 
 @router.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket) -> None:
+    """WebSocket endpoint for real-time messaging."""
     # Authenicate via JWT
     token = websocket.cookies.get("access_token")
 
@@ -73,7 +62,18 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
                     # ID of the sender whose message has been read
                     sender_id_message = raw_data["sender_id"]
 
-                    cid = conv_id(user_id_str, sender_id_message)
+                    # Find existing conversation via participants
+                    conversation = await Conversation.find_one({
+                        "participants": {
+                            "$all": [UUID(user_id_str), UUID(sender_id_message)],
+                        },
+                    })
+
+                    if not conversation:
+                        logger.warning(f"Conversation not found for read receipt: {user_id_str} and {sender_id_message}")
+                        continue
+
+                    cid = conversation.id
 
                     curr_time = datetime.datetime.now(datetime.timezone.utc)
 
@@ -92,7 +92,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
                             "conversationId": cid,
                             "readerId": user_id_str,
                             "readAt": read_at,
-                        }
+                        },
                     }
                     await publisher.publish_event(read_event)
 
@@ -118,11 +118,33 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
                 await manager.send_to_user(user_id_str, {"type": "error", "message": "Cannot send message to self"})
                 continue
 
-            # Store the message
-            cid = conv_id(user_id_str, recipient_id_str)
+            # Find existing conversation via participants
+            conversation = await Conversation.find_one({
+                "participants": {
+                    "$all": [UUID(user_id_str), UUID(recipient_id_str)],
+                },
+            })
 
-            # Fetch participant id-name mapping
-            names_dict = await get_participant_names(cid, [user_id_str, recipient_id_str])
+            if conversation:
+                # Use existing conversation
+                cid = conversation.id
+                names_dict = conversation.participant_names
+
+                if not all(uid in names_dict for uid in [user_id_str, recipient_id_str]):
+                    names_dict = await fetch_names_from_auth_service([user_id_str, recipient_id_str])
+            else:
+                # Create new conversation if none exists
+                cid = uuid4()
+                names_dict = await fetch_names_from_auth_service([user_id_str, recipient_id_str])
+                conversation = Conversation(
+                    id = cid,
+                    participants = [UUID(user_id_str), UUID(recipient_id_str)],
+                    participant_names = names_dict,
+                    last_msg = data.body,
+                    last_sender_id = user_id,
+                    updated_at = datetime.datetime.now(datetime.timezone.utc),
+                )
+                await conversation.insert()
 
             # Create and insert new message document
             new_msg = Message(
@@ -146,34 +168,26 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
                     "senderUsername": sender_username,
                     "recipientId": str(data.recipient_id),
                     "preview": data.body[:30],
-                    "timeStamp": time_stamp
-                }
+                    "timeStamp": time_stamp,
+                },
             }
             await publisher.publish_event(created_event)
 
             # Update conversation metadata
             curr_time = datetime.datetime.now(datetime.timezone.utc)
-            await Conversation.find_one(Conversation.id == cid).upsert(
-                {
-                    "$set": {
-                        "last_msg": data.body[:100],
-                        "last_sender_id": user_id,
-                        "updated_at": curr_time,
-                        "participant_names": names_dict,
-                    },
-                    "$addToSet": {
-                        "participants": {"$each": [user_id, data.recipient_id]},
-                    },
-                },
-                on_insert=Conversation(
-                    id=cid,
-                    participants=[user_id, data.recipient_id],
-                    participant_names=names_dict,
-                    last_msg=data.body[:100],
-                    last_sender_id=user_id,
-                    updated_at=curr_time,
-                ),
-            )
+
+            conversation.last_msg = data.body
+            conversation.last_sender_id = user_id
+            conversation.updated_at = curr_time
+            conversation.participant_names = names_dict
+
+            # Ensure both participants are in the conversation
+            if user_id not in conversation.participants:
+                conversation.participants.append(user_id)
+            if data.recipient_id not in conversation.participants:
+                conversation.participants.append(data.recipient_id)
+
+            await conversation.save()
 
             # Prepare response payload
             response_dict = new_msg.model_dump(mode="json")

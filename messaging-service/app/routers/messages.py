@@ -10,13 +10,13 @@ router = APIRouter()
 
 # Inbox endpoint
 @router.get("/inbox")
-async def get_user_inbox(current_user: Annotated[str, Depends(get_current_user)]):
+async def get_user_inbox(current_user: Annotated[str, Depends(get_current_user)]) -> dict:
     """Get the inbox for a user, listing all conversations they are a part of."""
     user_id = UUID(current_user)
 
     # Fetch conversations involving the user
     conversations = await Conversation.find(
-        Conversation.participants == user_id
+        Conversation.participants == user_id  # noqa: COM812
     ).sort("-updated_at").to_list()
 
     inbox_list = []
@@ -49,9 +49,8 @@ async def get_user_inbox(current_user: Annotated[str, Depends(get_current_user)]
 
 # Messages in a conversation endpoint
 @router.get("/conversations/{conversation_id}/messages")
-async def get_conversation(conversation_id: str, current_user: Annotated[str, Depends(get_current_user)]):
+async def get_conversation(conversation_id: UUID, current_user: Annotated[str, Depends(get_current_user)]) -> list[dict]:
     """Fetch all messages in a conversation."""
-
     user_id = UUID(current_user)
 
     # Fetch the conversation
@@ -60,15 +59,13 @@ async def get_conversation(conversation_id: str, current_user: Annotated[str, De
     # Verify user participation in the conversation
     if conversation:
         if user_id not in conversation.participants:
-            raise HTTPException(status_code=403, detail="You are not a participant in this conversation")
-    else:
-        if current_user not in conversation_id:
             raise HTTPException(status_code=403, detail="Access denied to this conversation")
+    else:
         return []
 
     # Fetch messages in the conversation
     messages = await Message.find(
-        Message.conversation_id == conversation_id
+        Message.conversation_id == conversation_id # noqa: COM812
     ).sort("+created_at").to_list()
 
     # Return messages as JSON dicts

@@ -5,11 +5,6 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
-export function getConversationId(userA: string, userB: string): string {
-    const [a, b] = [userA, userB].sort();
-    return `${a}-${b}`;
-}
-
 export function formatDate(dateString?: string | null): string {
     if (!dateString) return '';
 

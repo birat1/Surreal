@@ -6,7 +6,6 @@ import ConversationInbox from '@/components/ConversationInbox';
 import MessageBubble from '@/components/MessageBubble';
 import { useAuth } from '@/context/AuthContext';
 import { useChatSocket } from '@/hooks/useChatSocket';
-import { getConversationId } from '@/lib/utils';
 import type { Message, Conversation } from '@/types/types';
 
 const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
@@ -25,6 +24,39 @@ export default function MessagesPage() {
     const [messages, setMessages] = useState<Message[]>([]);
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
+    // Redirect if trying to access a draft conversation that now exists
+    useEffect(() => {
+        if (conversationId === 'new' || conversationId?.startsWith('new-')) {
+            let targetRecipientId = '';
+
+            // Determine recipient ID from state or URL
+            const locState = location.state as { recipientId: string } | null;
+            if (locState?.recipientId) {
+                targetRecipientId = locState.recipientId;
+            } else if (conversationId.startsWith('new-')) {
+                targetRecipientId = conversationId.replace('new-', '');
+            }
+
+            // Check if a real conversation now exists
+            if (targetRecipientId) {
+                const existingRealConv = conversations.find(
+                    (c) =>
+                        c.recipient_id === targetRecipientId &&
+                        c.id !== 'new' &&
+                        !c.id.startsWith('new-')
+                );
+
+                // If found, redirect to it
+                if (existingRealConv) {
+                    navigate(`/messages/${existingRealConv.id}`, {
+                        replace: true,
+                        state: location.state,
+                    });
+                }
+            }
+        }
+    }, [conversationId, conversations, location.state, navigate]);
+
     // Optimistically add new conversation if from friends finder
     useEffect(() => {
         const state = location.state as {
@@ -32,21 +64,17 @@ export default function MessagesPage() {
             recipientName: string;
         } | null;
 
+        // If state has recipientId and recipientName, add new conversation
         if (state?.recipientId && state.recipientName && currentUserId) {
             setConversations((prevConversations) => {
-                const targetId = getConversationId(
-                    currentUserId,
-                    state.recipientId
-                );
                 const exists = prevConversations.some(
-                    (c) =>
-                        c.id === targetId ||
-                        c.recipient_id === state.recipientId
+                    (c) => c.recipient_id === state.recipientId
                 );
 
+                // If not exists, add new conversation
                 if (!exists) {
                     const newConversation: Conversation = {
-                        id: targetId,
+                        id: `new-${state.recipientId}`, // Temporary ID
                         recipient_id: state.recipientId,
                         recipient_name: state.recipientName,
                         last_message: '',
@@ -64,31 +92,33 @@ export default function MessagesPage() {
     const activeConversation = useMemo(() => {
         if (!conversationId) return null;
 
-        const found = conversations.find(
-            (c) =>
-                c.id === conversationId ||
-                getConversationId(currentUserId, c.recipient_id) ===
-                    conversationId
-        );
-        if (found) return found;
+        // Handle draft conversations
+        if (conversationId === 'new' || conversationId.startsWith('new-')) {
+            const locState = location.state as {
+                recipientId: string;
+                recipientName: string;
+            } | null;
 
-        const locState = location.state as {
-            recipientId: string;
-            recipientName?: string;
-        } | null;
-        if (locState?.recipientId) {
-            return {
-                id: conversationId,
-                recipient_id: locState.recipientId,
-                recipient_name: locState.recipientName,
-                last_message: '',
-                last_sender_id: '',
-                updated_at: new Date().toISOString(),
-            } as Conversation;
+            // If no state, cannot determine recipient
+            if (locState?.recipientId) {
+                return {
+                    id: conversationId,
+                    recipient_id: locState.recipientId,
+                    recipient_name: locState.recipientName || 'Unknown',
+                    last_message: '',
+                    last_sender_id: '',
+                    updated_at: new Date().toISOString(),
+                } as Conversation;
+            }
+            return null;
         }
 
+        // Find existing conversation
+        const found = conversations.find((c) => c.id === conversationId);
+        if (found) return found;
+
         return null;
-    }, [conversationId, conversations, currentUserId, location.state]);
+    }, [conversationId, conversations, location.state]);
 
     const recipientId = activeConversation?.recipient_id || '';
     const activeRecipientName = activeConversation?.recipient_name || 'Unknown';
@@ -128,20 +158,26 @@ export default function MessagesPage() {
                     const data = await res.json();
                     if (data.conversations) {
                         setConversations((currentConv) => {
+                            // Replace with fetched conversations
                             const convList =
                                 data.conversations as Conversation[];
 
-                            const activeConv = currentConv.find(
-                                (c) =>
-                                    c.id === conversationId &&
-                                    !convList.some((nc) => nc.id === c.id)
+                            // Preserve drafts
+                            const drafts = currentConv.filter(
+                                (c) => c.id === 'new' || c.id.startsWith('new-')
                             );
 
-                            if (activeConv) {
-                                return [activeConv, ...convList];
-                            }
+                            // Merge drafts with fetched conversations
+                            const uniqueDrafts = drafts.filter(
+                                (draft) =>
+                                    !convList.some(
+                                        (convList) =>
+                                            convList.recipient_id ===
+                                            draft.recipient_id
+                                    )
+                            );
 
-                            return convList;
+                            return [...uniqueDrafts, ...convList];
                         });
                     }
                 }
@@ -159,7 +195,13 @@ export default function MessagesPage() {
 
         setMessages([]);
 
-        if (!conversationId || !isAuthenticated) {
+        // Ignore drafts or invalid conversation IDs
+        if (
+            !conversationId ||
+            conversationId == 'new' ||
+            conversationId.startsWith('new-') ||
+            !isAuthenticated
+        ) {
             return;
         }
 
@@ -209,40 +251,46 @@ export default function MessagesPage() {
         [recipientId, sendMessage]
     );
 
+    // Handle selecting a conversation from inbox
     const handleSelectConversation = useCallback(
         (selectedRecipientId: string, recipientName?: string) => {
-            const targetId = getConversationId(
-                currentUserId,
-                selectedRecipientId
+            const existingConv = conversations.find(
+                (c) => c.recipient_id === selectedRecipientId
             );
 
-            if (recipientName) {
-                setConversations((prevConversations) => {
-                    if (
-                        prevConversations.some(
-                            (c) => c.recipient_id === selectedRecipientId
-                        )
-                    )
-                        return prevConversations;
-                    return [
-                        {
-                            id: targetId,
-                            recipient_id: selectedRecipientId,
-                            recipient_name: recipientName,
-                            last_message: '',
-                            last_sender_id: '',
-                            updated_at: new Date().toISOString(),
-                        } as Conversation,
-                        ...prevConversations,
-                    ];
+            // If existing conversation found, navigate to it
+            if (
+                existingConv &&
+                existingConv.id !== 'new' &&
+                !existingConv.id.startsWith('new-')
+            ) {
+                navigate(`/messages/${existingConv.id}`, {
+                    state: { recipientId: selectedRecipientId, recipientName },
                 });
+                return;
             }
 
-            navigate(`/messages/${targetId}`, {
+            // If no existing conversation, optimistically add one
+            if (!existingConv) {
+                setConversations((prevConversations) => [
+                    {
+                        id: `new-${selectedRecipientId}`, // Temporary ID
+                        recipient_id: selectedRecipientId,
+                        recipient_name: recipientName || 'Unknown',
+                        last_message: '',
+                        last_sender_id: '',
+                        updated_at: new Date().toISOString(),
+                    } as Conversation,
+                    ...prevConversations,
+                ]);
+            }
+
+            // Redirect to new message route
+            navigate(`/messages/new`, {
                 state: { recipientId: selectedRecipientId, recipientName },
             });
         },
-        [currentUserId, navigate]
+        [conversations, navigate]
     );
 
     // Chat UI

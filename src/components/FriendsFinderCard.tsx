@@ -2,7 +2,6 @@ import { MessageCircle, Maximize2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@/context/AuthContext';
-import { getConversationId } from '@/lib/utils';
 import { UserProfileFriendsFinderProps } from '@/types/types';
 
 import defaultProfile from '../assets/default_profile.jpeg';
@@ -36,12 +35,7 @@ const FriendsFinderCard = ({
         console.log('Recipient User ID:', profile.user_id);
         console.log('Recipient Name:', profile.username);
 
-        const conversationId = getConversationId(
-            currentUserId,
-            String(profile.user_id)
-        );
-
-        navigate(`/messages/${conversationId}`, {
+        navigate(`/messages/new`, {
             state: {
                 recipientId: profile.user_id,
                 recipientName: profile.username,

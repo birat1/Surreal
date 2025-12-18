@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { getConversationId } from '@/lib/utils';
 import type { Conversation, Message } from '@/types/types';
 
 export function useChatSocket(
@@ -70,6 +69,7 @@ export function useChatSocket(
                     return;
                 }
 
+                // Handle read receipt
                 if (data.type === 'read_receipt') {
                     setMessages((prevMessages) =>
                         prevMessages.map((msg) => {
@@ -85,6 +85,7 @@ export function useChatSocket(
                     return;
                 }
 
+                // Determine who the message is for
                 const chattingWith =
                     data.sender_id === currentUserId
                         ? data.recipient_id
@@ -99,6 +100,7 @@ export function useChatSocket(
                 if (chattingWith === recipientRef.current) {
                     setMessages((prevMessages) => [...prevMessages, data]);
 
+                    // Send read receipt if incoming
                     if (isIncoming) {
                         sendReadReceipt(data.sender_id);
                     }
@@ -112,6 +114,7 @@ export function useChatSocket(
                     );
                     const existing = prevConversations[existingIndex];
 
+                    // Determine display name
                     let display_name = existing?.recipient_name;
                     if (!display_name) {
                         if (isIncoming) {
@@ -123,9 +126,9 @@ export function useChatSocket(
 
                     // Create the updated conversation object
                     const updatedConversation: Conversation = {
-                        id: existing
-                            ? existing.id
-                            : getConversationId(currentUserId, chattingWith),
+                        id:
+                            data.conversation_id ||
+                            (existing ? existing.id : 'new'),
                         recipient_id: chattingWith,
                         recipient_name: display_name || 'Unknown',
                         last_message: data.body,
@@ -133,6 +136,7 @@ export function useChatSocket(
                         updated_at: new Date().toISOString(),
                     };
 
+                    // Reorder conversations: updated one goes to top
                     const newConversations = [...prevConversations];
                     if (existingIndex !== -1) {
                         newConversations.splice(existingIndex, 1);

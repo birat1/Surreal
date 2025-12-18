@@ -1,10 +1,11 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-const baseUrl = 'http://localhost:8081';
+const baseUrl = 'http://localhost:8080/notification';
 
 export interface NotificationGroup {
   id: string;
   senderId: string;
+  senderUsername: string;
   conversationId: string;
   unreadCount: number;
   lastMessagePreview: string;

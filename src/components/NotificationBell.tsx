@@ -59,31 +59,25 @@ export default function NotificationBell() {
                             </div>
                         ) : (
                             notifications.map((notif: NotificationGroup) => (
-                                <Link to={`messages/${notif.conversationId}`}>
+                                <Link
+                                    to={`messages/${notif.conversationId}`}
+                                    onClick={() => markRead(notif.id)}
+                                >
                                     <div
                                         key={notif.id}
                                         className="relative flex justify-between items-center gap-4 bg-gray-100 hover:bg-gray-200 hover:cursor-pointer min-h-20 w-[95%] mx-auto rounded-xl p-3"
                                     >   
-                                        {notif.unreadCount > 1 && (
-                                            <span
-                                                className="
-                                                absolute -top-1 -right-1 bg-red-500 text-white text-xs font-semibold rounded-full min-w-[18px] h-[18px]
-                                                flex items-center justify-center
-                                                ">
-                                                {notif.unreadCount}
-                                            </span>
-                                        )}
                                         <div className='flex items-center gap-4'>
                                             <MessagesSquare className="text-gray-500"/>
                                             <div>
-                                                <p className='text-sm font-semibold'>{notif.senderId}</p>
-                                                <p className="text-sm">{notif.lastMessagePreview}</p>
+                                                <p className='text-sm font-semibold'>{notif.senderUsername}</p>
+                                                {notif.unreadCount > 1 ? (
+                                                    <p className='text-sm'>Sent you {notif.unreadCount} messages.</p>
+                                                ) : (
+                                                    <p className='text-sm'>Sent you a message.</p>
+                                                )}
                                             </div>
                                         </div>
-                                        <X
-                                            className="text-gray-500 hover:text-gray-700 hover:cursor-pointer"
-                                            onClick={() => markRead(notif.id)}
-                                        />
                                     </div>
                                 </Link>
                             ))

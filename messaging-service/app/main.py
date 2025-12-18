@@ -6,12 +6,17 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import ALLOWED_ORIGINS
 from app.db import init_db
 from app.routers import messages, ws
+from app.utils.rabbitmq_publisher import publisher
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await init_db()
-    yield
+    await publisher.start()
+    try:
+        yield
+    finally:
+        await publisher.stop()
 
 app = FastAPI(lifespan=lifespan)
 

@@ -3,6 +3,7 @@ import datetime
 import logging
 import os
 from uuid import UUID
+from uuid import uuid4
 
 import httpx
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
@@ -13,6 +14,7 @@ from app.db import conv_id
 from app.models import Conversation, Message
 from app.schemas import MessageCreate
 from app.utils.jwt_handler import get_ws_user_id
+from app.utils.rabbitmq_publisher import publisher
 
 logger = logging.getLogger(__name__)
 
@@ -82,6 +84,18 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
                         "read_at": None,
                     }).update({"$set": {"read_at": curr_time}})
 
+                    # Create read event and publish to message broker
+                    read_at = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
+                    read_event = {
+                        "eventType": "MessageRead",
+                        "messageRead": {
+                            "conversationId": cid,
+                            "readerId": user_id_str,
+                            "readAt": read_at,
+                        }
+                    }
+                    await publisher.publish_event(read_event)
+
                     # Notify the original sender about the read receipt
                     await manager.send_to_user(sender_id_message, {
                         "type": "read_receipt",
@@ -119,6 +133,23 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
             )
 
             await new_msg.insert()
+
+            message_id = str(uuid4())
+            time_stamp = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
+            sender_username = names_dict.get(user_id_str, "unknown")
+            created_event = {
+                "eventType": "MessageCreated",
+                "messageCreated":{
+                    "messageId": message_id,
+                    "conversationId": cid,
+                    "senderId": str(user_id),
+                    "senderUsername": sender_username,
+                    "recipientId": str(data.recipient_id),
+                    "preview": data.body[:30],
+                    "timeStamp": time_stamp
+                }
+            }
+            await publisher.publish_event(created_event)
 
             # Update conversation metadata
             curr_time = datetime.datetime.now(datetime.timezone.utc)

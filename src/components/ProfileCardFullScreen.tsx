@@ -50,7 +50,7 @@ const ProfileCardFullScreen: React.FC<ProfilePreviewProps> = ({
                 if (s && s !== 'null' && s !== 'undefined') {
                     // Check for relative path
                     if (s.startsWith('/')) {
-                        return `http://localhost:8080/auth${s}`;
+                        return `http://localhost:8080${s}`;
                     }
                     // If using cloud storage (check for http/https)
                 }

@@ -26,7 +26,7 @@ const FriendsFinderCard = ({
         if (pic !== '') {
             // Handle if its a relative path from the backend
             if (pic.startsWith('/')) {
-                imageSrc = `http://localhost:8080/auth${pic}`;
+                imageSrc = `http://localhost:8080${pic}`;
             }
             // Handle if its from an URL (Cloud Storage?)
         }

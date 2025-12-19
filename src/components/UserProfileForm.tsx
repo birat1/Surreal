@@ -46,6 +46,16 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null;
+
+        const MAX_SIZE = 5 * 1024 * 1024; // 5MB Limit
+
+        if (file && file.size > MAX_SIZE) {
+            alert('Maximum file size is 5MB.');
+            e.target.value = '';
+
+            setFormData({ ...formData, profile_picture: null });
+            return;
+        }
         setFormData({ ...formData, profile_picture: file });
     };
 

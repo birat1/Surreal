@@ -183,7 +183,7 @@
       "society": ["Debating Society"],
       "sport": ["Taekwondo"],
       "gym_goer": "Yes",
-      "profile_picture": "/static/defaults/avatar6.jpeg"
+      "profile_picture": "/static/defaults/avatar2.jpeg"
     }
   },
   {
@@ -204,7 +204,7 @@
       "society": ["ParaSoc"],
       "sport": ["Volleyball"],
       "gym_goer": "Yes",
-      "profile_picture": "/static/defaults/avatar4.jpeg"
+      "profile_picture": "/static/defaults/avatar31.jpeg"
     }
   },
   {
@@ -225,7 +225,7 @@
       "society": ["Baking Society"],
       "sport": ["Volleyball"],
       "gym_goer": "No",
-      "profile_picture": "/static/defaults/avatar6.jpeg"
+      "profile_picture": "/static/defaults/avatar33.jpeg"
     }
   },
   {
@@ -246,7 +246,7 @@
       "society": ["Opa Surrey"],
       "sport": ["Football"],
       "gym_goer": "Yes",
-      "profile_picture": "/static/defaults/avatar2.jpg"
+      "profile_picture": "/static/defaults/avatar32.jpg"
     }
   },
   {
@@ -267,7 +267,7 @@
       "society": ["Zoological Society"],
       "sport": ["Sailing"],
       "gym_goer": "Yes",
-      "profile_picture": "/static/defaults/avatar2.jpg"
+      "profile_picture": "/static/defaults/avatar30.jpg"
     }
   },
   {
@@ -288,7 +288,7 @@
       "society": ["Zoological Society"],
       "sport": ["MMA"],
       "gym_goer": "No",
-      "profile_picture": "/static/defaults/avatar7.jpeg"
+      "profile_picture": "/static/defaults/avatar26.jpeg"
     }
   },
   {
@@ -309,7 +309,7 @@
       "society": ["Rifle Club"],
       "sport": ["Rugby"],
       "gym_goer": "No",
-      "profile_picture": "/static/defaults/avatar7.jpeg"
+      "profile_picture": "/static/defaults/avatar22.jpeg"
     }
   },
   {
@@ -330,7 +330,7 @@
       "society": ["Caribbean Students' Society"],
       "sport": ["Tennis"],
       "gym_goer": "Yes",
-      "profile_picture": "/static/defaults/avatar6.jpeg"
+      "profile_picture": "/static/defaults/avatar21.jpeg"
     }
   },
   {
@@ -351,7 +351,7 @@
       "society": ["Salsa Society"],
       "sport": ["Volleyball"],
       "gym_goer": "No",
-      "profile_picture": "/static/defaults/avatar4.jpeg"
+      "profile_picture": "/static/defaults/avatar29.jpeg"
     }
   },
   {
@@ -372,7 +372,7 @@
       "society": ["EARS"],
       "sport": ["Rock Climbing"],
       "gym_goer": "No",
-      "profile_picture": "/static/defaults/avatar3.jpg"
+      "profile_picture": "/static/defaults/avatar28.jpg"
     }
   },
   {
@@ -393,7 +393,7 @@
       "society": ["Hindu Society"],
       "sport": ["Taekwondo"],
       "gym_goer": "Yes",
-      "profile_picture": "/static/defaults/avatar4.jpeg"
+      "profile_picture": "/static/defaults/avatar11.jpeg"
     }
   },
   {
@@ -414,7 +414,7 @@
       "society": ["Opa Surrey"],
       "sport": ["Lacrosse"],
       "gym_goer": "Yes",
-      "profile_picture": "/static/defaults/avatar5.jpeg"
+      "profile_picture": "/static/defaults/avatar8.jpeg"
     }
   },
   {
@@ -435,7 +435,7 @@
       "society": ["GameSoc"],
       "sport": ["Football"],
       "gym_goer": "No",
-      "profile_picture": "/static/defaults/avatar2.jpg"
+      "profile_picture": "/static/defaults/avatar12.jpg"
     }
   },
   {
@@ -456,7 +456,7 @@
       "society": ["Opa Surrey"],
       "sport": ["Sailing"],
       "gym_goer": "No",
-      "profile_picture": "/static/defaults/avatar2.jpg"
+      "profile_picture": "/static/defaults/avatar10.jpg"
     }
   },
   {
@@ -477,7 +477,7 @@
       "society": ["EARS"],
       "sport": ["MMA"],
       "gym_goer": "No",
-      "profile_picture": "/static/defaults/avatar2.jpg"
+      "profile_picture": "/static/defaults/avatar15.jpg"
     }
   },
   {
@@ -498,7 +498,7 @@
       "society": ["Nepalese Society"],
       "sport": ["Cricket"],
       "gym_goer": "Yes",
-      "profile_picture": "/static/defaults/avatar1.jpg"
+      "profile_picture": "/static/defaults/avatar19.jpg"
     }
   },
   {
@@ -519,7 +519,7 @@
       "society": ["Welsh Society"],
       "sport": ["Taekwondo"],
       "gym_goer": "Yes",
-      "profile_picture": "/static/defaults/avatar1.jpg"
+      "profile_picture": "/static/defaults/avatar20.jpg"
     }
   },
   {
@@ -540,7 +540,7 @@
       "society": ["MaDSoc"],
       "sport": ["Cricket"],
       "gym_goer": "No",
-      "profile_picture": "/static/defaults/avatar1.jpg"
+      "profile_picture": "/static/defaults/avatar9.jpg"
     }
   },
   {
@@ -561,7 +561,7 @@
       "society": ["Salsa Society"],
       "sport": ["Athletics"],
       "gym_goer": "No",
-      "profile_picture": "/static/defaults/avatar1.jpg"
+      "profile_picture": "/static/defaults/avatar13.jpg"
     }
   },
   {
@@ -582,7 +582,7 @@
       "society": ["MaDSoc"],
       "sport": ["Sailing"],
       "gym_goer": "No",
-      "profile_picture": "/static/defaults/avatar1.jpg"
+      "profile_picture": "/static/defaults/avatar18.jpg"
     }
   },
   {
@@ -603,7 +603,7 @@
       "society": ["Islamic Society"],
       "sport": ["MMA"],
       "gym_goer": "Yes",
-      "profile_picture": "/static/defaults/avatar7.jpeg"
+      "profile_picture": "/static/defaults/avatar23.jpeg"
     }
   },
   {
@@ -624,7 +624,7 @@
       "society": ["MaDSoc"],
       "sport": ["Lacrosse"],
       "gym_goer": "No",
-      "profile_picture": "/static/defaults/avatar6.jpeg"
+      "profile_picture": "/static/defaults/avatar24.jpeg"
     }
   },
   {
@@ -645,7 +645,7 @@
       "society": ["Hindu Society"],
       "sport": ["Hockey"],
       "gym_goer": "No",
-      "profile_picture": "/static/defaults/avatar5.jpeg"
+      "profile_picture": "/static/defaults/avatar27.jpeg"
     }
   },
   {
@@ -666,7 +666,7 @@
       "society": ["Nepalese Society"],
       "sport": ["Netball"],
       "gym_goer": "Yes",
-      "profile_picture": "/static/defaults/avatar3.jpg"
+      "profile_picture": "/static/defaults/avatar16.jpg"
     }
   },
   {
@@ -687,7 +687,7 @@
       "society": ["Opa Surrey"],
       "sport": ["Cricket"],
       "gym_goer": "No",
-      "profile_picture": "/static/defaults/avatar4.jpeg"
+      "profile_picture": "/static/defaults/avatar14.jpeg"
     }
   }
 ]

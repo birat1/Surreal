@@ -266,6 +266,7 @@ def setup_user_profile(request: UserProfileRequest, db: Annotated[Session, Depen
         new_user_profile = models.UserProfile(
             user_id = current_user.id,
             full_name = request.full_name,
+            is_admin = request.is_admin,
             age = request.age,
             bio=request.bio,
             course=request.course,

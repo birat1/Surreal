@@ -79,7 +79,7 @@
       "society": ["Art Society"],
       "sport": ["Tennis"],
       "gym_goer": "Yes",
-      "profile_picture": "/static/defaults/avatar4.jpeg"
+      "profile_picture": "/static/defaults/avatar4.jpg"
     }
   },
   {
@@ -100,7 +100,7 @@
       "society": ["Finance Society"],
       "sport": ["Volleyball"],
       "gym_goer": "Yes",
-      "profile_picture": "/static/defaults/avatar5.jpeg"
+      "profile_picture": "/static/defaults/avatar5.jpg"
     }
   },
   {
@@ -121,7 +121,7 @@
       "society": ["Gaming Society"],
       "sport": ["Table Tennis"],
       "gym_goer": "Yes",
-      "profile_picture": "/static/defaults/avatar6.jpeg"
+      "profile_picture": "/static/defaults/avatar6.jpg"
     }
   },
   {
@@ -142,7 +142,7 @@
       "society": ["Science Society"],
       "sport": ["Rugby"],
       "gym_goer": "Yes",
-      "profile_picture": "/static/defaults/avatar7.jpeg"
+      "profile_picture": "/static/defaults/avatar7.jpg"
     }
   },
   {
@@ -183,7 +183,7 @@
       "society": ["Debating Society"],
       "sport": ["Taekwondo"],
       "gym_goer": "Yes",
-      "profile_picture": "/static/defaults/avatar2.jpeg"
+      "profile_picture": "/static/defaults/avatar2.jpg"
     }
   },
   {
@@ -204,7 +204,7 @@
       "society": ["ParaSoc"],
       "sport": ["Volleyball"],
       "gym_goer": "Yes",
-      "profile_picture": "/static/defaults/avatar31.jpeg"
+      "profile_picture": "/static/defaults/avatar31.jpg"
     }
   },
   {
@@ -225,7 +225,7 @@
       "society": ["Baking Society"],
       "sport": ["Volleyball"],
       "gym_goer": "No",
-      "profile_picture": "/static/defaults/avatar33.jpeg"
+      "profile_picture": "/static/defaults/avatar33.jpg"
     }
   },
   {
@@ -288,7 +288,7 @@
       "society": ["Zoological Society"],
       "sport": ["MMA"],
       "gym_goer": "No",
-      "profile_picture": "/static/defaults/avatar26.jpeg"
+      "profile_picture": "/static/defaults/avatar26.jpg"
     }
   },
   {
@@ -309,7 +309,7 @@
       "society": ["Rifle Club"],
       "sport": ["Rugby"],
       "gym_goer": "No",
-      "profile_picture": "/static/defaults/avatar22.jpeg"
+      "profile_picture": "/static/defaults/avatar22.jpg"
     }
   },
   {
@@ -330,7 +330,7 @@
       "society": ["Caribbean Students' Society"],
       "sport": ["Tennis"],
       "gym_goer": "Yes",
-      "profile_picture": "/static/defaults/avatar21.jpeg"
+      "profile_picture": "/static/defaults/avatar21.jpg"
     }
   },
   {
@@ -351,7 +351,7 @@
       "society": ["Salsa Society"],
       "sport": ["Volleyball"],
       "gym_goer": "No",
-      "profile_picture": "/static/defaults/avatar29.jpeg"
+      "profile_picture": "/static/defaults/avatar29.jpg"
     }
   },
   {
@@ -393,7 +393,7 @@
       "society": ["Hindu Society"],
       "sport": ["Taekwondo"],
       "gym_goer": "Yes",
-      "profile_picture": "/static/defaults/avatar11.jpeg"
+      "profile_picture": "/static/defaults/avatar11.jpg"
     }
   },
   {
@@ -414,7 +414,7 @@
       "society": ["Opa Surrey"],
       "sport": ["Lacrosse"],
       "gym_goer": "Yes",
-      "profile_picture": "/static/defaults/avatar8.jpeg"
+      "profile_picture": "/static/defaults/avatar8.jpg"
     }
   },
   {
@@ -603,7 +603,7 @@
       "society": ["Islamic Society"],
       "sport": ["MMA"],
       "gym_goer": "Yes",
-      "profile_picture": "/static/defaults/avatar23.jpeg"
+      "profile_picture": "/static/defaults/avatar23.jpg"
     }
   },
   {
@@ -624,7 +624,7 @@
       "society": ["MaDSoc"],
       "sport": ["Lacrosse"],
       "gym_goer": "No",
-      "profile_picture": "/static/defaults/avatar24.jpeg"
+      "profile_picture": "/static/defaults/avatar24.jpg"
     }
   },
   {
@@ -645,7 +645,7 @@
       "society": ["Hindu Society"],
       "sport": ["Hockey"],
       "gym_goer": "No",
-      "profile_picture": "/static/defaults/avatar27.jpeg"
+      "profile_picture": "/static/defaults/avatar27.jpg"
     }
   },
   {
@@ -687,7 +687,7 @@
       "society": ["Opa Surrey"],
       "sport": ["Cricket"],
       "gym_goer": "No",
-      "profile_picture": "/static/defaults/avatar14.jpeg"
+      "profile_picture": "/static/defaults/avatar14.jpg"
     }
   }
 ]

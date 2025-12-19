@@ -1,21 +1,25 @@
+import io
+import logging
 import os
-import uuid
 import secrets
+import uuid
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from typing import Annotated
 
-from fastapi import Depends, FastAPI, HTTPException, Request, Response, status, UploadFile, File
-from fastapi.staticfiles import StaticFiles
+import anyio
+from fastapi import Depends, FastAPI, File, HTTPException, Request, Response, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 from passlib.context import CryptContext
-from pathlib import Path
+from PIL import Image
 from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
 
 from app import models
 from app.database import SessionLocal, engine
-from app.models import User, MatchedUsers
+from app.models import MatchedUsers, User
 from app.schemas import (
     BatchIDRequest,
     EmailRequest,
@@ -26,12 +30,15 @@ from app.schemas import (
 )
 from app.utils.jwt_handler import create_jwt_token, verify_jwt_token
 
+logger = logging.getLogger("__name__")
+
 app = FastAPI()
 
 UPLOAD_DIR = Path("uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)
 
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # CORS settings
 origins = [
@@ -47,6 +54,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 # Dependency to get DB session
 def get_db():
     db = SessionLocal()
@@ -54,6 +62,7 @@ def get_db():
         yield db
     finally:
         db.close()
+
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
@@ -69,8 +78,8 @@ app_password = os.getenv("APP_PASSWORD")
 
 
 conf = ConnectionConfig(
-    MAIL_USERNAME= sender_email,
-    MAIL_PASSWORD=app_password.replace(" ",""),
+    MAIL_USERNAME=sender_email,
+    MAIL_PASSWORD=app_password.replace(" ", ""),
     MAIL_FROM=sender_email,
     MAIL_PORT=587,
     MAIL_SERVER="smtp.gmail.com",
@@ -90,14 +99,14 @@ def health():
 # This method sends 6 digit verification code to ensure user is a surrey student
 @app.post("/send-verification-code")
 async def send_verification_code(request: EmailRequest, db: Annotated[Session, Depends(get_db)]):
-    verification_code = str(secrets.randbelow(900000) + 100000) # Creates a random 6 digit number
+    verification_code = str(secrets.randbelow(900000) + 100000)  # Creates a random 6 digit number
 
     # check to see if there is already an existing user with this email (in which case they cannot sign up again)
     existing_user = db.query(models.User).filter(models.User.email_address == request.email).first()
     if existing_user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User with this email already exists")
 
-    existing_record = db.query(models.EmailVerificationCode).filter_by(email= request.email).first()
+    existing_record = db.query(models.EmailVerificationCode).filter_by(email=request.email).first()
 
     if existing_record:
         existing_record.code = verification_code
@@ -113,7 +122,6 @@ async def send_verification_code(request: EmailRequest, db: Annotated[Session, D
 
     db.commit()
 
-
     html = f"<p>Hi! Thank you for signing up to Surreal. Your verification code is: {verification_code}</p>"
 
     message = MessageSchema(
@@ -125,11 +133,12 @@ async def send_verification_code(request: EmailRequest, db: Annotated[Session, D
 
     fm = FastMail(conf)
     await fm.send_message(message)
-    return JSONResponse(status_code=200, content= {"message": "email has been sent"})
+    return JSONResponse(status_code=200, content={"message": "email has been sent"})
 
 
 # hash password before storing in db for security
 pwd_context = CryptContext(schemes=["argon2"])
+
 
 # This method checks if the 6 digit code they entered is correct (compares the value in the database for their email)
 @app.post("/verify-code")
@@ -150,11 +159,10 @@ def verify_code(request: VerifyCodeRequest, db: Annotated[Session, Depends(get_d
 
     hashed_password = pwd_context.hash(request.password)
 
-
     new_user = models.User(
-        email_address = request.email,
-        password = hashed_password,
-        created_at = datetime.now(timezone.utc),
+        email_address=request.email,
+        password=hashed_password,
+        created_at=datetime.now(timezone.utc),
     )
 
     db.add(new_user)
@@ -162,17 +170,21 @@ def verify_code(request: VerifyCodeRequest, db: Annotated[Session, Depends(get_d
     db.commit()
     db.refresh(record)
 
-    jwt_token = create_jwt_token(data={
-        "sub": str(new_user.id),
-        "email": new_user.email_address,
-        "name": "New User", # default name until they set up profile
-    })
+    jwt_token = create_jwt_token(
+        data={
+            "sub": str(new_user.id),
+            "email": new_user.email_address,
+            "name": "New User",  # default name until they set up profile
+        }
+    )
 
-    response = JSONResponse(content={
-        "message": "Email verified successfully",
-        "user_id": str(new_user.id),
-        "user_name": "New User",
-    })
+    response = JSONResponse(
+        content={
+            "message": "Email verified successfully",
+            "user_id": str(new_user.id),
+            "user_name": "New User",
+        }
+    )
 
     response.set_cookie(
         key="access_token",
@@ -200,23 +212,27 @@ def login_user(request: LoginRequest, db: Annotated[Session, Depends(get_db)]):
 
     # Get profile info
     display_name = "Placeholder"
-    profile  = db.query(models.UserProfile).filter(models.UserProfile.user_id == user.id).first()
+    profile = db.query(models.UserProfile).filter(models.UserProfile.user_id == user.id).first()
     if profile:
         display_name = profile.username or profile.full_name or "Placeholder"
 
     # Generate JWT token
-    jwt_token = create_jwt_token(data={
-        "sub": str(user.id),
-        "email": user.email_address,
-        "name": display_name,
-    })
+    jwt_token = create_jwt_token(
+        data={
+            "sub": str(user.id),
+            "email": user.email_address,
+            "name": display_name,
+        }
+    )
 
     # Create response
-    response = JSONResponse(content={
-        "message": "Login successful",
-        "user_id": str(user.id),
-        "user_name": display_name,
-    })
+    response = JSONResponse(
+        content={
+            "message": "Login successful",
+            "user_id": str(user.id),
+            "user_name": display_name,
+        }
+    )
 
     # Set cookie
     response.set_cookie(
@@ -231,6 +247,7 @@ def login_user(request: LoginRequest, db: Annotated[Session, Depends(get_db)]):
     # print(f"User {request.email} logged in successfully w jwt token: {jwt_token}")
 
     return response
+
 
 @app.post("/logout")
 def logout(response: Response):
@@ -261,13 +278,17 @@ def get_current_user(request: Request, db: Annotated[Session, Depends(get_db)]):
 
 # This method handles submission of the original user profile setup (basically just takes the data from the frontend and stores it in the database)
 @app.post("/user-profile-setup")
-def setup_user_profile(request: UserProfileRequest, db: Annotated[Session, Depends(get_db)], current_user: Annotated[User, Depends(get_current_user)]):
+def setup_user_profile(
+    request: UserProfileRequest,
+    db: Annotated[Session, Depends(get_db)],
+    current_user: Annotated[User, Depends(get_current_user)],
+):
     try:
         new_user_profile = models.UserProfile(
-            user_id = current_user.id,
-            full_name = request.full_name,
-            is_admin = request.is_admin,
-            age = request.age,
+            user_id=current_user.id,
+            full_name=request.full_name,
+            is_admin=request.is_admin,
+            age=request.age,
             bio=request.bio,
             course=request.course,
             accommodation=request.accommodation,
@@ -276,18 +297,18 @@ def setup_user_profile(request: UserProfileRequest, db: Annotated[Session, Depen
             languages=request.languages,
             ethnicities=request.ethnicities,
             home_area=request.home_area,
-            fun_fact = request.fun_fact,
-            societies = request.societies,
-            sports = request.sports,
-            gym_goer = request.gym_goer,
-            show_bio = request.show_bio,
-            show_accommodation = request.show_accommodation,
-            show_languages = request.show_languages,
-            show_ethnicities = request.show_ethnicities,
-            show_home_area = request.show_home_area,
-            show_societies = request.show_societies,
-            show_sports = request.show_sports,
-            show_gym_goer = request.show_gym_goer
+            fun_fact=request.fun_fact,
+            societies=request.societies,
+            sports=request.sports,
+            gym_goer=request.gym_goer,
+            show_bio=request.show_bio,
+            show_accommodation=request.show_accommodation,
+            show_languages=request.show_languages,
+            show_ethnicities=request.show_ethnicities,
+            show_home_area=request.show_home_area,
+            show_societies=request.show_societies,
+            show_sports=request.show_sports,
+            show_gym_goer=request.show_gym_goer,
         )
 
         db.add(new_user_profile)
@@ -296,11 +317,13 @@ def setup_user_profile(request: UserProfileRequest, db: Annotated[Session, Depen
 
         insert_matched_users(db, current_user)
 
-        new_token = create_jwt_token(data={
-            "sub": str(current_user.id),
-            "email": current_user.email_address,
-            "name": new_user_profile.username,
-        })
+        new_token = create_jwt_token(
+            data={
+                "sub": str(current_user.id),
+                "email": current_user.email_address,
+                "name": new_user_profile.username,
+            }
+        )
 
         return {
             "message": "User created successfully,",
@@ -313,6 +336,7 @@ def setup_user_profile(request: UserProfileRequest, db: Annotated[Session, Depen
 
         raise HTTPException(status_code=400, detail=str(e))
 
+
 # This gets user profiles from the db and is used to display them on the friends-finder page.
 @app.get("/user-profiles", response_model=list[UserProfileResponse])
 def list_user_profiles(db: Annotated[Session, Depends(get_db)]):
@@ -324,6 +348,7 @@ def list_user_profiles(db: Annotated[Session, Depends(get_db)]):
         print("Error fetching user profiles", e)
         raise HTTPException(status_code=500, detail="Error fetching user profiles")
 
+
 @app.get("/users/search")
 def search_user(username: str, db: Annotated[Session, Depends(get_db)]):
     """Find a user ID via their username."""
@@ -334,12 +359,14 @@ def search_user(username: str, db: Annotated[Session, Depends(get_db)]):
 
     return {"user_id": str(user.user_id), "display_name": user.username}
 
+
 @app.post("/users/retrieve")
 def retrieve_users(payload: BatchIDRequest, db: Annotated[Session, Depends(get_db)]):
     """Retrieve UUIDs to names in batches."""
     profiles = db.query(models.UserProfile).filter(models.UserProfile.user_id.in_(payload.user_ids)).all()
 
     return {str(p.user_id): p.username for p in profiles}
+
 
 @app.get("/validate-token")
 def validate_token(current_user: Annotated[User, Depends(get_current_user)]):
@@ -350,8 +377,7 @@ def validate_token(current_user: Annotated[User, Depends(get_current_user)]):
 
 
 def compare_profiles(current_user: User, db: Session):
-
-    profile = current_user.user_profile  
+    profile = current_user.user_profile
 
     logged_in_profile = {
         "id": profile.user_id,
@@ -359,10 +385,10 @@ def compare_profiles(current_user: User, db: Session):
         "course": profile.course,
         "accommodation": profile.accommodation,
         "university_year": profile.university_year,
-        "languages": profile.languages, # array
-        "ethnicities": profile.ethnicities, # array
-        "societies": profile.societies, # array
-        "sports": profile.sports, # array
+        "languages": profile.languages,  # array
+        "ethnicities": profile.ethnicities,  # array
+        "societies": profile.societies,  # array
+        "sports": profile.sports,  # array
         "gym_goer": profile.gym_goer,
     }
 
@@ -373,9 +399,7 @@ def compare_profiles(current_user: User, db: Session):
 
     matched_user_ids = []  # UUIDs of matched users
 
-
     for p in all_profiles:
-
         # Don't compare with own profile
         if str(p.user_id) == str(logged_in_profile["id"]):
             continue
@@ -403,10 +427,7 @@ def compare_profiles(current_user: User, db: Session):
 
 
 @app.get("/compare-profiles")
-def compare_profiles_route(
-    db: Annotated[Session, Depends(get_db)],
-    current_user: User = Depends(get_current_user)
-):
+def compare_profiles_route(db: Annotated[Session, Depends(get_db)], current_user: User = Depends(get_current_user)):
     return compare_profiles(current_user, db)
 
 
@@ -414,26 +435,29 @@ def compare_profiles_route(
 @app.post("/insert-matched-users")
 # def insert_matched_users(db: Session, current_user: User):
 def insert_matched_users(
-    db: Annotated[Session, Depends(get_db)],
-    current_user: Annotated[User, Depends(get_current_user)]
+    db: Annotated[Session, Depends(get_db)], current_user: Annotated[User, Depends(get_current_user)]
 ):
-
     try:
         matched_ids = compare_profiles(current_user, db)
 
         for other_user_id in matched_ids:
-            exists = db.query(models.MatchedUsers).filter(
-                ((models.MatchedUsers.user1_id == current_user.id) &
-                (models.MatchedUsers.user2_id == other_user_id)) |
-                ((models.MatchedUsers.user1_id == other_user_id) &
-                (models.MatchedUsers.user2_id == current_user.id))
-            ).first()
+            exists = (
+                db.query(models.MatchedUsers)
+                .filter(
+                    (
+                        (models.MatchedUsers.user1_id == current_user.id)
+                        & (models.MatchedUsers.user2_id == other_user_id)
+                    )
+                    | (
+                        (models.MatchedUsers.user1_id == other_user_id)
+                        & (models.MatchedUsers.user2_id == current_user.id)
+                    )
+                )
+                .first()
+            )
 
             if not exists:
-                new_row = models.MatchedUsers(
-                    user1_id=current_user.id,
-                    user2_id=other_user_id
-                )
+                new_row = models.MatchedUsers(user1_id=current_user.id, user2_id=other_user_id)
                 db.add(new_row)
 
         db.commit()
@@ -444,7 +468,7 @@ def insert_matched_users(
             # "matched_profiles": matched_ids,
             # "match_count": len(matched_ids)
         }
-    
+
     except Exception as e:
         print("Error inserting matched users", e)
         raise HTTPException(status_code=400, detail=str(e))
@@ -452,15 +476,17 @@ def insert_matched_users(
 
 @app.get("/matched-profiles", response_model=list[UserProfileResponse])
 def get_matched_profiles(
-    db: Annotated[Session, Depends(get_db)],
-    current_user: Annotated[User, Depends(get_current_user)]
+    db: Annotated[Session, Depends(get_db)], current_user: Annotated[User, Depends(get_current_user)]
 ):
     try:
         # Rows where current user is involved
-        matches = db.query(models.MatchedUsers).filter(
-            (models.MatchedUsers.user1_id == current_user.id) |
-            (models.MatchedUsers.user2_id == current_user.id)
-        ).all()
+        matches = (
+            db.query(models.MatchedUsers)
+            .filter(
+                (models.MatchedUsers.user1_id == current_user.id) | (models.MatchedUsers.user2_id == current_user.id)
+            )
+            .all()
+        )
 
         # The other user of those matched_user pairings
         matched_user_ids = []
@@ -474,9 +500,7 @@ def get_matched_profiles(
             return []
 
         # Fetch profiles for matched users
-        profiles = db.query(models.UserProfile).filter(
-            models.UserProfile.user_id.in_(matched_user_ids)
-        ).all()
+        profiles = db.query(models.UserProfile).filter(models.UserProfile.user_id.in_(matched_user_ids)).all()
 
         return profiles
 
@@ -484,9 +508,10 @@ def get_matched_profiles(
         print("Error fetching matched profiles", e)
         raise HTTPException(status_code=500, detail="Error fetching matched profiles")
 
+
 @app.post("/user-profile-picture")
 async def upload_profile_picture(
-    file: UploadFile = File(...),
+    file: Annotated[UploadFile, File()],
     db: Annotated[Session, Depends(get_db)] = None,
     current_user: Annotated[User, Depends(get_current_user)] = None,
 ):
@@ -494,21 +519,43 @@ async def upload_profile_picture(
     if file.content_type not in allowed_types:
         raise HTTPException(status_code=400, detail="Only JPG/PNG/WEBP allowed")
 
-    ext_map = {"image/jpeg": ".jpg", "image/png": ".png", "image/webp": ".webp"}
-    ext = ext_map[file.content_type]
-
-    filename = f"{current_user.id}_{uuid.uuid4().hex}{ext}"
-    filepath = UPLOAD_DIR / filename
-
     content = await file.read()
-    with open(filepath, "wb") as f:
-        f.write(content)
 
-    profile = (
-        db.query(models.UserProfile)
-        .filter(models.UserProfile.user_id == current_user.id)
-        .first()
-    )
+    MAX_FILE_SIZE = 5 * 1024 * 1024
+    if len(content) > MAX_FILE_SIZE:
+        raise HTTPException(status_code=413, detail="File size exceeds 5MB limit.")
+
+    try:
+        image = Image.open(io.BytesIO(content))
+
+        if image.mode in ("RGBA", "P"):
+            image = image.convert("RGB")
+
+        width, height = image.size
+        new_size = min(width, height)
+
+        left = (width - new_size) / 2
+        top = (height - new_size) / 2
+        right = (width + new_size) / 2
+        bottom = (height + new_size) / 2
+
+        image = image.crop((left, top, right, bottom))
+        image.thumbnail((500, 500))
+
+        buffer = io.BytesIO()
+        image.save(buffer, format="WEBP", quality=80, optimize=True)
+        compressed_content = buffer.getvalue()
+
+        filename = f"{current_user.id}_{uuid.uuid4().hex}.webp"
+        filepath = UPLOAD_DIR / filename
+    except Exception as e:
+        logger.exception(f"Error processing image: {e}")
+        raise HTTPException(status_code=400, detail="Invalid image file.")
+
+    async with await anyio.open_file(filepath, "wb") as f:
+        await f.write(compressed_content)
+
+    profile = db.query(models.UserProfile).filter(models.UserProfile.user_id == current_user.id).first()
     if not profile:
         raise HTTPException(status_code=400, detail="Create profile first, then upload picture")
 

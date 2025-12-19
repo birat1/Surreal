@@ -10,6 +10,7 @@ const ProfileCardFullScreen: React.FC<ProfilePreviewProps> = ({
     user_data,
 }) => {
     const {
+        user_id,
         profile_picture,
         full_name,
         username,
@@ -50,7 +51,8 @@ const ProfileCardFullScreen: React.FC<ProfilePreviewProps> = ({
                 if (s && s !== 'null' && s !== 'undefined') {
                     // Check for relative path
                     if (s.startsWith('/')) {
-                        return `http://localhost:8080${s}`;
+                        const filename = s.split('/').pop();
+                        return `http://localhost:8080/images/${user_id}/avatar/${filename}`;
                     }
                     // If using cloud storage (check for http/https)
                 }

@@ -1,8 +1,9 @@
 export type ProfilePicture = File | string | null | undefined;
 
 export interface UserProfile {
+    user_id: number;
     profile_picture?: ProfilePicture;
-    is_admin: boolean
+    is_admin: boolean;
     full_name: string;
     username: string;
     age: number | string;
@@ -17,7 +18,7 @@ export interface UserProfile {
     societies: string[];
     sports: string[];
     gym_goer: string;
-    
+
     show_bio: boolean;
     show_accommodation: boolean;
     show_languages: boolean;
@@ -40,9 +41,9 @@ export interface UserProfileFormProps {
 }
 
 export interface VisibilityToggleProps {
-    label: string
-    checked: boolean
-    onChange: (value: boolean) => void
+    label: string;
+    checked: boolean;
+    onChange: (value: boolean) => void;
 }
 
 export interface Message {

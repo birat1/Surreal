@@ -18,6 +18,7 @@ class LoginRequest(BaseModel):
 class UserProfileRequest(BaseModel):
     full_name: str
     username: str
+    is_admin: bool
     age: int
     bio: str
     course: str
@@ -45,6 +46,7 @@ class UserProfileResponse(BaseModel):
     id: int
     user_id: UUID
     full_name: str
+    is_admin: bool 
     age: int | None = None
     username: str
     bio: str

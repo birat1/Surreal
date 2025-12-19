@@ -44,6 +44,7 @@ class UserProfile(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), unique=True)  # this links to the respective user
     full_name = Column(String, nullable=False)
+    is_admin = Column(Boolean, default=False)
     username = Column(String, nullable=False)
     age = Column(Integer, nullable=True)
     bio = Column(String, nullable=True)

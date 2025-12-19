@@ -1,22 +1,27 @@
-from faker import Faker
 import json
-import random
+import logging
+import secrets
+from pathlib import Path
+
+from faker import Faker
+
+logger = logging.getLogger(__name__)
 
 fake = Faker()
 
 courses = [
     "Computer Science", "Chemistry", "Mathematics",
-    "Physics", "Psychology", "Economics", "Law", "Politics", 
-    "History"
+    "Physics", "Psychology", "Economics", "Law", "Politics",
+    "History",
 ]
 
 accommodations = [
-    "Manor Park", "Stag Hill", "Commuting", "Private Housing"
+    "Manor Park", "Stag Hill", "Commuting", "Private Housing",
 ]
 
 years = [
-    "First Year", "Second Year", "Third Year", 
-    "Foundation Year", "Placement Year"
+    "First Year", "Second Year", "Third Year",
+    "Foundation Year", "Placement Year",
 ]
 
 ethnicity_language_map = {
@@ -36,23 +41,22 @@ ethnicity_language_map = {
     "Albanian": ["Albanian", "English"],
 }
 
-
 home_areas = [
-    "London", "Manchester", "Birmingham", "Winchester", 
-    "Leeds", "Southampton", "Kent"
+    "London", "Manchester", "Birmingham", "Winchester",
+    "Leeds", "Southampton", "Kent",
 ]
 
-societies = [ 
-    "ABACUS", "Baking Society", "Caribbean Students' Society", 
-    "Debating Society", "EARS", "Filipino Society", "GameSoc", 
-    "Hindu Society", "Islamic Society", "Japanese Society", 
-    "Kannada Society", "Languages Society", "MaDSoc", 
+societies = [
+    "ABACUS", "Baking Society", "Caribbean Students' Society",
+    "Debating Society", "EARS", "Filipino Society", "GameSoc",
+    "Hindu Society", "Islamic Society", "Japanese Society",
+    "Kannada Society", "Languages Society", "MaDSoc",
     "Nepalese Society", "Opa Surrey", "ParaSoc", "Rifle Club",
-    "Salsa Society", "Tamil Society", "UAS Team Peryton", 
+    "Salsa Society", "Tamil Society", "UAS Team Peryton",
     "Vet Band", "Welsh Society", "Zoological Society",
 ]
 
-sports = [ 
+sports = [
     "Football", "Horse Riding", "Basketball", "Netball", "Swimming",
     "Water Polo", "Tennis", "Badminton", "Volleyball", "MMA",
     "Boxing", "Cricket", "Rugby", "Hockey", "Athletics",
@@ -79,6 +83,16 @@ funfact_templates = [
     "I played the Triangle in my school band.",
 ]
 
+default_profile_pics = [
+    "/static/defaults/avatar1.jpg",
+    "/static/defaults/avatar2.jpg",
+    "/static/defaults/avatar3.jpg",
+    "/static/defaults/avatar4.jpeg",
+    "/static/defaults/avatar5.jpeg",
+    "/static/defaults/avatar6.jpeg",
+    "/static/defaults/avatar7.jpeg",
+]
+
 data = []
 
 for _ in range(25):
@@ -90,41 +104,44 @@ for _ in range(25):
     username = first.lower()
     email = f"{first.lower()}{last.lower()}@surrey.ac.uk"
 
-    ethnicity = random.choice(list(ethnicity_language_map.keys()))
+    ethnicity = secrets.choice(list(ethnicity_language_map.keys()))
     possible_langs = ethnicity_language_map[ethnicity]
-    language = random.choice(possible_langs)
+    language = secrets.choice(possible_langs)
 
-    course = random.choice(courses)
+    course = secrets.choice(courses)
 
-    bio = random.choice(bio_templates).format(name=first.capitalize(), course=course)
+    bio = secrets.choice(bio_templates).format(name=first.capitalize(), course=course)
 
-    fun_fact = random.choice(funfact_templates)
+    fun_fact = secrets.choice(funfact_templates)
+
+    selected_profile_pic = secrets.choice(default_profile_pics)
 
     user = {
         "email": email,
         "password": "password",
         "profile": {
             "full_name": full_name,
-            "age": random.randint(18, 23),
+            "age": secrets.randbelow(6) + 18,
             "username": username,
             "bio": bio,
             "fun_fact": fun_fact,
             "course": course,
-            "accommodation": random.choice(accommodations),
-            "university_year": random.choice(years),
-            "languages": language,
-            "ethnicity": ethnicity,
-            "home_area": random.choice(home_areas),
-            "society": random.choice(societies),
-            "sport": random.choice(sports),
-            "gym_goer": random.choice(["Yes", "No"])
-        }
+            "accommodation": secrets.choice(accommodations),
+            "university_year": secrets.choice(years),
+            "languages": [language],
+            "ethnicity": [ethnicity],
+            "home_area": secrets.choice(home_areas),
+            "society": [secrets.choice(societies)],
+            "sport": [secrets.choice(sports)],
+            "gym_goer": secrets.choice(["Yes", "No"]),
+            "profile_picture": selected_profile_pic,
+        },
     }
 
     data.append(user)
 
 
-with open("seed_data.json", "w") as f:
+with Path("seed_data.json").open("w") as f:
     json.dump(data, f, indent=4)
 
-print("Fake data written to seed_data.json")
+logger.info("Fake data written to seed_data.json")

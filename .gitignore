@@ -1,5 +1,3 @@
-.DS_Store
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
@@ -216,3 +214,13 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Mac system files
+.DS_Store
+
+# User uploads
+uploads/*
+!uploads/.gitkeep
+
+# Do not ignore static files
+!static/

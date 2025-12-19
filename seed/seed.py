@@ -31,9 +31,8 @@ def seed():
         db.query(User).delete()
         db.commit()
 
-
         logger.info("Seeding Users and Profiles...")
-        for u in data["users"]:
+        for u in data:
             hashed_password = pwd_context.hash(u["password"])
             user = User(
                 email_address=u["email"],
@@ -62,6 +61,7 @@ def seed():
                     societies=user_p.get("society"),
                     sports=user_p.get("sport"),
                     gym_goer=user_p.get("gym_goer"),
+                    profile_picture=user_p.get("profile_picture"),
                 )
                 db.add(profile)
                 db.commit()

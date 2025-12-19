@@ -1,8 +1,10 @@
 import React from 'react';
+
 import type { ProfilePreviewProps } from '@/types/types';
-import { Card, CardHeader, CardContent } from './ui/card';
 
 import defaultProfile from '../assets/default_profile.jpeg';
+
+import { Card, CardHeader, CardContent } from './ui/card';
 
 const ProfileCardFullScreen: React.FC<ProfilePreviewProps> = ({
     user_data,
@@ -46,7 +48,11 @@ const ProfileCardFullScreen: React.FC<ProfilePreviewProps> = ({
 
                 // guard against bad strings
                 if (s && s !== 'null' && s !== 'undefined') {
-                    return s.startsWith('/uploads/') ? `http://localhost:8080/auth${s}` : s;
+                    // Check for relative path
+                    if (s.startsWith('/')) {
+                        return `http://localhost:8080/auth${s}`;
+                    }
+                    // If using cloud storage (check for http/https)
                 }
             }
 

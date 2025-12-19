@@ -15,13 +15,22 @@ const FriendsFinderCard = ({
     const navigate = useNavigate();
     const { userId: currentUserId } = useAuth();
 
-    const imageSrc =
-        typeof profile.profile_picture === 'string' &&
-        profile.profile_picture.trim() !== ''
-            ? profile.profile_picture.startsWith('/uploads/')
-                ? `http://localhost:8000/auth${profile.profile_picture}`
-                : profile.profile_picture
-            : defaultProfile;
+    let imageSrc = defaultProfile;
+
+    if (
+        profile.profile_picture &&
+        typeof profile.profile_picture === 'string'
+    ) {
+        const pic = profile.profile_picture.trim();
+
+        if (pic !== '') {
+            // Handle if its a relative path from the backend
+            if (pic.startsWith('/')) {
+                imageSrc = `http://localhost:8080/auth${pic}`;
+            }
+            // Handle if its from an URL (Cloud Storage?)
+        }
+    }
 
     const handleSendMessage = (event: React.MouseEvent) => {
         event.stopPropagation();

@@ -546,7 +546,7 @@ async def upload_profile_picture(
         image.save(buffer, format="WEBP", quality=80, optimize=True)
         compressed_content = buffer.getvalue()
 
-        filename = f"{current_user.id}_{uuid.uuid4().hex}.webp"
+        filename = f"{uuid.uuid4().hex}.webp"
         filepath = UPLOAD_DIR / filename
     except Exception as e:
         logger.exception(f"Error processing image: {e}")
@@ -565,3 +565,23 @@ async def upload_profile_picture(
     db.refresh(profile)
 
     return {"message": "Profile picture updated", "profile_picture": public_path}
+
+
+@app.get("/images/{user_id}/avatar/{filename}")
+async def get_user_avatar(user_id: str, filename: str) -> Response:
+    """Serve user avatar images using X-Accel-Redirect for Nginx."""
+    upload_path = UPLOAD_DIR / filename
+    static_path = Path("static/defaults") / filename
+
+    final_path = ""
+
+    if upload_path.is_file():
+        final_path = f"/uploads/{filename}"
+    elif static_path.is_file():
+        final_path = f"/static/defaults/{filename}"
+    else:
+        raise HTTPException(status_code=404, detail="Avatar not found")
+
+    response = Response()
+    response.headers["X-Accel-Redirect"] = f"/protected_files{final_path}"
+    return response

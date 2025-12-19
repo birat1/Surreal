@@ -95,7 +95,7 @@ const ProfileCardFullScreen: React.FC<ProfilePreviewProps> = ({
                     <p>Course: {course || '-'}</p>
 
                     {show_accommodation && (
-                        <p>Accommodation: {accommodation || 'Not provided'}</p>
+                        <p>Accommodation: {accommodation || '-'}</p>
                     )}
 
                     <p>Year: {university_year || '-'}</p>

@@ -11,6 +11,7 @@ import type { UserProfileFormData } from '@/types/types';
 const UserProfilePage = () => {
     const [formData, setFormData] = useState<UserProfileFormData>({
         full_name: '',
+        is_admin: false,
         age: '',
         username: '',
         bio: '',

@@ -2,6 +2,7 @@ export type ProfilePicture = File | string | null | undefined;
 
 export interface UserProfile {
     profile_picture?: ProfilePicture;
+    is_admin: boolean
     full_name: string;
     username: string;
     age: number | string;

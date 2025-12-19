@@ -65,12 +65,15 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
         try {
             const { profile_picture, ...profileDataNoPic } = formData;
 
-            const res = await fetch('http://localhost:8080/auth/user-profile-setup', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify(profileDataNoPic),
-            });
+            const res = await fetch(
+                'http://localhost:8080/auth/user-profile-setup',
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(profileDataNoPic),
+                }
+            );
 
             if (!res.ok) {
                 const errText = await res.text();
@@ -83,11 +86,14 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
                 const fileForm = new FormData();
                 fileForm.append('file', profile_picture);
 
-                const uploadRes = await fetch('http://localhost:8080/auth/user-profile-picture', {
-                    method: 'POST',
-                    body: fileForm,
-                    credentials: 'include',
-                });
+                const uploadRes = await fetch(
+                    'http://localhost:8080/auth/user-profile-picture',
+                    {
+                        method: 'POST',
+                        body: fileForm,
+                        credentials: 'include',
+                    }
+                );
 
                 if (!uploadRes.ok) {
                     const errText = await uploadRes.text();
@@ -98,10 +104,10 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
 
                 const uploaded = await uploadRes.json();
 
-                setFormData({
-                    ...formData,
+                setFormData((prev) => ({
+                    ...prev,
                     profile_picture: uploaded.profile_picture,
-                });
+                }));
             }
 
             if (userId && formData.username) {
@@ -132,6 +138,19 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
                     Use the toggle under the optional fields to decide which
                     fields you want others to be able to view{' '}
                 </p>
+
+                <div className="mt-6 flex justify-center">
+                    <VisibilityToggle
+                        label="Sign Up As Admin"
+                        checked={formData.is_admin}
+                        onChange={(value) =>
+                            setFormData({
+                                ...formData,
+                                is_admin: value,
+                            })
+                        }
+                    />
+                </div>
             </CardHeader>
 
             <CardContent className="flex flex-col gap-3">

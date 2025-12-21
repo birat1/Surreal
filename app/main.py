@@ -515,7 +515,7 @@ async def upload_profile_picture(
     db: Annotated[Session, Depends(get_db)] = None,
     current_user: Annotated[User, Depends(get_current_user)] = None,
 ):
-    allowed_types = {"image/jpeg", "image/png", "image/webp"}
+    allowed_types = {"image/jpeg", "image/jpg", "image/png", "image/webp"}
     if file.content_type not in allowed_types:
         raise HTTPException(status_code=400, detail="Only JPG/PNG/WEBP allowed")
 

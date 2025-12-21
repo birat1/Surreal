@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@/context/AuthContext';
 
-import surreyLogo from '../assets/surrey_logo.jpg';
+import surreyLogo from '../assets/surrey_logo.png';
 
 import NotificationBell from './NotificationBell';
 import { Button } from './ui/button';

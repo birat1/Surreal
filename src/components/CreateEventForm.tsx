@@ -24,7 +24,7 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({
     setLoading(true);
 
     try {
-      const res = await fetch('http://localhost:8000/events', {
+      const res = await fetch('http://localhost:8080/events-and-societies/events', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

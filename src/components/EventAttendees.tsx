@@ -6,7 +6,9 @@ const EventAttendees = ({ eventId }: { eventId: number }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`http://localhost:8000/events/${eventId}/attendees`)
+    fetch(`http://localhost:8080/events-and-societies/events/${eventId}/attendees`, {
+      credentials: 'include',
+    })
       .then(res => res.json())
       .then(data => {
         setAttendees(data);

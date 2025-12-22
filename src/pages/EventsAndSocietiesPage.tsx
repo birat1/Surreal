@@ -10,7 +10,9 @@ const EventsAndSocietiesPage = () => {
   const [organiserFilter, setOrganiserFilter] = useState('');
 
   useEffect(() => {
-    fetch("http://localhost:8000/events")
+    fetch("http://localhost:8080/events-and-societies/events", {
+      credentials: "include",
+    })
       .then((res) => res.json())
       .then((data: Event[]) => setEvents(data))
       .catch((err) => console.error(err));
@@ -24,7 +26,9 @@ const EventsAndSocietiesPage = () => {
     params.append('organiser', organiserFilter);
   }
 
-  const res = await fetch(`http://localhost:8000/events?${params.toString()}`);
+  const res = await fetch(`http://localhost:8080/events-and-societies/events?${params.toString()}`, {
+    credentials: 'include',
+  });
   const data = await res.json();
   setEvents(data);
 };

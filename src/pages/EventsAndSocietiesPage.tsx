@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import EventsCard from "@/components/EventsCard";
+import EventAttendees from "@/components/EventAttendees";
 import type { Event } from "@/types/types";
 import { useNavigate } from 'react-router-dom';
 
@@ -43,13 +44,15 @@ useEffect(() => {
         className="border px-3 py-2 rounded w-64 mb-6"
       />
       <div className="grid grid-cols-4 gap-6">
-        {events.map((event, index) => (
-          <EventsCard key={index} event={event} />
+        {events.map((event) => (
+          <EventsCard key={event.id} event={event}>
+            <EventAttendees eventId={event.id} />
+          </EventsCard>
         ))}
       </div>
       <button
           onClick={() => navigate('/create-event')}
-          className="mt-6 px-4 py-2 bg-blue-500 text-white rounded">
+          className="mt-6 px-4 py-2 bg-blue-500 text-white rounded mb-6">
           Create Event
         </button>
     </div>

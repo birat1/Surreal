@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader } from "./ui/card";
-import { EventsCardProps } from "@/types/types";
+import { EventsPageProps } from "@/types/types";
 
-const EventsCard = ({ event }: EventsCardProps) => {
+const EventsCard = ({ event, children }: EventsPageProps) => {
   return (
     <Card className="bg-blue-50 rounded-xl shadow-md hover:shadow-lg transition-shadow">
       <CardHeader className="flex flex-col items-center gap-2 pb-1 pt-3">
@@ -21,7 +21,7 @@ const EventsCard = ({ event }: EventsCardProps) => {
             I'm going
           </button>
         </div>
-
+      {children}
       </CardContent>
     </Card>
   );

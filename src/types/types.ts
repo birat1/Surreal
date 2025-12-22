@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export type ProfilePicture = File | string | null | undefined;
 
 export interface UserProfile {
@@ -105,7 +107,8 @@ export interface Event {
 }
 
 export interface EventsPageProps {
-    events: Event;
+    event: Event;
+    children?: ReactNode;
 }
 
 export interface CreateEventFormData {
@@ -119,4 +122,9 @@ export interface CreateEventFormData {
 export interface CreateEventFormProps {
     formData: CreateEventFormData;
     setFormData: React.Dispatch<React.SetStateAction<CreateEventFormData>>;
+}
+
+export interface Attendee {
+  id: number;
+  username: string;
 }

@@ -43,7 +43,6 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # CORS settings
 origins = [
     "http://localhost:5173",  # frontend URL,
-    "http://127.0.0.1:5173",
 ]
 
 app.add_middleware(

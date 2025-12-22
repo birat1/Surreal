@@ -24,11 +24,11 @@ export default function NotificationBell() {
     return (
         <div className="relative" ref={dropdownRef}>
             <div
-                className={`hover:bg-gray-300 hover:cursor-pointer rounded-full p-1.5 
-                    ${open && "bg-gray-300"}`}
+                className={`hover:bg-gray-400/15 hover:cursor-pointer text-gray-700 rounded-full p-1.5 
+                    ${open && "bg-gray-400/15"}`}
                 onClick={() => setOpen(!open)}
             >
-                <Bell className="text-gray-700" />
+                <Bell/>
                 {unreadCount > 0 && (
                     <span className="
                         absolute -top-1 -right-1 bg-red-500 text-white text-xs font-semibold rounded-full min-w-[18px] h-[18px]

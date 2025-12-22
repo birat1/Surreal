@@ -1,4 +1,4 @@
-import { Users, Inbox } from 'lucide-react';
+import { Users, Inbox, Newspaper } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@/context/AuthContext';
@@ -22,7 +22,7 @@ const Navbar: React.FC = () => {
 
     return (
         <nav className="fixed top-0 left-0 w-full bg-white/70 backdrop-blur-md shadow-md z-50">
-            <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center align-middle">
                 <Link
                     className="text-2xl font-extrabold text-blue-600 hover:text-blue-700 transition"
                     to="/"
@@ -38,14 +38,21 @@ const Navbar: React.FC = () => {
                     <div className="flex items-center gap-6">
                         <Link
                             to="/friends-finder"
-                            className="flex items-center gap-2 p-1.5 px-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200 transition"
+                            className="flex items-center gap-2 p-1.5 px-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-400/15 transition"
                         >
                             <Users/>
                             <span>Friends Finder</span>
                         </Link>
                         <Link
+                            to="/events-and-societies"
+                            className="flex items-center gap-2 p-1.5 px-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-400/15 transition"
+                        >
+                            <Newspaper/>
+                            <span>Events & Societies</span>
+                        </Link>
+                        <Link
                             to="/messages"
-                            className="flex items-center gap-2 p-1.5 px-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200 transition"
+                            className="flex items-center gap-2 p-1.5 px-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-400/15 transition"
                         >
                             <Inbox/>
                             <span>Inbox</span>

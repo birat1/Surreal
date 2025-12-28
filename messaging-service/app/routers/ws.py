@@ -89,12 +89,14 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
                     read_event = {
                         "eventType": "MessageRead",
                         "messageRead": {
-                            "conversationId": cid,
+                            "conversationId": str(cid),
                             "readerId": user_id_str,
                             "readAt": read_at,
                         },
                     }
-                    await publisher.publish_event(read_event)
+                    published = await publisher.publish_event(read_event)
+                    if not published:
+                        logger.warning(f"Failed to publish MessageRead event for: {cid}")
 
                     # Notify the original sender about the read receipt
                     await manager.send_to_user(sender_id_message, {
@@ -163,7 +165,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
                 "eventType": "MessageCreated",
                 "messageCreated":{
                     "messageId": message_id,
-                    "conversationId": cid,
+                    "conversationId": str(cid),
                     "senderId": str(user_id),
                     "senderUsername": sender_username,
                     "recipientId": str(data.recipient_id),
@@ -171,7 +173,9 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
                     "timeStamp": time_stamp,
                 },
             }
-            await publisher.publish_event(created_event)
+            published = await publisher.publish_event(created_event)
+            if not published:
+                logger.warning(f"Failed to publish MessageCreated event for: {cid}")
 
             # Update conversation metadata
             curr_time = datetime.datetime.now(datetime.timezone.utc)

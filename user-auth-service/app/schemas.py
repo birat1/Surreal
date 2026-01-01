@@ -1,21 +1,32 @@
 from uuid import UUID
+
 from pydantic import BaseModel, EmailStr
 
+
 class EmailRequest(BaseModel):
+    """Email request schema."""
+
     email: EmailStr
 
 
 class VerifyCodeRequest(BaseModel):
+    """Verify code request schema."""
+
     email: EmailStr
     password: str
     code: str
 
 
 class LoginRequest(BaseModel):
+    """Login request schema."""
+
     email: EmailStr
     password: str
 
+
 class UserProfileRequest(BaseModel):
+    """User profile request schema."""
+
     full_name: str
     username: str
     is_admin: bool
@@ -42,11 +53,14 @@ class UserProfileRequest(BaseModel):
     show_sports: bool = True
     show_gym_goer: bool = True
 
+
 class UserProfileResponse(BaseModel):
+    """User profile response schema."""
+
     id: int
     user_id: UUID
     full_name: str
-    is_admin: bool 
+    is_admin: bool
     age: int | None = None
     username: str
     bio: str
@@ -73,12 +87,19 @@ class UserProfileResponse(BaseModel):
     show_gym_goer: bool
 
     class Config:
+        """Configuration for the Pydantic model."""
+
         from_attributes = True
 
+
 class BatchIDRequest(BaseModel):
+    """Batch ID request schema."""
+
     user_ids: list[str]
 
-# REMOVE IF NOT USED
+
 class MatchedUsersResponse(BaseModel):
-    logged_in_user_id: UUID # ID of currently logged in user
-    other_user_id: UUID # ID of the matched user
+    """Matched users response schema."""
+
+    logged_in_user_id: UUID  # ID of currently logged in user
+    other_user_id: UUID  # ID of the matched user

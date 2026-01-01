@@ -20,7 +20,8 @@ logger = logging.getLogger(__name__)
 pwd_context = CryptContext(schemes=["argon2"])
 
 
-def seed():
+def seed() -> None:
+    """Seed the database with initial user and profile data, and generate matches."""
     db = SessionLocal()
 
     json_path = Path(CURRENT_DIR) / "seed_data.json"
@@ -69,9 +70,6 @@ def seed():
                 db.commit()
 
     all_profiles = db.query(UserProfile).all()
-
-    single_attrs = ["age", "course", "accommodation", "university_year", "gym_goer"]
-    list_attrs = ["languages", "ethnicities", "societies", "sports"]
 
     new_matches = []
 

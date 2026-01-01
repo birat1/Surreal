@@ -84,13 +84,14 @@ conf = ConnectionConfig(
 
 
 @app.get("/")
-def health():
+def health() -> dict:
+    """Health check endpoint."""
     return {"status": "ok"}
 
 
-# This method sends 6 digit verification code to ensure user is a surrey student
 @app.post("/send-verification-code")
-async def send_verification_code(request: EmailRequest, db: Annotated[Session, Depends(get_db)]):
+async def send_verification_code(request: EmailRequest, db: Annotated[Session, Depends(get_db)]) -> JSONResponse:
+    """Send 6 digit verification code to ensure user is a surrey student."""
     verification_code = str(secrets.randbelow(900000) + 100000)  # Creates a random 6 digit number
 
     # check to see if there is already an existing user with this email (in which case they cannot sign up again)
@@ -132,9 +133,9 @@ async def send_verification_code(request: EmailRequest, db: Annotated[Session, D
 pwd_context = CryptContext(schemes=["argon2"])
 
 
-# This method checks if the 6 digit code they entered is correct (compares the value in the database for their email)
 @app.post("/verify-code")
-def verify_code(request: VerifyCodeRequest, db: Annotated[Session, Depends(get_db)]):
+def verify_code(request: VerifyCodeRequest, db: Annotated[Session, Depends(get_db)]) -> JSONResponse:
+    """Verify the 6 digit code sent to user's email."""
     # get the record with email from previous step
     record = db.query(models.EmailVerificationCode).filter(models.EmailVerificationCode.email == request.email).first()
 
@@ -190,9 +191,9 @@ def verify_code(request: VerifyCodeRequest, db: Annotated[Session, Depends(get_d
     return response
 
 
-# This method is to handle a user login (checks if the email exists and the entered password (hashed) matches that in the database)
 @app.post("/login")
-def login_user(request: LoginRequest, db: Annotated[Session, Depends(get_db)]):
+def login_user(request: LoginRequest, db: Annotated[Session, Depends(get_db)]) -> JSONResponse:
+    """Handle user login by verifying email and password."""
     user = db.query(models.User).filter(models.User.email_address == request.email).first()
 
     # if the email is not found in the database
@@ -242,18 +243,18 @@ def login_user(request: LoginRequest, db: Annotated[Session, Depends(get_db)]):
         max_age=3600,
     )
 
-    # print(f"User {request.email} logged in successfully w jwt token: {jwt_token}")
-
     return response
 
 
 @app.post("/logout")
-def logout(response: Response):
+def logout(response: Response) -> JSONResponse:
+    """Handle user logout by clearing the authentication cookie."""
     response.delete_cookie(key="access_token")
     return {"message": "Logged out successfully"}
 
 
-def get_current_user(request: Request, db: Annotated[Session, Depends(get_db)]):
+def get_current_user(request: Request, db: Annotated[Session, Depends(get_db)]) -> User:
+    """Retrieve the current authenticated user based on the JWT token in cookies."""
     token = request.cookies.get("access_token")
 
     if not token:
@@ -274,13 +275,13 @@ def get_current_user(request: Request, db: Annotated[Session, Depends(get_db)]):
     return user
 
 
-# This method handles submission of the original user profile setup (basically just takes the data from the frontend and stores it in the database)
 @app.post("/user-profile-setup")
 def setup_user_profile(
     request: UserProfileRequest,
     db: Annotated[Session, Depends(get_db)],
     current_user: Annotated[User, Depends(get_current_user)],
-):
+) -> JSONResponse:
+    """Handle initial user profile setup and store it in the database."""
     try:
         new_user_profile = models.UserProfile(
             user_id=current_user.id,
@@ -358,20 +359,18 @@ def setup_user_profile(
         raise HTTPException(status_code=500, detail="Something went wrong while creating your profile")
 
 
-# This gets user profiles from the db and is used to display them on the friends-finder page.
-@app.get("/user-profiles", response_model=list[UserProfileResponse])
-def list_user_profiles(db: Annotated[Session, Depends(get_db)]):
+@app.get("/user-profiles")
+def list_user_profiles(db: Annotated[Session, Depends(get_db)]) -> list[UserProfileResponse]:
     """Return a list of all user profiles."""
     try:
-        profiles = db.query(models.UserProfile).all()
-        return profiles
+        return db.query(models.UserProfile).all()
     except Exception as e:
         print("Error fetching user profiles", e)
         raise HTTPException(status_code=500, detail="Error fetching user profiles")
 
 
 @app.get("/users/search")
-def search_user(username: str, db: Annotated[Session, Depends(get_db)]):
+def search_user(username: str, db: Annotated[Session, Depends(get_db)]) -> dict:
     """Find a user ID via their username."""
     user = db.query(models.UserProfile).filter(models.UserProfile.username == username).first()
 
@@ -382,7 +381,7 @@ def search_user(username: str, db: Annotated[Session, Depends(get_db)]):
 
 
 @app.post("/users/retrieve")
-def retrieve_users(payload: BatchIDRequest, db: Annotated[Session, Depends(get_db)]):
+def retrieve_users(payload: BatchIDRequest, db: Annotated[Session, Depends(get_db)]) -> dict:
     """Retrieve UUIDs to names in batches."""
     profiles = db.query(models.UserProfile).filter(models.UserProfile.user_id.in_(payload.user_ids)).all()
 
@@ -390,7 +389,8 @@ def retrieve_users(payload: BatchIDRequest, db: Annotated[Session, Depends(get_d
 
 
 @app.get("/validate-token")
-def validate_token(current_user: Annotated[User, Depends(get_current_user)]):
+def validate_token(current_user: Annotated[User, Depends(get_current_user)]) -> dict:
+    """Validate JWT token and return user info."""
     profile_picture = None
     user_name = "Unknown"
     is_admin = False
@@ -408,7 +408,8 @@ def validate_token(current_user: Annotated[User, Depends(get_current_user)]):
     }
 
 
-def compare_profiles(current_user: User, db: Session):
+def compare_profiles(current_user: User, db: Session) -> list[dict]:
+    """Compare current user's profile with all others and return scored matches."""
     profile = current_user.user_profile
 
     logged_in_profile = {
@@ -461,22 +462,27 @@ def compare_profiles(current_user: User, db: Session):
 
 
 @app.get("/compare-profiles")
-def compare_profiles_route(db: Annotated[Session, Depends(get_db)], current_user: User = Depends(get_current_user)):
+def compare_profiles_route(
+    db: Annotated[Session, Depends(get_db)],
+    current_user: Annotated[User, Depends(get_current_user)],
+) -> list[dict]:
+    """Endpoint to compare current user's profile with all others and return scored matches."""
     return compare_profiles(current_user, db)
 
 
 """
 New method to replace insert_matched_users:
-takes into consideration that after a user edits their profile, scores can change, so 
+takes into consideration that after a user edits their profile, scores can change, so
 an existing matched user pair could be deleted or a new pair be created.
 """
 
 
-def recompute_matches(user: models.User, db: Session):
+def recompute_matches(user: models.User, db: Session) -> None:
+    """Recompute and update matched users for the given user based on profile comparison."""
     scored_matches = compare_profiles(user, db)
 
     db.query(models.MatchedUsers).filter(
-        (models.MatchedUsers.user1_id == user.id) | (models.MatchedUsers.user2_id == user.id)
+        (models.MatchedUsers.user1_id == user.id) | (models.MatchedUsers.user2_id == user.id),
     ).delete(synchronize_session=False)
 
     for match in scored_matches:
@@ -490,16 +496,18 @@ def recompute_matches(user: models.User, db: Session):
     db.commit()
 
 
-@app.get("/matched-profiles", response_model=list[UserProfileResponse])
+@app.get("/matched-profiles")
 def get_matched_profiles(
-    db: Annotated[Session, Depends(get_db)], current_user: Annotated[User, Depends(get_current_user)]
-):
+    db: Annotated[Session, Depends(get_db)],
+    current_user: Annotated[User, Depends(get_current_user)],
+) -> list[UserProfileResponse]:
+    """Fetch profiles of users matched with the current user, ordered by compatibility score."""
     try:
         # Rows where current user is involved
         matches = (
             db.query(models.MatchedUsers)
             .filter(
-                (models.MatchedUsers.user1_id == current_user.id) | (models.MatchedUsers.user2_id == current_user.id)
+                (models.MatchedUsers.user1_id == current_user.id) | (models.MatchedUsers.user2_id == current_user.id),
             )
             .order_by(models.MatchedUsers.score.desc())
             .all()  # return users with high matching scores first
@@ -520,12 +528,10 @@ def get_matched_profiles(
         profiles = db.query(models.UserProfile).filter(models.UserProfile.user_id.in_(matched_user_ids)).all()
 
         profiles_dict = {str(p.user_id): p for p in profiles}
-        ordered_profiles = [profiles_dict[str(uid)] for uid in matched_user_ids if str(uid) in profiles_dict]
 
-        return ordered_profiles
-
+        return [profiles_dict[str(uid)] for uid in matched_user_ids if str(uid) in profiles_dict]
     except Exception as e:
-        print("Error fetching matched profiles", e)
+        logger.exception(f"Error fetching matched profiles: {e}")
         raise HTTPException(status_code=500, detail="Error fetching matched profiles")
 
 
@@ -535,7 +541,8 @@ async def upload_profile_picture(
     file: Annotated[UploadFile, File()],
     db: Annotated[Session, Depends(get_db)],
     current_user: Annotated[User, Depends(get_current_user)],
-):
+) -> dict:
+    """Upload and process user profile picture, store in S3, and update user profile."""
     allowed_types = {"image/jpeg", "image/jpg", "image/png", "image/webp"}
     if file.content_type not in allowed_types:
         raise HTTPException(status_code=400, detail="Only JPG/PNG/WEBP allowed")
@@ -592,16 +599,17 @@ async def upload_profile_picture(
             "profile_picture": s3_url,
         }
     except Exception as e:
-        logger.error(f"Failed to upload to S3: {e}")
+        logger.exception(f"Failed to upload to S3: {e}")
         raise HTTPException(status_code=500, detail="Failed to upload image to storage")
 
 
 # This is to get the current user's existing data
-@app.get("/user-profile/me", response_model=UserProfileResponse)
+@app.get("/user-profile/me")
 def get_existing_profile(
     db: Annotated[Session, Depends(get_db)],
     current_user: Annotated[User, Depends(get_current_user)],
-):
+) -> UserProfileResponse:
+    """Get the current user's profile data."""
     profile = db.query(models.UserProfile).filter(models.UserProfile.user_id == current_user.id).first()
 
     if not profile:
@@ -616,7 +624,8 @@ def edit_user_profile(
     request: UserProfileRequest,
     db: Annotated[Session, Depends(get_db)],
     current_user: Annotated[User, Depends(get_current_user)],
-):
+) -> UserProfileResponse:
+    """Edit and update the current user's profile information."""
     profile = db.query(models.UserProfile).filter(models.UserProfile.user_id == current_user.id).first()
 
     if not profile:
@@ -680,7 +689,6 @@ def edit_user_profile(
         )
 
         return response
-
     except IntegrityError:
         db.rollback()
         raise HTTPException(status_code=400, detail="There is a problem updating your profile")

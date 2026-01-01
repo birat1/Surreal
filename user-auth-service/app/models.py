@@ -10,8 +10,9 @@ from app.database import Base
 
 # This maps the Python User class to the users table in Postgres.
 class User(Base):
+    """User model representing a user in the system."""
 
-    __tablename__ = "users" # name of the table in postgres
+    __tablename__ = "users"  # name of the table in postgres
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
     email_address = Column(String, unique=True, nullable=False)
@@ -24,7 +25,8 @@ class User(Base):
     matches_as_user2 = relationship("MatchedUsers", foreign_keys="MatchedUsers.user2_id", back_populates="user2")
 
 
-class EmailVerificationCode(Base):      # The temporary verification code is stored in this table
+class EmailVerificationCode(Base):
+    """Verification code model for email verification."""
 
     __tablename__ = "email_verifications"
 
@@ -37,6 +39,7 @@ class EmailVerificationCode(Base):      # The temporary verification code is sto
 
 
 class UserProfile(Base):
+    """User profile model representing additional user information."""
 
     __tablename__ = "user_profiles"
 
@@ -45,7 +48,6 @@ class UserProfile(Base):
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), unique=True)  # this links to the respective user
     full_name = Column(String, nullable=False)
     is_admin = Column(Boolean, default=False)
-    # username = Column(String, nullable=False)
     username = Column(String, unique=True, nullable=False)
     age = Column(Integer, nullable=True)
     bio = Column(String, nullable=True)
@@ -76,6 +78,7 @@ class UserProfile(Base):
 
 
 class MatchedUsers(Base):
+    """Model representing matched users and their compatibility score."""
 
     __tablename__ = "matched_users"
 
@@ -88,6 +91,4 @@ class MatchedUsers(Base):
     user2 = relationship("User", foreign_keys=[user2_id], back_populates="matches_as_user2")
 
     # Ensures that a pair of matched users only appears once
-    __table_args__ = (
-        UniqueConstraint("user1_id", "user2_id", name="unique_user_pair"),
-    )
+    __table_args__ = (UniqueConstraint("user1_id", "user2_id", name="unique_user_pair"),)

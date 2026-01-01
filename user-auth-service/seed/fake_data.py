@@ -10,18 +10,30 @@ logger = logging.getLogger(__name__)
 fake = Faker()
 
 courses = [
-    "Computer Science", "Chemistry", "Mathematics",
-    "Physics", "Psychology", "Economics", "Law", "Politics",
+    "Computer Science",
+    "Chemistry",
+    "Mathematics",
+    "Physics",
+    "Psychology",
+    "Economics",
+    "Law",
+    "Politics",
     "History",
 ]
 
 accommodations = [
-    "Manor Park", "Stag Hill", "Commuting", "Private Housing",
+    "Manor Park",
+    "Stag Hill",
+    "Commuting",
+    "Private Housing",
 ]
 
 years = [
-    "First Year", "Second Year", "Third Year",
-    "Foundation Year", "Placement Year",
+    "First Year",
+    "Second Year",
+    "Third Year",
+    "Foundation Year",
+    "Placement Year",
 ]
 
 ethnicity_language_map = {
@@ -42,25 +54,61 @@ ethnicity_language_map = {
 }
 
 home_areas = [
-    "London", "Manchester", "Birmingham", "Winchester",
-    "Leeds", "Southampton", "Kent",
+    "London",
+    "Manchester",
+    "Birmingham",
+    "Winchester",
+    "Leeds",
+    "Southampton",
+    "Kent",
 ]
 
 societies = [
-    "ABACUS", "Baking Society", "Caribbean Students' Society",
-    "Debating Society", "EARS", "Filipino Society", "GameSoc",
-    "Hindu Society", "Islamic Society", "Japanese Society",
-    "Kannada Society", "Languages Society", "MaDSoc",
-    "Nepalese Society", "Opa Surrey", "ParaSoc", "Rifle Club",
-    "Salsa Society", "Tamil Society", "UAS Team Peryton",
-    "Vet Band", "Welsh Society", "Zoological Society",
+    "ABACUS",
+    "Baking Society",
+    "Caribbean Students' Society",
+    "Debating Society",
+    "EARS",
+    "Filipino Society",
+    "GameSoc",
+    "Hindu Society",
+    "Islamic Society",
+    "Japanese Society",
+    "Kannada Society",
+    "Languages Society",
+    "MaDSoc",
+    "Nepalese Society",
+    "Opa Surrey",
+    "ParaSoc",
+    "Rifle Club",
+    "Salsa Society",
+    "Tamil Society",
+    "UAS Team Peryton",
+    "Vet Band",
+    "Welsh Society",
+    "Zoological Society",
 ]
 
 sports = [
-    "Football", "Horse Riding", "Basketball", "Netball", "Swimming",
-    "Water Polo", "Tennis", "Badminton", "Volleyball", "MMA",
-    "Boxing", "Cricket", "Rugby", "Hockey", "Athletics",
-    "Lacrosse", "Sailing", "Rock Climbing", "Taekwondo",
+    "Football",
+    "Horse Riding",
+    "Basketball",
+    "Netball",
+    "Swimming",
+    "Water Polo",
+    "Tennis",
+    "Badminton",
+    "Volleyball",
+    "MMA",
+    "Boxing",
+    "Cricket",
+    "Rugby",
+    "Hockey",
+    "Athletics",
+    "Lacrosse",
+    "Sailing",
+    "Rock Climbing",
+    "Taekwondo",
 ]
 
 bio_templates = [

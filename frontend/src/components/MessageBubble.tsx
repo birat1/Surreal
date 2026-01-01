@@ -5,41 +5,36 @@ import { formatDate } from '@/lib/utils';
 import type { MessageBubbleProps } from '@/types/types';
 
 const MessageBubble = memo(({ msg, isMe, senderName }: MessageBubbleProps) => {
-    const timestamp = formatDate(msg.created_at);
+  const timestamp = formatDate(msg.created_at);
 
-    const getStatusIcon = () => {
-        if (!isMe) return null;
+  const getStatusIcon = () => {
+    if (!isMe) return null;
 
-        if (msg.read_at) {
-            return (
-                <CheckCheck
-                    size={16}
-                    className="text-blue-500 font-bold ml-1"
-                />
-            );
-        }
+    if (msg.read_at) {
+      return <CheckCheck size={16} className="text-blue-500 font-bold ml-1" />;
+    }
 
-        return <Check size={16} className="text-gray-400" />;
-    };
+    return <Check size={16} className="text-gray-400" />;
+  };
 
-    return (
-        <div className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
-            <div
-                className={`max-w-[70%] px-4 py-2 rounded-2xl shadow-sm ${
-                    isMe
-                        ? 'bg-blue-600 text-white rounded-br-none'
-                        : 'bg-white text-gray-800 border border-gray-200 rounded-bl-none'
-                }`}
-            >
-                <p>{msg.body}</p>
-            </div>
-            <div className="text-xs text-gray-400 mt-1 px-1 flex gap-2">
-                <span>{isMe ? 'You' : senderName}</span>
-                {timestamp && <span>{timestamp}</span>}
-                {getStatusIcon()}
-            </div>
-        </div>
-    );
+  return (
+    <div className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
+      <div
+        className={`max-w-[70%] px-4 py-2 rounded-2xl shadow-sm ${
+          isMe
+            ? 'bg-blue-600 text-white rounded-br-none'
+            : 'bg-white text-gray-800 border border-gray-200 rounded-bl-none'
+        }`}
+      >
+        <p>{msg.body}</p>
+      </div>
+      <div className="text-xs text-gray-400 mt-1 px-1 flex gap-2">
+        <span>{isMe ? 'You' : senderName}</span>
+        {timestamp && <span>{timestamp}</span>}
+        {getStatusIcon()}
+      </div>
+    </div>
+  );
 });
 
 MessageBubble.displayName = 'MessageBubble';

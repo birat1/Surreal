@@ -1,7 +1,8 @@
-import { Card, CardContent, CardHeader } from './ui/card';
+import type { UserProfileFriendsFinderPreview } from '@/types/types';
+
 import defaultProfile from '../assets/default_profile.jpeg';
 
-import type { UserProfileFriendsFinderPreview } from '@/types/types';
+import { Card, CardContent, CardHeader } from './ui/card';
 
 interface FriendsFinderCardPreviewProps {
   profile: UserProfileFriendsFinderPreview;
@@ -17,9 +18,7 @@ const FriendsFinderCardPreview = ({
 
     if (profile.profile_picture instanceof File) {
       imageSrc = URL.createObjectURL(profile.profile_picture);
-    }
-
-    else if (typeof profile.profile_picture === 'string') {
+    } else if (typeof profile.profile_picture === 'string') {
       const pic = profile.profile_picture.trim();
       if (pic && pic !== 'null' && pic !== 'undefined') {
         if (pic.startsWith('http')) {

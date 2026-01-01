@@ -1,3 +1,4 @@
+// Only allow access to admin users. Redirect non-admins to 404 page.
 import type { JSX } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 

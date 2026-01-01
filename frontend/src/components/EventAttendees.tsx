@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import type { Attendee } from '@/types/types';
@@ -12,12 +12,10 @@ interface EventAttendeesProps {
 
 //match events feature: list of users who have rsvp'd to the event and a button to dm them
 const EventAttendees = ({
-  eventId,
   attendees,
   onAttendanceCheck,
 }: EventAttendeesProps) => {
   const { userId: currentUserId } = useAuth();
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {

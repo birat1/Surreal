@@ -1,6 +1,9 @@
 import React from 'react';
+
 import type { ProfilePreviewProps } from '@/types/types';
+
 import defaultProfile from '../assets/default_profile.jpeg';
+
 import { Card, CardHeader, CardContent } from './ui/card';
 
 const ProfileCardFullScreen: React.FC<ProfilePreviewProps> = ({

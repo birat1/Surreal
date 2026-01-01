@@ -14,8 +14,6 @@ const EventsAndSocietiesPage = () => {
   );
   const [organiserFilter, setOrganiserFilter] = useState('');
   const {
-    userId: currentUserId,
-    username: currentUsername,
     isAdmin,
   } = useAuth();
 

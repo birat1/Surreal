@@ -16,12 +16,13 @@ services:
   frontend:
     restart: always
     build: ./frontend
-    container_name: frontend-prod
+    container_name: frontend-dev
 
   # --- AUTH SERVICE ---
   auth-db:
     image: postgres:latest
     restart: always
+    container_name: auth-db
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASS}
@@ -38,6 +39,7 @@ services:
   user-auth-service:
     build: ./user-auth-service
     env_file: .env
+    container_name: user-auth-service
     depends_on:
       auth-db:
         condition: service_healthy
@@ -46,6 +48,7 @@ services:
   messaging-db:
     image: mongo:latest
     restart: always
+    container_name: messaging-db
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${DB_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${DB_PASS}
@@ -62,6 +65,7 @@ services:
   messaging-service:
     build: ./messaging-service
     env_file: .env
+    container_name: messaging-service
     depends_on:
       messaging-db:
         condition: service_healthy
@@ -72,6 +76,7 @@ services:
   rabbitmq:
     image: rabbitmq:4-management-alpine
     restart: always
+    container_name: message-broker
     environment:
       RABBITMQ_DEFAULT_USER: ${MQ_USER}
       RABBITMQ_DEFAULT_PASS: ${MQ_PASS}
@@ -88,6 +93,7 @@ services:
   notification-db:
     image: mongo:latest
     restart: always
+    container_name: notification-db
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${DB_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${DB_PASS}
@@ -102,6 +108,7 @@ services:
   notification-service:
     build: ./notification-service
     env_file: .env
+    container_name: notification-service
     depends_on:
       notification-db:
         condition: service_healthy
@@ -112,6 +119,7 @@ services:
   events-societies-db:
     image: postgres:latest
     restart: always
+    container_name: events-societies-db
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASS}
@@ -128,6 +136,7 @@ services:
   events-societies-service:
     build: ./events-societies-service
     env_file: .env
+    container_name: events-societies-service
     depends_on:
       events-societies-db:
         condition: service_healthy

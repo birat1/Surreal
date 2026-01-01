@@ -1,5 +1,6 @@
 # Surreal
-This is a development branch that contains all services from different branches merged together.
+
+This is the development branch that contains all services from different branches merged together.
 
 ## Setting up .env
 

@@ -14,6 +14,7 @@ ROUTING_KEY = "notification.chat"
 
 logger = logging.getLogger(__name__)
 
+
 class RabbitMQClient:
     """Creates connection and publishes messages to message broker."""
 
@@ -63,7 +64,6 @@ class RabbitMQClient:
         if not self.connection.is_closed:
             await self.connect()
 
-
         try:
             message = aio_pika.Message(
                 body=body,
@@ -85,5 +85,6 @@ class RabbitMQClient:
         """Close connection to RabbitMQ broker."""
         if self.connection and not self.connection.is_closed:
             await self.connection.close()
+
 
 client = RabbitMQClient()

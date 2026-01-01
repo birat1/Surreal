@@ -10,7 +10,7 @@ from app.utils.rabbitmq_client import client
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI):  # noqa: ANN201, ARG001
     """Lifespan context manager to handle startup and shutdown events."""
     await init_db()
     await client.connect()
@@ -18,6 +18,7 @@ async def lifespan(app: FastAPI):
         yield
     finally:
         await client.close()
+
 
 app = FastAPI(lifespan=lifespan)
 
@@ -29,10 +30,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/")
 def health() -> dict:
     """Health check endpoint."""
     return {"blank page": "This is a blank page"}
+
 
 app.include_router(messages.router)
 app.include_router(ws.router)

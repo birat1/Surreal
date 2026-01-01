@@ -20,6 +20,7 @@ router = APIRouter()
 
 USER_AUTH_SERVICE_URL = os.getenv("USER_AUTH_SERVICE_URL")
 
+
 async def fetch_names_from_auth_service(user_ids: list[str]) -> dict[str, str]:
     """Get names from user-auth-service given a list of user IDs."""
     try:
@@ -29,11 +30,12 @@ async def fetch_names_from_auth_service(user_ids: list[str]) -> dict[str, str]:
                 f"{USER_AUTH_SERVICE_URL}/users/retrieve",
                 json={"user_ids": user_ids},
             )
-            if response.status_code == 200: # Successful response
+            if response.status_code == 200:  # Successful response
                 return response.json()
     except Exception as e:
         logger.exception(f"Error fetching names from auth service: {e}")
     return {}
+
 
 @router.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket) -> None:
@@ -63,14 +65,18 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
                     sender_id_message = raw_data["sender_id"]
 
                     # Find existing conversation via participants
-                    conversation = await Conversation.find_one({
-                        "participants": {
-                            "$all": [UUID(user_id_str), UUID(sender_id_message)],
-                        },
-                    })
+                    conversation = await Conversation.find_one(
+                        {
+                            "participants": {
+                                "$all": [UUID(user_id_str), UUID(sender_id_message)],
+                            },
+                        }
+                    )
 
                     if not conversation:
-                        logger.warning(f"Conversation not found for read receipt: {user_id_str} and {sender_id_message}")
+                        logger.warning(
+                            f"Conversation not found for read receipt: {user_id_str} and {sender_id_message}"
+                        )
                         continue
 
                     cid = conversation.id
@@ -78,11 +84,13 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
                     curr_time = datetime.datetime.now(datetime.timezone.utc)
 
                     # Update all messages sent to user_id from sender_id as read
-                    await Message.find({
-                        "conversation_id": cid,
-                        "recipient_id": UUID(user_id_str),
-                        "read_at": None,
-                    }).update({"$set": {"read_at": curr_time}})
+                    await Message.find(
+                        {
+                            "conversation_id": cid,
+                            "recipient_id": UUID(user_id_str),
+                            "read_at": None,
+                        }
+                    ).update({"$set": {"read_at": curr_time}})
 
                     # Create read event and publish to message broker
                     read_at = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
@@ -99,11 +107,14 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
                         logger.warning(f"Failed to publish MessageRead event for: {cid}")
 
                     # Notify the original sender about the read receipt
-                    await manager.send_to_user(sender_id_message, {
-                        "type": "read_receipt",
-                        "reader_id": user_id_str,
-                        "read_at": str(curr_time),
-                    })
+                    await manager.send_to_user(
+                        sender_id_message,
+                        {
+                            "type": "read_receipt",
+                            "reader_id": user_id_str,
+                            "read_at": str(curr_time),
+                        },
+                    )
                 except KeyError:
                     pass
                 continue
@@ -121,11 +132,13 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
                 continue
 
             # Find existing conversation via participants
-            conversation = await Conversation.find_one({
-                "participants": {
-                    "$all": [UUID(user_id_str), UUID(recipient_id_str)],
-                },
-            })
+            conversation = await Conversation.find_one(
+                {
+                    "participants": {
+                        "$all": [UUID(user_id_str), UUID(recipient_id_str)],
+                    },
+                }
+            )
 
             if conversation:
                 # Use existing conversation
@@ -139,12 +152,12 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
                 cid = uuid4()
                 names_dict = await fetch_names_from_auth_service([user_id_str, recipient_id_str])
                 conversation = Conversation(
-                    id = cid,
-                    participants = [UUID(user_id_str), UUID(recipient_id_str)],
-                    participant_names = names_dict,
-                    last_msg = data.body,
-                    last_sender_id = user_id,
-                    updated_at = datetime.datetime.now(datetime.timezone.utc),
+                    id=cid,
+                    participants=[UUID(user_id_str), UUID(recipient_id_str)],
+                    participant_names=names_dict,
+                    last_msg=data.body,
+                    last_sender_id=user_id,
+                    updated_at=datetime.datetime.now(datetime.timezone.utc),
                 )
                 await conversation.insert()
 
@@ -163,7 +176,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
             sender_username = names_dict.get(user_id_str, "unknown")
             created_event = {
                 "eventType": "MessageCreated",
-                "messageCreated":{
+                "messageCreated": {
                     "messageId": message_id,
                     "conversationId": str(cid),
                     "senderId": str(user_id),

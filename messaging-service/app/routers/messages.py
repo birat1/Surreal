@@ -8,6 +8,7 @@ from app.utils.jwt_handler import get_current_user
 
 router = APIRouter()
 
+
 # Inbox endpoint
 @router.get("/inbox")
 async def get_user_inbox(current_user: Annotated[str, Depends(get_current_user)]) -> dict:
@@ -15,9 +16,13 @@ async def get_user_inbox(current_user: Annotated[str, Depends(get_current_user)]
     user_id = UUID(current_user)
 
     # Fetch conversations involving the user
-    conversations = await Conversation.find(
-        Conversation.participants == user_id  # noqa: COM812
-    ).sort("-updated_at").to_list()
+    conversations = (
+        await Conversation.find(
+            Conversation.participants == user_id  # noqa: COM812
+        )
+        .sort("-updated_at")
+        .to_list()
+    )
 
     inbox_list = []
     for c in conversations:
@@ -35,21 +40,27 @@ async def get_user_inbox(current_user: Annotated[str, Depends(get_current_user)]
         display_name = c.participant_names.get(str(other_user_id), "Unknown User")
 
         # Append conversation details to inbox list
-        inbox_list.append({
-            "id": c.id,
-            "recipient_id": str(other_user_id),
-            "recipient_name": display_name,
-            "last_message": c.last_msg,
-            "last_sender_id": str(c.last_sender_id) if c.last_sender_id else None,
-            "updated_at": c.updated_at,
-        })
+        inbox_list.append(
+            {
+                "id": c.id,
+                "recipient_id": str(other_user_id),
+                "recipient_name": display_name,
+                "last_message": c.last_msg,
+                "last_sender_id": str(c.last_sender_id) if c.last_sender_id else None,
+                "updated_at": c.updated_at,
+            },
+        )
 
     # Return the compiled inbox list
     return {"conversations": inbox_list}
 
+
 # Messages in a conversation endpoint
 @router.get("/conversations/{conversation_id}/messages")
-async def get_conversation(conversation_id: UUID, current_user: Annotated[str, Depends(get_current_user)]) -> list[dict]:
+async def get_conversation(
+    conversation_id: UUID,
+    current_user: Annotated[str, Depends(get_current_user)],
+) -> list[dict]:
     """Fetch all messages in a conversation."""
     user_id = UUID(current_user)
 
@@ -64,9 +75,13 @@ async def get_conversation(conversation_id: UUID, current_user: Annotated[str, D
         return []
 
     # Fetch messages in the conversation
-    messages = await Message.find(
-        Message.conversation_id == conversation_id # noqa: COM812
-    ).sort("+created_at").to_list()
+    messages = (
+        await Message.find(
+            Message.conversation_id == conversation_id  # noqa: COM812
+        )
+        .sort("+created_at")
+        .to_list()
+    )
 
     # Return messages as JSON dicts
     return [msg.model_dump(mode="json") for msg in messages]

@@ -19,7 +19,10 @@ class Message(Document):
     read_at: datetime | None = None
 
     class Settings:
+        """Settings for the Message model."""
+
         name = "messages"
+
 
 class Conversation(Document):
     """Conversation model."""
@@ -34,4 +37,6 @@ class Conversation(Document):
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     class Settings:
+        """Settings for the Conversation model."""
+
         name = "conversations"

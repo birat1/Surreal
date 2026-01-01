@@ -9,6 +9,7 @@ class MessageCreate(BaseModel):
     recipient_id: UUID4
     body: str = Field(..., min_length=1)
 
+
 class MessageResponse(BaseModel):
     """Schema for message response."""
 

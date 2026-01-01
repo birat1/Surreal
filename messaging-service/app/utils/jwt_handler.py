@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 SECRET_KEY = os.getenv("JWT_SECRET")
 ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
 
+
 def get_current_user(request: Request) -> str:
     """Handle JWT validation and returns UserID as string."""
     token = request.cookies.get("access_token")
@@ -33,6 +34,7 @@ def get_current_user(request: Request) -> str:
         logger.debug(f"JWTError occurred - {e}")
         logger.debug(f"Token value - {token[:10]}...")
         raise HTTPException(status_code=401, detail="Could not validate credentials") from e
+
 
 async def get_ws_user_id(token: str | None) -> UUID | None:
     """Validate JWT for WebSocket and returns UserID."""

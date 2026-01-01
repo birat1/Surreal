@@ -7,6 +7,7 @@ from .rabbitmq_client import RabbitMQClient, client
 
 logger = logging.getLogger(__name__)
 
+
 class RabbitMQPublisher:
     """Publisher."""
 
@@ -24,8 +25,9 @@ class RabbitMQPublisher:
         except AMQPConnectionError:
             logger.error("Failed to publish, due to connection error")
             return False
-        except Exception:
-            logger.error("Failed to publish event")
+        except Exception as e:
+            logger.exception(f"Failed to publish event: {e}")
             return False
+
 
 publisher = RabbitMQPublisher(client)

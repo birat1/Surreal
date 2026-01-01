@@ -4,6 +4,7 @@ from fastapi import WebSocket, WebSocketDisconnect
 
 logger = logging.getLogger(__name__)
 
+
 class ConnectionManager:
     """Class to manage active WebSocket connections for users."""
 
@@ -32,10 +33,11 @@ class ConnectionManager:
         for ws in list(active_sockets):
             try:
                 await ws.send_json(payload)
-            except (WebSocketDisconnect, RuntimeError):
+            except (WebSocketDisconnect, RuntimeError):  # noqa: PERF203
                 self.disconnect(user_id, ws)
             except Exception as e:
                 logger.exception(f"Error sending message to {user_id}: {e}")
                 self.disconnect(user_id, ws)
+
 
 manager = ConnectionManager()

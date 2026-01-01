@@ -5,7 +5,7 @@ from pymongo import AsyncMongoClient
 
 from app.models import Conversation, Message
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("MESSAGE_DB_URL")
 
 async def init_db() -> None:
     """Initialise the database connection."""

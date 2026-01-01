@@ -1,13 +1,14 @@
+import os
+
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-import os
-from dotenv import load_dotenv
 
 # this imports the env file in the same folder
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("USER_DB_URL")
 
 if not DATABASE_URL:
       raise RuntimeError("DATABASE_URL is not set. Check your .env file or environment variables.")

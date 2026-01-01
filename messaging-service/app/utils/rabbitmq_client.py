@@ -4,10 +4,10 @@ import os
 import aio_pika
 from aio_pika.exceptions import AMQPConnectionError
 
-RABBITMQ_HOST = os.getenv("RABBITMQ_HOST")
-RABBITMQ_PORT = os.getenv("RABBITMQ_PORT")
-RABBITMQ_USER = os.getenv("RABBITMQ_USER")
-RABBITMQ_PASS = os.getenv("RABBITMQ_PASS")
+RABBITMQ_HOST = os.getenv("MQ_HOST")
+RABBITMQ_PORT = os.getenv("MQ_PORT")
+RABBITMQ_USER = os.getenv("MQ_USER")
+RABBITMQ_PASS = os.getenv("MQ_PASS")
 
 EXCHANGE = "notification.exchange"
 ROUTING_KEY = "notification.chat"

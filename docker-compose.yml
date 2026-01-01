@@ -10,7 +10,7 @@ services:
       - frontend
       - user-auth-service
       - messaging-service
-      - events-and-societies-service
+      - events-societies-service
 
   # --- FRONTEND ---
   frontend:
@@ -109,7 +109,7 @@ services:
         condition: service_healthy
 
   # --- EVENTS/SOCIETIES SERVICE ---
-  events-services-db:
+  events-societies-db:
     image: postgres:latest
     restart: always
     environment:
@@ -125,11 +125,11 @@ services:
       retries: 5
       start_period: 20s
   
-  events-and-societies-service:
-    build: ./events-and-societies-service
+  events-societies-service:
+    build: ./events-societies-service
     env_file: .env
     depends_on:
-      events-services-db:
+      events-societies-db:
         condition: service_healthy
   
 volumes:

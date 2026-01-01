@@ -1,0 +1,41 @@
+services:
+  db:
+    image: mongo:latest
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASS}
+      MONGO_INITDB_DATABASE: ${DB_NAME}
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - messaging-internal
+
+  messaging-service:
+    build: .
+    ports:
+      - "8001:8000"
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - USER_AUTH_SERVICE_URL=${USER_AUTH_SERVICE_URL}
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    restart: on-failure
+    networks:
+      - backend
+      - messaging-internal
+
+networks:
+  messaging-internal:
+    driver: bridge
+  backend:
+    external: true
+
+volumes:
+  mongo_data:

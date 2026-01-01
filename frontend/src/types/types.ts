@@ -113,6 +113,7 @@ export interface Event {
   event_time: string;
   event_location: string;
   event_organiser: string;
+  attendees?: Attendee[];
 }
 
 export interface EventsPageProps {

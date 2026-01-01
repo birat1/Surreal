@@ -1,0 +1,22 @@
+services:
+  rabbitmq:
+    image: rabbitmq:4-management-alpine
+    env_file:
+      - .env
+    environment:
+      RABBITMQ_DEFAULT_USER: ${MQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${MQ_PASS}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - backend
+
+volumes:
+  rabbitmq_data:
+
+networks:
+  backend:
+    external: true

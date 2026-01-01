@@ -1,0 +1,12 @@
+FROM nginx:latest
+
+RUN rm /etc/nginx/conf.d/default.conf
+
+COPY /nginx/nginx.conf /etc/nginx/nginx.conf
+COPY /nginx/snippets/cors_preflight.conf /etc/nginx/snippets/cors_preflight.conf
+
+EXPOSE 8080
+
+WORKDIR /etc/nginx
+
+CMD ["nginx", "-g", "daemon off;"]

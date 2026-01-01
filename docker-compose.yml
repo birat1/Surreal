@@ -1,0 +1,139 @@
+services:
+  # --- NGINX ---
+  nginx:
+    restart: always
+    build: ./api-gateway
+    container_name: nginx-web
+    ports:
+      - "8080:8080"
+    depends_on:
+      - frontend
+      - user-auth-service
+      - messaging-service
+      - events-and-societies-service
+
+  # --- FRONTEND ---
+  frontend:
+    restart: always
+    build: ./frontend
+    container_name: frontend-prod
+
+  # --- AUTH SERVICE ---
+  auth-db:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${USER_DB_NAME}
+    volumes:
+      - auth_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  user-auth-service:
+    build: ./user-auth-service
+    env_file: .env
+    depends_on:
+      auth-db:
+        condition: service_healthy
+
+  # --- MESSAGING SERVICE ---
+  messaging-db:
+    image: mongo:latest
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASS}
+      MONG_INITDB_DATABASE: ${MESSAGE_DB_NAME}
+    volumes:
+      - messaging_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.runCommand({ ping: 1 }).ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  messaging-service:
+    build: ./messaging-service
+    env_file: .env
+    depends_on:
+      messaging-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  # --- MESSAGE BROKER ---
+  rabbitmq:
+    image: rabbitmq:4-management-alpine
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: ${MQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${MQ_PASS}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  # --- NOTIFICATION SERVICE ---
+  notification-db:
+    image: mongo:latest
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASS}
+      MONG_INITDB_DATABASE: ${NOTIFICATION_DB_NAME}
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.runCommand({ ping: 1 }).ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  notification-service:
+    build: ./notification-service
+    env_file: .env
+    depends_on:
+      notification-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  # --- EVENTS/SOCIETIES SERVICE ---
+  events-services-db:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${EVENTS_DB_NAME}
+    volumes:
+      - events_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+  
+  events-and-societies-service:
+    build: ./events-and-societies-service
+    env_file: .env
+    depends_on:
+      events-services-db:
+        condition: service_healthy
+  
+volumes:
+  auth_data:
+  messaging_data:
+  events_data:
+  rabbitmq_data:

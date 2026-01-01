@@ -11,6 +11,7 @@ services:
       - user-auth-service
       - messaging-service
       - events-societies-service
+      - notification-service
 
   # --- FRONTEND ---
   frontend:

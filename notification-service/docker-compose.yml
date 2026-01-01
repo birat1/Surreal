@@ -1,0 +1,31 @@
+services:
+  notification-service:
+    build: .
+    ports:
+      - "8081:8080"
+    env_file: .env
+    depends_on:
+      - db
+    networks:
+      - notification-internal
+      - backend
+    restart: unless-stopped
+
+  db:
+    image: mongo:latest
+    ports:
+      - "27018:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASS}
+      MONG_INITDB_DATABASE: notificationdb
+    restart: unless-stopped
+    networks:
+      - notification-internal
+
+
+networks:
+  notification-internal:
+    driver: bridge
+  backend:
+    external: true

@@ -1,6 +1,6 @@
 # Surreal
 
-This is the development branch that contains all services from different branches merged together.
+This is the development branch that contains all services from different branches merged together
 
 ## Setting up .env
 
@@ -8,5 +8,5 @@ An `.env.example` file is provided outlining what should be in an `.env` file fo
 
 ## Running the project
 
-1. `docker compose up` - can also include `-d` for detached or `--build` for building.
-2. `docker compose down` - can also include `-V` for deleting volumes.
+1. `docker compose up` - can also include `-d` for detached or `--build` for building
+2. `docker compose down` - can also include `-v` for deleting volumes

@@ -13,7 +13,7 @@ from app.database import SessionLocal
 from app.models import EventRSVP, Events
 
 
-def seed_database():
+def seed_database() -> None:
     """Seeds the database with sample events data."""
     db = SessionLocal()
     try:

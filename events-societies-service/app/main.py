@@ -1,12 +1,11 @@
-from datetime import date, datetime
 import logging
 import os
 from typing import Annotated
 
 import httpx
 from fastapi import APIRouter, Depends, FastAPI, HTTPException, Request
-from jose import JWTError, jwt
 from fastapi.middleware.cors import CORSMiddleware
+from jose import JWTError, jwt
 from sqlalchemy import asc
 from sqlalchemy.orm import Session
 
@@ -31,8 +30,8 @@ app.add_middleware(
 )
 
 
-# Dependency to get DB session
 def get_db():
+    """Get a database session."""
     db = SessionLocal()
     try:
         yield db
@@ -102,16 +101,17 @@ async def fetch_names_from_auth_service(user_ids: list[str]) -> dict[str, str]:
 
 
 @app.get("/")
-def health():
+def health() -> dict:
+    """Health check endpoint."""
     return {"status": "ok"}
 
 
-# get a list of all events
 @app.get("/events", response_model=list[EventRead])
 async def get_events(
     db: Annotated[Session, Depends(get_db)],
     organiser: str | None = None,
-):
+) -> list[Events]:
+    """Get all events, optionally filtered by organiser."""
     query = db.query(Events)
     # filter by organiser
     if organiser:
@@ -129,22 +129,23 @@ async def get_events(
     return events
 
 
-# get the users attending the event
 @app.get("/events/{event_id}/attendees")
-async def get_event_attendees(event_id: int, db: Annotated[Session, Depends(get_db)]):
+async def get_event_attendees(event_id: int, db: Annotated[Session, Depends(get_db)]) -> list[dict]:
+    """Get attendees for a specific event."""
     rsvps = db.query(EventRSVP).filter_by(event_id=event_id).all()
     user_ids = [str(r.user_id) for r in rsvps]
     user_map = await fetch_names_from_auth_service(user_ids)
+
     return [{"user_id": uid, "username": user_map.get(uid, "Unknown")} for uid in user_ids]
 
 
-# match events: rsvp to an event
 @app.post("/events/{event_id}/rsvp")
 def rsvp_event(
     event_id: int,
-    user=Depends(get_current_user),
-    db: Session = Depends(get_db),
-):
+    db: Annotated[Session, Depends(get_db)],
+    user: Annotated[dict, Depends(get_current_user)],
+) -> dict:
+    """RSVP to an event."""
     user_id = user["user_id"]
 
     existing = db.query(EventRSVP).filter_by(event_id=event_id, user_id=user_id).first()
@@ -159,13 +160,13 @@ def rsvp_event(
     return {"message": "RSVP successful"}
 
 
-# create event feature: add the data to the database
 @app.post("/events", response_model=EventRead)
 def create_event(
     event: EventCreate,
-    db: Session = Depends(get_db),
-    user=Depends(get_current_user),
-):
+    db: Annotated[Session, Depends(get_db)],
+    user: Annotated[dict, Depends(get_current_user)],
+) -> Events:
+    """Create a new event (Admins only)."""
     if not user["is_admin"]:
         raise HTTPException(status_code=403, detail="Admins only")
 
@@ -173,4 +174,5 @@ def create_event(
     db.add(new_event)
     db.commit()
     db.refresh(new_event)
+
     return new_event

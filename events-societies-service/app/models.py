@@ -5,7 +5,9 @@ from sqlalchemy.orm import relationship
 from app.database import Base
 
 
-class Events(Base):  # Creates table for Events
+class Events(Base):
+    """Events table definition."""
+
     __tablename__ = "events"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -22,7 +24,9 @@ class Events(Base):  # Creates table for Events
     )
 
 
-class EventRSVP(Base):  # Create table for Users who RSVP to an event
+class EventRSVP(Base):
+    """EventRSVP table definition."""
+
     __tablename__ = "event_rsvps"
 
     user_id = Column(UUID(as_uuid=True), primary_key=True)

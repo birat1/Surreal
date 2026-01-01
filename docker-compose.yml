@@ -1,0 +1,17 @@
+services:
+    frontend-dev:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: frontend-dev
+        ports:
+            - '5173:5173'
+        volumes:
+            - .:/app
+            - /app/node_modules
+        networks:
+            - backend
+
+networks:
+    backend:
+        external: true

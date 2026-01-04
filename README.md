@@ -21,3 +21,5 @@ password: password
 email: test2@surrey.ac.uk
 password: password
 ```
+
+Details for seeded users can be found at user-auth-service/seed/seed_data.json

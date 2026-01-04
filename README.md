@@ -10,3 +10,14 @@ An `.env.example` file is provided outlining what should be in an `.env` file fo
 
 1. `docker compose up` - can also include `-d` for detached or `--build` for building
 2. `docker compose down` - can also include `-v` for deleting volumes
+
+Some users and events have already been seeded into the database  
+For example, you can use:
+
+```
+email: test@surrey.ac.uk
+password: password
+
+email: test2@surrey.ac.uk
+password: password
+```

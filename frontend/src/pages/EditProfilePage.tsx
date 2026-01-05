@@ -80,10 +80,8 @@ const EditProfilePage = () => {
       <div className="bg-white rounded-xl shadow p-6 overflow-auto">
         <ProfileCardFullScreen user_data={formData} />
 
-        <div className="mt-6 flex justify-center">
-          <div className="w-1/2">
-            <FriendsFinderCardPreview profile={previewProfile} />
-          </div>
+        <div className="mt-6">
+          <FriendsFinderCardPreview profile={previewProfile} />
         </div>
       </div>
     </div>

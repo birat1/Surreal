@@ -129,6 +129,12 @@ const SignUpPage = () => {
                   />
                 </div>
 
+                <p className="text-sm text-orange-400 font-medium text-center">
+                    By signing up, you agree for us to process your personal data. 
+                    Only relevant information will be asked and stored securely.
+                    For any questions, please contact surrealwebapp@gmail.com.
+                </p>
+
                 <Button
                   type="submit"
                   disabled={loading}

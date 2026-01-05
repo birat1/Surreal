@@ -205,7 +205,7 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
             : "Welcome to Surreal! Don't worry — you can change these later."}
         </p>
 
-        <p className="text-blue-700 font-bold">
+        <p className="text-blue-700 font-bold text-center">
           Use the toggle under the optional fields to decide which fields you
           want others to be able to view
         </p>
@@ -737,17 +737,17 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
         <div className="flex flex-col mt-2">
           <label
             htmlFor="fun_fact"
-            className="text-sm font-medium text-orange-300 "
+            className="text-sm font-medium text-orange-500 "
           >
             Fun Fact
           </label>
           <Textarea
             id="fun_fact"
             name="fun_fact"
-            placeholder="Give us a fun fact about yourself!!!!!!!!"
+            placeholder="Give us a fun fact about yourself!"
             value={formData.fun_fact}
             onChange={handleChange}
-            className="border-orange-400 text-orange-300 focus:ring-blue-500"
+            className="border-orange-300 text-orange-500 focus:ring-orange-500 focus:border-orange-500"
           />
         </div>
 

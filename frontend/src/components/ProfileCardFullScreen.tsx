@@ -54,7 +54,7 @@ const ProfileCardFullScreen: React.FC<ProfilePreviewProps> = ({
   }
 
   return (
-    <Card className="w-full max-w-2xl shadow-lg p-4 flex flex-col">
+    <Card className="w-full max-w-2xl mx-auto shadow-lg p-4 flex flex-col">
       <CardHeader>
         <div className="flex flex-col items-center text-center">
           <img

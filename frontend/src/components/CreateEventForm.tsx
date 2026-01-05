@@ -7,6 +7,8 @@ import { Button } from './ui/button';
 import { Card, CardHeader, CardContent } from './ui/card';
 import { Input } from './ui/input';
 
+import { toast } from 'sonner';
+
 //for create event feature: admins can create events
 
 const CreateEventForm: React.FC<CreateEventFormProps> = ({
@@ -68,11 +70,11 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({
         throw new Error(errData.detail || 'Failed to create event');
       }
 
-      alert('Event created successfully!');
+      toast.success('Event created successfully!');
       navigate('/events');
     } catch (err) {
       console.error(err);
-      alert('Something went wrong while creating the event.');
+      toast.error('Something went wrong while creating the event.');
     } finally {
       setLoading(false);
     }

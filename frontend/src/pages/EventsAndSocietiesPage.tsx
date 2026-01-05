@@ -5,6 +5,7 @@ import EventAttendees from '@/components/EventAttendees';
 import EventsCard from '@/components/EventsCard';
 import { useAuth } from '@/context/AuthContext';
 import type { Event } from '@/types/types';
+import { toast } from 'sonner';
 
 const EventsAndSocietiesPage = () => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -60,7 +61,7 @@ const EventsAndSocietiesPage = () => {
     );
 
     if (!res.ok) {
-      alert('Failed to RSVP');
+      toast.error('Failed to RSVP');
       return;
     }
 
@@ -92,6 +93,16 @@ const EventsAndSocietiesPage = () => {
         onChange={(e) => setOrganiserFilter(e.target.value)}
         className="border px-3 py-2 rounded w-64 mb-6"
       />
+      <div>
+        <{isAdmin && (
+          <button
+            onClick={() => navigate('/events/create')}
+            className="mt-6 px-4 py-2 bg-blue-500 text-white rounded mb-6 cursor-pointer"
+          >
+            Create Event
+          </button>
+        )}>
+      </div>
       <div className="grid grid-cols-4 gap-6">
         {events.map((event) => (
           <EventsCard
@@ -110,14 +121,6 @@ const EventsAndSocietiesPage = () => {
           </EventsCard>
         ))}
       </div>
-      {isAdmin && (
-        <button
-          onClick={() => navigate('/events/create')}
-          className="mt-6 px-4 py-2 bg-blue-500 text-white rounded mb-6 cursor-pointer"
-        >
-          Create Event
-        </button>
-      )}
     </div>
   );
 };

@@ -14,9 +14,7 @@ const EventsAndSocietiesPage = () => {
     {}
   );
   const [organiserFilter, setOrganiserFilter] = useState('');
-  const {
-    isAdmin,
-  } = useAuth();
+  const { isAdmin } = useAuth();
 
   // Only update attendance status when it changes (Avoiding unnecessary re-renders)
   const handleAttendanceCheck = useCallback(
@@ -94,14 +92,14 @@ const EventsAndSocietiesPage = () => {
         className="border px-3 py-2 rounded w-64 mb-6"
       />
       <div>
-        <{isAdmin && (
+        {isAdmin && (
           <button
             onClick={() => navigate('/events/create')}
             className="mt-6 px-4 py-2 bg-blue-500 text-white rounded mb-6 cursor-pointer"
           >
             Create Event
           </button>
-        )}>
+        )}
       </div>
       <div className="grid grid-cols-4 gap-6">
         {events.map((event) => (

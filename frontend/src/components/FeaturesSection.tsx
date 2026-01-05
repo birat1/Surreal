@@ -1,23 +1,26 @@
 import { motion } from 'framer-motion';
 
 import { Card, CardContent } from '@/components/ui/card';
+import screenshot1 from '../assets/screenshot1.jpg';
+import screenshot2 from '../assets/screenshot2.jpg';
+import screenshot3 from '../assets/screenshot3.jpg';
 
 const FeaturesSection = () => {
   const features = [
     {
       title: 'Finding People Who Get You',
       desc: 'Discover other students with similar interests, hobbies, and culture as you — without awkward introductions.',
-      img: '/placeholder.png',
+      img: screenshot3,
     },
     {
       title: 'Making Real Connections',
       desc: 'Surreal is built specifically to help students form genuine friendships, not chase likes or followers.',
-      img: '/placeholder.png',
+      img: screenshot1,
     },
     {
       title: 'Settling Into Uni Faster',
       desc: "Whether it's your first week or your first year, Surreal helps you feel at home sooner.",
-      img: '/placeholder.png',
+      img: screenshot2,
     },
   ];
 
@@ -78,11 +81,13 @@ const FeaturesSection = () => {
                         alignRight ? 'lg:flex-row-reverse' : ''
                       }`}
                     >
-                      {/* IMAGE PLACEHOLDER */}
+                      {/* IMAGE */}
                       <div className="flex flex-1 justify-center">
-                        <div className="flex h-[300px] w-[420px] items-center justify-center rounded-xl bg-white/10 text-gray-400">
-                          Screenshot
-                        </div>
+                        <img
+                            src={feature.img}
+                            alt={feature.title}
+                            className="h-[300px] w-[420px] rounded-xl object-cover"
+                        />
                       </div>
 
                       {/* TEXT */}

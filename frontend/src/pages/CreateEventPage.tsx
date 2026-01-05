@@ -14,7 +14,7 @@ const CreateEventPage = () => {
   });
 
   return (
-    <div className="min-h-screen flex justify-center pt-10 bg-gray-50">
+    <div className="min-h-screen flex justify-center pt-32 bg-gray-50">
       <div className="min-h-0 bg-white rounded-xl shadow p-4 ">
         <CreateEventForm formData={formData} setFormData={setFormData} />
       </div>

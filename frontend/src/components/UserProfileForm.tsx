@@ -737,9 +737,9 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
         <div className="flex flex-col mt-2">
           <label
             htmlFor="fun_fact"
-            className="text-sm font-medium text-orange-500 "
+            className="text-sm font-medium text-blue-600 "
           >
-            Fun Fact
+            Fun Fact ✨
           </label>
           <Textarea
             id="fun_fact"
@@ -747,7 +747,7 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
             placeholder="Give us a fun fact about yourself!"
             value={formData.fun_fact}
             onChange={handleChange}
-            className="border-orange-300 text-orange-500 focus:ring-orange-500 focus:border-orange-500"
+            className="border-blue-300 text-blue-600 focus:ring-blue-500"
           />
         </div>
 

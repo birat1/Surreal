@@ -11,7 +11,12 @@ An `.env.example` file is provided outlining what should be in an `.env` file fo
 1. `docker compose up` - can also include `-d` for detached or `--build` for building
 2. `docker compose down` - can also include `-v` for deleting volumes
 
-Some users and events have already been seeded into the database  
+## Seeding commands
+
+1. `docker compose exec user-auth-service python seed/seed.py` - seeds users and their profiles
+2. `docker compose exec events-societies-service python seed/seed_events.py` - seeds events
+
+Details for seeded users can be found at user-auth-service/seed/seed_data.json
 For example, you can use:
 
 ```
@@ -21,5 +26,3 @@ password: password
 email: test2@surrey.ac.uk
 password: password
 ```
-
-Details for seeded users can be found at user-auth-service/seed/seed_data.json

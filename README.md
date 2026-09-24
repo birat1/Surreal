@@ -1,6 +1,6 @@
 # Surreal
 
-This is the development branch that contains all services from different branches merged together
+A full-stack microservices-based web application designed for campus networking, finding friends, joining societies, and managing events.
 
 ## Setting up .env
 
